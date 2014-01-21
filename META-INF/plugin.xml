@@ -1,7 +1,7 @@
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
-  <name>Plugin display name here</name>
-  <version>1.0</version>
+  <id>org.perfcake.perfcakeidea</id>
+  <name>PerfCake</name>
+  <version>0.1</version>
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
@@ -38,5 +38,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
+      <moduleType id="PERFCAKE_MODULE"
+                  implementationClass="PerfCakeModuleType"/>
   </extensions>
 </idea-plugin>
