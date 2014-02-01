@@ -1,17 +1,16 @@
-<idea-plugin version="2">
-  <id>org.perfcake.perfcakeidea</id>
-  <name>PerfCake</name>
+<idea-plugin version="2" url="https://www.perfcake.org">
+  <id>org.perfcake.idea</id>
+  <name>PerfCakeIDEA</name>
   <version>0.1</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="m.michalko@aol.com">Miron Michalko</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <small>most HTML tags may be used</small>
+      PerfCake plugin for IntellijIdea. <br/>
+      PerfCake is a lightweight performance testing tool and a load generator.
       ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <small>most HTML tags may be used</small>
+      <small>Version 0.1</small>
       ]]>
   </change-notes>
 
@@ -39,6 +38,10 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
       <moduleType id="PERFCAKE_MODULE"
-                  implementationClass="PerfCakeModuleType"/>
+                  implementationClass="org.perfcake.idea.module.PerfCakeModuleType"/>
+      <projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>
   </extensions>
+    <module-components>
+
+    </module-components>
 </idea-plugin>

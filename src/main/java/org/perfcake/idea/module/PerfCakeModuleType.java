@@ -1,3 +1,5 @@
+package org.perfcake.idea.module;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
@@ -10,19 +12,16 @@ import javax.swing.*;
  * Created by miron on 8.1.2014.
  */
 public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder>{
-    //private static final Icon ADD_PLUGIN_MODULE_ICON = IconLoader.getIcon("/add_plugin_modulewizard.png");
     @NonNls private static final String ID = "PERFCAKE_MODULE";
 
     public PerfCakeModuleType() {
         super(ID);
     }
 
-    //TODO: Why?
     public static PerfCakeModuleType getInstance() {
         return (PerfCakeModuleType) ModuleTypeManager.getInstance().findByID(ID);
     }
 
-    //TODO: Why?
     public static boolean isOfType(Module module) {
         return get(module) instanceof PerfCakeModuleType;
     }
@@ -33,9 +32,11 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder>{
         return new PerfCakeModuleBuilder();
     }
 
+
+    @NotNull
     @Override
-    public Icon getNodeIcon(boolean isOpened) {
-        return null;
+    public String getName() {
+        return "PerfCake Module";
     }
 
     @NotNull
@@ -45,15 +46,13 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder>{
     }
 
 
-    //TODO: get name from constants
-    @NotNull
     @Override
-    public String getName() {
-        return "PerfCake Module";
+    public Icon getBigIcon() {
+        return Constants.BIG_ICON;
     }
 
     @Override
-    public Icon getBigIcon() {
-        return null;
+    public Icon getNodeIcon(boolean isOpened) {
+        return Constants.NODE_ICON;
     }
 }
