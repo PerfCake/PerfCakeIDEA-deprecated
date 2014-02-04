@@ -36,7 +36,6 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
       <moduleType id="PERFCAKE_MODULE"
                   implementationClass="org.perfcake.idea.module.PerfCakeModuleType"/>
       <projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>

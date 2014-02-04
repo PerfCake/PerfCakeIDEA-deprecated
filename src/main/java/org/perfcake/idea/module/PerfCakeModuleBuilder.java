@@ -1,5 +1,6 @@
 package org.perfcake.idea.module;
 
+import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModuleType;
@@ -54,15 +55,9 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
         try {
             VirtualFile scenariosDir = root.createChildDirectory(this, "Scenarios");
             VirtualFile messagesDir = root.createChildDirectory(this, "Messages");
-            PerfCakeFileTemplates.createFromTemplate(project, scenariosDir, PerfCakeFileTemplates.SCENARIO, "scenario", null);
+            PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.SCENARIO, "Scenario", FileTemplateManager.getInstance().getDefaultProperties(project), project, scenariosDir);
         } catch (Exception ignore){
         }
     }
 
-    /*private void createScenario(VirtualFile scenariosDir){
-        VirtualFile scenario = scenariosDir.createChildData(this, "scenario.xml");
-        scenario.setBinaryContent();
-        FileTemplateManager manager = FileTemplateManager.getInstance();
-        FileTemplate template = manager.getInternalTemplate("scenario.xml");
-    }*/
 }
