@@ -3,6 +3,7 @@ package org.perfcake.idea.module;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.DumbAwareRunnable;
@@ -49,6 +50,7 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
                 });
             }
         });
+
     }
 
     private void createStructure(VirtualFile root, Project project){
@@ -56,6 +58,7 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
             VirtualFile scenariosDir = root.createChildDirectory(this, "Scenarios");
             VirtualFile messagesDir = root.createChildDirectory(this, "Messages");
             PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.SCENARIO, "Scenario", FileTemplateManager.getInstance().getDefaultProperties(project), project, scenariosDir);
+            PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.MESSAGE, "Text Message", FileTemplateManager.getInstance().getDefaultProperties(project), project, messagesDir);
         } catch (Exception ignore){
         }
     }

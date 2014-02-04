@@ -1,4 +1,4 @@
-package org.perfcake.idea.module;
+package org.perfcake.idea;
 
 import com.intellij.openapi.util.IconLoader;
 

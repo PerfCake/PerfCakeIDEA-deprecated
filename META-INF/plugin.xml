@@ -39,6 +39,7 @@
       <moduleType id="PERFCAKE_MODULE"
                   implementationClass="org.perfcake.idea.module.PerfCakeModuleType"/>
       <projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>
+      <configurationType implementation="org.perfcake.idea.run.PerfCakeConfigurationType"/>
   </extensions>
     <module-components>
 

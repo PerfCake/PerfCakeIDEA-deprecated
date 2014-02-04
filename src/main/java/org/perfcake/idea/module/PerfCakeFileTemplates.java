@@ -16,6 +16,7 @@ import java.util.Properties;
  */
 public class PerfCakeFileTemplates {
     public static final String SCENARIO = "Scenario.xml";
+    public static final String MESSAGE = "Message.txt";
 
     public static PsiElement createFromTemplate(String template, String fileName, Properties properties, Project project, VirtualFile root) throws Exception{
         root.refresh(false, false);
