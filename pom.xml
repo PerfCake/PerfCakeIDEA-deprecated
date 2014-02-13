@@ -62,7 +62,7 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>intellij-ce</includeArtifactIds>
+                            <includeArtifactIds>ideaIU</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/dependency/IntelliJ-IDEA-CE</outputDirectory>
                             <includes>**/*.jar</includes>
                         </configuration>
