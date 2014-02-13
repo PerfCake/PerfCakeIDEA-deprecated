@@ -8,6 +8,7 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.ScenarioExecution;
 
 /**
  * Created by miron on 4.2.2014.
@@ -16,6 +17,7 @@ public class PerfCakeRunConfiguration extends RunConfigurationBase {
 
     protected PerfCakeRunConfiguration(Project project, ConfigurationFactory factory, String name) {
         super(project, factory, name);
+        ScenarioExecution.class.getName();
     }
 
     @NotNull
