@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>org.jetbrains</groupId>
-            <artifactId>intellij-ce</artifactId>
+            <artifactId>ideaIU</artifactId>
             <version>13.0.2</version>
             <type>zip</type>
             <scope>provided</scope>
