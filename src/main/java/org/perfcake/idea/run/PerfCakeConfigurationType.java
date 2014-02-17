@@ -1,8 +1,6 @@
 package org.perfcake.idea.run;
 
-import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationTypeBase;
-import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.Constants;
 
 import javax.swing.*;
@@ -12,7 +10,7 @@ import javax.swing.*;
  */
 public class PerfCakeConfigurationType extends ConfigurationTypeBase {
     private static final String ID = "PERFCAKE_CONFIGURATION";
-    private static final String DISPLAY_NAME = "PerfCake Display Name";
+    private static final String DISPLAY_NAME = "PerfCake";
     private static final String DESCRIPTION = "PerfCake Description";
     private static final Icon ICON = Constants.NODE_ICON;
 
