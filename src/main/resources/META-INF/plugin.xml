@@ -1,14 +1,23 @@
 <idea-plugin version="2" url="https://www.perfcake.org">
-  <id>${project.groupId}</id>
+    <id>org.perfcake.idea</id>
+    <name>PerfCakeIDEA</name>
+    <version>0.0.1</version>
+    <vendor email="m.michalko@aol.com">Miron Michalko</vendor>
+
+    <description><![CDATA[
+	${project.description}
+      ]]></description>
+
+    <!--<id>${project.groupId}</id>
   <name>${project.artifactId}</name>
   <version>${project.version}</version>
   <vendor email="${vendor.email}">${vendor.name}</vendor>
 
   <description><![CDATA[
 	${project.description}
-      ]]></description>
+      ]]></description>-->
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
       <small>Version 0.1</small>
       ]]>
   </change-notes>
@@ -39,6 +48,7 @@
                   implementationClass="org.perfcake.idea.module.PerfCakeModuleType"/>
       <projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>
       <configurationType implementation="org.perfcake.idea.run.PerfCakeConfigurationType"/>
+      <runConfigurationProducer implementation="org.perfcake.idea.run.PerfCakeRunConfigurationProducer"/>
   </extensions>
     <module-components>
 

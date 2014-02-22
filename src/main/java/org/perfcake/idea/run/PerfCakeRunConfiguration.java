@@ -2,10 +2,7 @@ package org.perfcake.idea.run;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.LocatableConfigurationBase;
-import com.intellij.execution.configurations.RunConfiguration;
-import com.intellij.execution.configurations.RunProfileState;
+import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.components.PathMacroManager;
 import com.intellij.openapi.options.SettingsEditor;
@@ -13,14 +10,23 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizerUtil;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.refactoring.listeners.RefactoringElementAdapter;
+import com.intellij.refactoring.listeners.RefactoringElementListener;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Created by miron on 4.2.2014.
  */
-public class PerfCakeRunConfiguration extends LocatableConfigurationBase implements PerfCakeRunConfigurationParams {
+public class PerfCakeRunConfiguration extends LocatableConfigurationBase implements PerfCakeRunConfigurationParams, RefactoringListenerProvider {
     private final String SCENARIO_NAME = "SCENARIO_NAME";
     private String scenarioName;
 
@@ -66,5 +72,33 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
         super.writeExternal(element);
         JDOMExternalizerUtil.writeField(element, SCENARIO_NAME, scenarioName);
         PathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
+    }
+
+    @Nullable
+    @Override
+    public RefactoringElementListener getRefactoringElementListener(PsiElement element) {
+        if (element instanceof PsiFile) {
+            VirtualFile virtualFile = ((PsiFile) element).getVirtualFile();
+            try {
+                if (virtualFile != null && (new File(virtualFile.getPath())).getCanonicalPath().equals((new File(scenarioName)).getCanonicalPath())) {
+                    return new RefactoringElementAdapter() {
+                        @Override
+                        protected void elementRenamedOrMoved(@NotNull PsiElement newElement) {
+                            VirtualFile newFile = ((PsiFile) newElement).getVirtualFile();
+                            if (newFile != null) {
+                                scenarioName = FileUtil.toSystemIndependentName(newFile.getPath());
+                            }
+                        }
+
+                        @Override
+                        public void undoElementMovedOrRenamed(@NotNull PsiElement newElement, @NotNull String oldQualifiedName) {
+                            scenarioName = FileUtil.toSystemIndependentName(oldQualifiedName);
+                        }
+                    };
+                }
+            } catch (IOException ignore) {
+            }
+        }
+        return null;
     }
 }

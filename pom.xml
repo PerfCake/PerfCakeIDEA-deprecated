@@ -112,7 +112,8 @@
                         <artifactId>tools</artifactId>
                         <version>1.7.0</version>
                         <scope>system</scope>
-                        <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
+                        <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                        <!--<systemPath>/usr/lib/jvm/java-1.7.0-openjdk-amd64/lib/tools.jar</systemPath>-->
                     </dependency>
                 </dependencies>
             </plugin>

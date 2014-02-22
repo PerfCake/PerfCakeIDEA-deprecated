@@ -36,7 +36,7 @@ public class PerfCakeRunConfigurationForm implements PerfCakeRunConfigurationPar
                 fileChooser.showDialog();
 
                 if (fileChooser.getSelectedFile() != null) {
-                    String name = fileChooser.getSelectedFile().getName();
+                    String name = fileChooser.getSelectedFile().getVirtualFile().getPath();
                     setScenarioName(name);
                 }
             }
