@@ -43,7 +43,7 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env) throws ExecutionException {
-        return null;
+        return new PerfCakeCommandLineState(env, this);
     }
 
     @Override
@@ -58,6 +58,22 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
 
     public static void copyParams(PerfCakeRunConfigurationParams source, PerfCakeRunConfigurationParams target) {
         target.setScenarioName(source.getScenarioName());
+    }
+
+    @Override
+    public void checkConfiguration() throws RuntimeConfigurationException {
+        if (scenarioName == null) {
+            throw new RuntimeConfigurationError("Scenario not specified!");
+        }
+    }
+
+    @Override
+    public String suggestedName() {
+        if (scenarioName != null) {
+            String name = (new File(scenarioName)).getName();
+            if (name.length() > 4) return name.substring(0, name.length() - 4);
+        }
+        return null;
     }
 
     @Override

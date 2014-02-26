@@ -44,8 +44,7 @@ public class PerfCakeRunConfigurationProducer extends RunConfigurationProducer<P
         Location location = context.getLocation();
         if (location == null) return null;
 
-        VirtualFile file = location.getVirtualFile();
-        return file;
+        return location.getVirtualFile();
     }
 }
 

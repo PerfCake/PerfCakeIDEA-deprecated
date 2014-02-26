@@ -1,37 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <scenario xmlns="urn:perfcake:scenario:1.0">
-   <properties>
-      <property name="quickstartName" value="sy-plain-http-servlet"/>
-   </properties>
-   <generator class="DefaultMessageGenerator" threads="${DS}{perfcake.performance.thread.count:100}">
-      <run type="time" value="${DS}{perfcake.performance.duration:300000}"/>
-      <property name="threadQueueSize" value="50000"/>
-   </generator>
-   <sender class="HTTPSender">
-      <property name="target" value="http://${DS}{server.host}:${DS}{server.port}/performance-plain-http-servlet/PlainHttpServlet"/>
-      <property name="method" value="POST"/>
-   </sender>
-   <reporting>
-      <reporter class="ResponseTimeReporter">
-         <destination class="CSVDestination">
-            <period type="time" value="30000"/>
-            <property name="path" value="${DS}{scenario}-response-time.csv"/>
-         </destination>
-         <!--destination class="ConsoleDestination">
-            <period type="time" value="30000" />
-         </destination-->
-      </reporter>
-      <!--reporter class="MemoryUsageReporter">
-         <destination class="CSVDestination">
-            <period type="time" value="30000"/>
-            <property name="path" value="${DS}{scenario}-memory-usage.csv" />
-         </destination>
-         <destination class="ConsoleDestination">
-            <period type="time" value="30000" />
-         </destination>
-      </reporter-->
-   </reporting>
-   <messages>
-      <message uri="plain.txt"/>
-   </messages>
+    <generator class="DefaultMessageGenerator" threads="${DS}{thread.count:10}">
+        <run type="time" value="10000"/>
+        <property name="threadQueueSize" value="5000"/>
+    </generator>
+    <sender class="HTTPSender">
+        <property name="target" value="http://httpbin.org/get"/>
+    </sender>
 </scenario>
