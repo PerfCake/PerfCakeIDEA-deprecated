@@ -43,7 +43,7 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env) throws ExecutionException {
-        return new PerfCakeCommandLineState(env, this);
+        return new PerfCakeRunProfileState(this);
     }
 
     @Override

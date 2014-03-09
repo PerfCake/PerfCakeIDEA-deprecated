@@ -3,6 +3,7 @@ package org.perfcake.idea.run;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.openapi.extensions.Extensions;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.Constants;
 
@@ -12,6 +13,8 @@ import javax.swing.*;
  * Created by miron on 4.2.2014.
  */
 public class PerfCakeConfigurationType implements ConfigurationType {
+    private static final Logger log = Logger.getLogger(PerfCakeConfigurationType.class);
+
     private final PerfCakeConfigurationFactory myFactory = new PerfCakeConfigurationFactory(this);
 
 
@@ -21,6 +24,7 @@ public class PerfCakeConfigurationType implements ConfigurationType {
                 return (PerfCakeConfigurationType) configType;
             }
         }
+        log.error("Unexpected Idea Error: Could not find instance of PerfCakeConfigurationType");
         assert false;
         return null;
     }
