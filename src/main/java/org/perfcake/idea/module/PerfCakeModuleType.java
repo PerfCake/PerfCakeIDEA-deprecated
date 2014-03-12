@@ -6,13 +6,11 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
-import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.Constants;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 /**
  * Created by miron on 8.1.2014.
@@ -36,10 +34,11 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder> {
     @NotNull
     @Override
     public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull PerfCakeModuleBuilder moduleBuilder, @NotNull ModulesProvider modulesProvider) {
-        ArrayList<ModuleWizardStep> steps = new ArrayList<ModuleWizardStep>();
+        /*ArrayList<ModuleWizardStep> steps = new ArrayList<ModuleWizardStep>();
         steps.add(new PerfCakeWizardStep(moduleBuilder));
         final ModuleWizardStep[] wizardSteps = steps.toArray(new ModuleWizardStep[steps.size()]);
-        return ArrayUtil.mergeArrays(super.createWizardSteps(wizardContext, moduleBuilder, modulesProvider), wizardSteps);
+        return ArrayUtil.mergeArrays(super.createWizardSteps(wizardContext, moduleBuilder, modulesProvider), wizardSteps);*/
+        return super.createWizardSteps(wizardContext, moduleBuilder, modulesProvider);
     }
 
     @NotNull

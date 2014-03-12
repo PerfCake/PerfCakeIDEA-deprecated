@@ -41,6 +41,10 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action id="NewScenarioAction" class="org.perfcake.idea.module.NewScenarioAction" text="New Scenario"
+                description="Opens new scenario wizard.">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+        </action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">

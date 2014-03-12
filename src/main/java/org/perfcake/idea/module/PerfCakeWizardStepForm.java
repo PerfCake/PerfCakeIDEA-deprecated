@@ -9,6 +9,7 @@ public class PerfCakeWizardStepForm {
     private JTextField generatorField;
     private JTextField senderField;
     private JPanel rootPanel;
+    private JTextField nameField;
 
     public String getGenerator() {
         return generatorField.getText();
