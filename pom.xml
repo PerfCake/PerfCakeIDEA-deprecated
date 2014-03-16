@@ -7,6 +7,9 @@
     <groupId>org.perfcake.idea</groupId>
     <artifactId>PerfCakeIDEA</artifactId>
     <version>0.0.1</version>
+
+    <packaging>jar</packaging>
+
     <description>PerfCake plugin for IntellijIdea.
         PerfCake is a lightweight performance testing tool and a load generator.
     </description>
@@ -14,6 +17,8 @@
         <vendor.url></vendor.url>
         <vendor.email>m.michalko@aol.com</vendor.email>
         <vendor.name>Miron Michalko</vendor.name>
+        <!-->property for "Intellij plugin development with Maven" plugin<-->
+        <ij.plugin>true</ij.plugin>
     </properties>
 
     <dependencies>

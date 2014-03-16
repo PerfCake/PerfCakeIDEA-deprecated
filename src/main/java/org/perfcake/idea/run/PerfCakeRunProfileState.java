@@ -43,6 +43,7 @@ public class PerfCakeRunProfileState implements RunProfileState {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(console.getComponent(), "PerfCake Run", false);
         toolWindow.getContentManager().addContent(content);
+        toolWindow.getContentManager().setSelectedContent(content);
 
         //show console and run scenario
         toolWindow.show(new Runnable() {
