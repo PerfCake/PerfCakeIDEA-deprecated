@@ -50,15 +50,24 @@ public class PerfCakeRunProfileState implements RunProfileState {
             public void run() {
                 PipedOutputStream pipeOut = new PipedOutputStream();
                 PipedInputStream pipeIn = null;
+
+                PipedOutputStream pipeErrOut = new PipedOutputStream();
+                PipedInputStream pipeErrIn = null;
                 try {
                     pipeIn = new PipedInputStream(pipeOut);
                 } catch (IOException e) {
                     log.error("Error connecting pipes", e);
                     return;
                 }
+                try {
+                    pipeErrIn = new PipedInputStream(pipeErrOut);
+                } catch (IOException e) {
+                    log.error("Error connecting pipes", e);
+                    return;
+                }
 
-                (new ScenarioThread(runConfiguration, pipeOut)).start();
-                (new ConsoleWriterThread(console, pipeIn)).start();
+                (new ScenarioThread(runConfiguration, pipeOut, pipeErrOut)).start();
+                (new ConsoleWriterThread(console, pipeIn, pipeErrIn)).start();
             }
         });
         return null;

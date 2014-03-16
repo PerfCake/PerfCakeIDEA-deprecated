@@ -1,8 +1,10 @@
 package org.perfcake.idea.run;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.perfcake.PerfCakeException;
 import org.perfcake.Scenario;
+import org.perfcake.idea.Constants;
 import org.perfcake.idea.util.ScenarioHandler;
 
 import java.io.OutputStream;
@@ -17,24 +19,32 @@ public class ScenarioThread extends Thread {
     private static final Logger log = Logger.getLogger(ScenarioThread.class);
 
     private PerfCakeRunConfiguration runConfiguration;
-    private OutputStream scenarioOutput;
+    private PrintStream scenarioOutput;
+    private PrintStream scenarioErrOutput;
 
-    public ScenarioThread(PerfCakeRunConfiguration runConfiguration, OutputStream scenarioOutput) {
+    public ScenarioThread(@NotNull PerfCakeRunConfiguration runConfiguration, @NotNull OutputStream scenarioOutput, @NotNull OutputStream scenarioErrOutput) {
         this.runConfiguration = runConfiguration;
-        this.scenarioOutput = scenarioOutput;
+        this.scenarioOutput = new PrintStream(scenarioOutput, true);
+        this.scenarioErrOutput = new PrintStream(scenarioErrOutput, true);
     }
 
     @Override
     public void run() {
-        //redirect perfcake output to scenarioOutput
+        //redirect System output (perfcake) to scenarioOutput
         PrintStream systemOut = System.out;
-        PrintStream scenarioOut = new PrintStream(scenarioOutput, true);
-        System.setOut(scenarioOut);
+        System.setOut(scenarioOutput);
+
+        //redirect System error (perfcake) to scenarioErrOutput
+        PrintStream errOut = System.err;
+        System.setErr(scenarioErrOutput);
+
         try {
             ScenarioHandler handler = new ScenarioHandler(runConfiguration.getScenarioName());
             System.out.println("Running scenario " + runConfiguration.getScenarioName());
             Scenario scenario = handler.buildScenario();
             runScenario(scenario);
+            //send message to console thread, that it can stop
+            System.out.println(Constants.SCENARIO_FINISHED_MARK);
         } catch (Exception e) {
             //TODO show user the error
             StringWriter sw = new StringWriter();
@@ -44,8 +54,10 @@ public class ScenarioThread extends Thread {
             log.error("Error running scenario file", e);
         }
         System.setOut(systemOut);
-        scenarioOut.close();
+        System.setErr(errOut);
 
+        scenarioOutput.close();
+        scenarioErrOutput.close();
     }
 
     private void runScenario(Scenario scenario) throws PerfCakeException {

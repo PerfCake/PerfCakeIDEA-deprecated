@@ -12,4 +12,5 @@ public class Constants {
     //public static final String scenarioPath = "/fileTemplates/internal/scenario.xml.ft";
     public static final Icon NODE_ICON = IconLoader.getIcon("/logo.16p.png");
     public static final Icon BIG_ICON = IconLoader.getIcon("/logo.24p.png");
+    public static final String SCENARIO_FINISHED_MARK = "SCENARIO_FINISHED_MARK";
 }

@@ -3,6 +3,7 @@ package org.perfcake.idea.run;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import org.apache.log4j.Logger;
+import org.perfcake.idea.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,29 +17,47 @@ public class ConsoleWriterThread extends Thread {
     private final static Logger log = Logger.getLogger(ConsoleWriterThread.class);
 
     private ConsoleView console;
-    private InputStream scenarioOutput;
+    private BufferedReader scenarioOutput;
+    private BufferedReader scenarioErrOutput;
 
-    public ConsoleWriterThread(ConsoleView console, InputStream scenarioOutput) {
+    public ConsoleWriterThread(ConsoleView console, InputStream scenarioOutput, InputStream scenarioErrOutput) {
         this.console = console;
-        this.scenarioOutput = scenarioOutput;
+        this.scenarioOutput = new BufferedReader(new InputStreamReader(scenarioOutput));
+        this.scenarioErrOutput = new BufferedReader(new InputStreamReader(scenarioErrOutput));
     }
 
     @Override
     public void run() {
-        BufferedReader scenarioOut = new BufferedReader(new InputStreamReader(scenarioOutput));
-        String s;
         try {
-            while ((s = scenarioOut.readLine()) != null) {
-                console.print(s + '\n', ConsoleViewContentType.NORMAL_OUTPUT);
+            boolean notFinished = true;
+            while (notFinished) {
+                while (scenarioErrOutput.ready()) {
+                    console.print(scenarioErrOutput.readLine() + '\n', ConsoleViewContentType.ERROR_OUTPUT);
+                }
+
+                while (scenarioOutput.ready()) {
+                    String s = scenarioOutput.readLine();
+                    if (s.equals(Constants.SCENARIO_FINISHED_MARK)) {
+                        notFinished = false;
+                    } else {
+                        console.print(s + '\n', ConsoleViewContentType.NORMAL_OUTPUT);
+                    }
+                }
             }
         } catch (IOException e) {
             log.error(e);
         } finally {
             try {
-                scenarioOut.close();
+                scenarioOutput.close();
             } catch (IOException e) {
                 log.error(e);
             }
+            try {
+                scenarioErrOutput.close();
+            } catch (IOException e) {
+                log.error(e);
+            }
+
         }
     }
 }
