@@ -5,7 +5,8 @@
     <vendor email="m.michalko@aol.com">Miron Michalko</vendor>
 
     <description><![CDATA[
-	${project.description}
+	PerfCake plugin for IntellijIdea.<br/>
+        PerfCake is a lightweight performance testing tool and a load generator.
       ]]></description>
 
     <!--<id>${project.groupId}</id>
