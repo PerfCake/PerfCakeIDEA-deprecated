@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.util.PerfCakeClassProvider;
 
 import javax.swing.*;
 
@@ -13,8 +14,8 @@ import javax.swing.*;
 public class NewScenarioDialog extends DialogWrapper {
     private JPanel myRootPanel;
     private JTextField nameField;
-    private JTextField generatorField;
-    private JTextField senderField;
+    private JComboBox generatorComboBox;
+    private JComboBox senderComboBox;
 
     @Nullable
     @Override
@@ -26,6 +27,13 @@ public class NewScenarioDialog extends DialogWrapper {
         super(project);
         init();
         setTitle("New Scenario");
+
+        PerfCakeClassProvider classProvider = new PerfCakeClassProvider();
+        final DefaultComboBoxModel generators = new DefaultComboBoxModel(classProvider.findGenerators());
+        generatorComboBox.setModel(generators);
+
+        final DefaultComboBoxModel senders = new DefaultComboBoxModel(classProvider.findSenders());
+        senderComboBox.setModel(senders);
     }
 
     public String getName() {
@@ -34,11 +42,11 @@ public class NewScenarioDialog extends DialogWrapper {
 
 
     public String getGeneratorName() {
-        return generatorField.getText();
+        return generatorComboBox.getSelectedItem().toString();
     }
 
     public String getSenderName() {
-        return senderField.getText();
+        return senderComboBox.getSelectedItem().toString();
     }
 
     @Nullable
@@ -49,4 +57,6 @@ public class NewScenarioDialog extends DialogWrapper {
         }
         return null;
     }
+
+
 }

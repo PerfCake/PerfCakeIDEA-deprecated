@@ -35,7 +35,6 @@ public class PerfCakeRunProfileState implements RunProfileState {
     @Nullable
     @Override
     public ExecutionResult execute(Executor executor, @NotNull ProgramRunner runner) throws ExecutionException {
-
         //create run console and attach it to tool window
         final ConsoleView console = TextConsoleBuilderFactory.getInstance().createBuilder(runConfiguration.getProject()).getConsole();
         ToolWindow toolWindow = ToolWindowManager.getInstance(runConfiguration.getProject()).getToolWindow(ToolWindowId.RUN);
