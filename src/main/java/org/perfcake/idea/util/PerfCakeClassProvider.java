@@ -1,17 +1,16 @@
 package org.perfcake.idea.util;
 
-import org.apache.log4j.Logger;
 import org.perfcake.message.generator.AbstractMessageGenerator;
 import org.perfcake.message.sender.AbstractSender;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Created by miron on 18.3.2014.
@@ -32,32 +31,32 @@ public class PerfCakeClassProvider {
         if(url == null){
             throw new NullPointerException("Could not find superclass resource: " + superclass.getName());
         }
+
+
         //we dont support superclass that is not in jar file
         if(!url.toString().startsWith("jar:")){
             throw new UnsupportedOperationException("Superclass is not inside jar file");
         }
-        //get file URL of jar file
-        String path = url.getPath();
-        String[] split = path.split("!");
-        URL jar = null;
+        JarURLConnection connection = null;
         try {
-            jar = new URL(split[0]);
-        } catch (MalformedURLException e) {
-            throw new PerfCakeClassProviderException("Unexpected Error in URL construction from superclass", e);
+            connection = (JarURLConnection) url.openConnection();
+        } catch (IOException e) {
+            throw new PerfCakeClassProviderException("Error getting jar connection from superclass resource URL", e);
         }
+        URL jarURL = connection.getJarFileURL();
 
         //find subclasses
         List<String> subclasses = new ArrayList<>();
 
-        ZipInputStream zip = null;
+        JarInputStream jar = null;
         try {
-            zip = new ZipInputStream(jar.openStream());
+            jar = new JarInputStream(jarURL.openStream());
         } catch (IOException e) {
-            throw new PerfCakeClassProviderException("Could not open jar file URL " + jar.toString() + " to get " + superclass.getName() + " subclasses", e);
+            throw new PerfCakeClassProviderException("Could not open jar file URL " + jarURL.toString() + " to get " + superclass.getName() + " subclasses", e);
         }
         ZipEntry entry = null;
         try {
-            while ((entry = zip.getNextEntry()) != null) {
+            while ((entry = jar.getNextEntry()) != null) {
                 String entryName = entry.getName();
                 if (entryName.startsWith(pckgPath) && entryName.endsWith(".class")) {
                     String clazzName = entryName.replace('/', '.').substring(0, entryName.length() - 6);

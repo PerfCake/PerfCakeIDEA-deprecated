@@ -31,15 +31,6 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder> {
         return get(module) instanceof PerfCakeModuleType;
     }
 
-    @NotNull
-    @Override
-    public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull PerfCakeModuleBuilder moduleBuilder, @NotNull ModulesProvider modulesProvider) {
-        /*ArrayList<ModuleWizardStep> steps = new ArrayList<ModuleWizardStep>();
-        steps.add(new PerfCakeWizardStep(moduleBuilder));
-        final ModuleWizardStep[] wizardSteps = steps.toArray(new ModuleWizardStep[steps.size()]);
-        return ArrayUtil.mergeArrays(super.createWizardSteps(wizardContext, moduleBuilder, modulesProvider), wizardSteps);*/
-        return super.createWizardSteps(wizardContext, moduleBuilder, modulesProvider);
-    }
 
     @NotNull
     @Override
