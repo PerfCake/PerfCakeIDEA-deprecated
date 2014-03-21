@@ -33,11 +33,6 @@
             <artifactId>perfcake</artifactId>
             <version>1.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.9-RC1</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -139,7 +134,7 @@
 		  <executions>
 		    <execution>
 		      <id>make-assembly</id>
-		      <phase>package</phase> 
+		      <phase>package</phase>
 		      <goals>
 			<goal>single</goal>
 		      </goals>
