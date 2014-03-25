@@ -9,8 +9,6 @@ import org.perfcake.idea.util.ScenarioHandler;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /**
  * Created by miron on 9.3.2014.
@@ -43,16 +41,13 @@ public class ScenarioThread extends Thread {
             System.out.println("Running scenario " + runConfiguration.getScenarioName());
             Scenario scenario = handler.buildScenario();
             runScenario(scenario);
-            //send message to console thread, that it can stop
-            System.out.println(Constants.SCENARIO_FINISHED_MARK);
         } catch (Exception e) {
-            //TODO show user the error
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            System.err.println("Error running scenario file" + '\n' + sw.toString());
             log.error("Error running scenario file", e);
+            System.err.println("Error running scenario file: " + e.getMessage());
         }
+        //send message to console thread, that it can stop
+        System.out.println(Constants.SCENARIO_FINISHED_MARK);
+
         System.setOut(systemOut);
         System.setErr(errOut);
 
