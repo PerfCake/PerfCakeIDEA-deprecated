@@ -7,12 +7,12 @@ import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowId;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +24,7 @@ import java.io.PipedOutputStream;
  * Created by miron on 9.3.2014.
  */
 public class PerfCakeRunProfileState implements RunProfileState {
-    private static final Logger log = Logger.getLogger(PerfCakeRunProfileState.class);
+    private static final Logger log = Logger.getInstance(PerfCakeRunProfileState.class);
 
     private final PerfCakeRunConfiguration runConfiguration;
 
@@ -35,6 +35,8 @@ public class PerfCakeRunProfileState implements RunProfileState {
     @Nullable
     @Override
     public ExecutionResult execute(Executor executor, @NotNull ProgramRunner runner) throws ExecutionException {
+
+
         //create run console and attach it to tool window
         final ConsoleView console = TextConsoleBuilderFactory.getInstance().createBuilder(runConfiguration.getProject()).getConsole();
         ToolWindow toolWindow = ToolWindowManager.getInstance(runConfiguration.getProject()).getToolWindow(ToolWindowId.RUN);
@@ -65,8 +67,9 @@ public class PerfCakeRunProfileState implements RunProfileState {
                     log.error("Error connecting pipes", e);
                     return;
                 }
-
-                (new ScenarioThread(runConfiguration, pipeOut, pipeErrOut)).start();
+                ScenarioThread scenarioThread = new ScenarioThread(runConfiguration, pipeOut, pipeErrOut);
+                scenarioThread.setContextClassLoader(getClass().getClassLoader());
+                scenarioThread.start();
                 (new ConsoleWriterThread(console, pipeIn, pipeErrIn)).start();
             }
         });

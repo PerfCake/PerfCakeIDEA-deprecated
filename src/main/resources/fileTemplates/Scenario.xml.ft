@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<scenario xmlns="urn:perfcake:scenario:1.0">
-    <generator class="DefaultMessageGenerator" threads="1">
-        <run type="time" value="1"/>
-    </generator>
-    <sender class="HTTPSender">
-        <property name="target" value="http://"/>
-    </sender>
-</scenario>

@@ -18,10 +18,10 @@ import java.util.zip.ZipEntry;
 public class PerfCakeClassProvider {
 
     /**
-     * Finds all subclass's names in a jar file of the superclass
+     * Finds all subclasses names in a jar file of the superclass
      * @param superclass
      * @param pckage package in superclass's jar to search
-     * @return list of subclass's names
+     * @return list of subclasses names
      * @throws PerfCakeClassProviderException when an error occures during the search
      */
     private String[] getSubclasses(Class<?> superclass, String pckage) throws PerfCakeClassProviderException {
@@ -59,7 +59,7 @@ public class PerfCakeClassProvider {
             while ((entry = jar.getNextEntry()) != null) {
                 String entryName = entry.getName();
                 if (entryName.startsWith(pckgPath) && entryName.endsWith(".class")) {
-                    String clazzName = entryName.replace('/', '.').substring(0, entryName.length() - 6);
+                    String clazzName = entryName.replace('/', '.').substring(0, entryName.length() - 6); //get rid of .class suffix
                     try {
                         //construct class
                         Class clazz = Class.forName(clazzName);

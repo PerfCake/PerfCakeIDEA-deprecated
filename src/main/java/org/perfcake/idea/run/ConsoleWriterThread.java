@@ -2,7 +2,7 @@ package org.perfcake.idea.run;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import org.apache.log4j.Logger;
+import com.intellij.openapi.diagnostic.Logger;
 import org.perfcake.idea.Constants;
 
 import java.io.BufferedReader;
@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
  * Created by miron on 9.3.2014.
  */
 public class ConsoleWriterThread extends Thread {
-    private final static Logger log = Logger.getLogger(ConsoleWriterThread.class);
+    private final static Logger log = Logger.getInstance(ConsoleWriterThread.class);
 
     private ConsoleView console;
     private BufferedReader scenarioOutput;

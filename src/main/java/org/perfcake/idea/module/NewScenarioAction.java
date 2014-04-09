@@ -3,42 +3,82 @@ package org.perfcake.idea.module;
 import com.intellij.ide.actions.CreateElementActionBase;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.Constants;
+import org.perfcake.idea.util.PerfCakeIDEAException;
+import org.perfcake.idea.util.PerfCakeIdeaUtil;
 import org.perfcake.idea.util.ScenarioHandler;
 import org.perfcake.model.Scenario;
 
 import java.io.File;
+import java.nio.file.FileAlreadyExistsException;
 
 /**
  * Created by miron on 10.3.2014.
  */
 public class NewScenarioAction extends CreateElementActionBase {
+    private static final Logger log = Logger.getInstance(CreateElementActionBase.class);
+
+    public NewScenarioAction() {
+        super("", "", Constants.NODE_ICON);
+    }
+
     @NotNull
     @Override
     protected PsiElement[] invokeDialog(Project project, PsiDirectory directory) {
         NewScenarioDialog scenarioDialog = new NewScenarioDialog(project);
         scenarioDialog.show();
         if (scenarioDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
-            //vytvor scenar so specifikovanymi hodnotami v adresari Scenarios
+            //create scenario with specified values in Scenarios directory
+            final VirtualFile scenariosDir = project.getBaseDir().findChild("Scenarios");
+            String scenarioName = scenarioDialog.getName().endsWith(".xml") ? scenarioDialog.getName() : scenarioDialog.getName() + ".xml";
+            final String scenarioPath = scenariosDir.getPath() + File.separator + scenarioName;
+
+            ScenarioHandler handler = null;
             try {
-                final String path = project.getBaseDir().findChild("Scenarios").getPath() + File.separator + scenarioDialog.getName() + ".xml";
-                final ScenarioHandler handler = new ScenarioHandler((new File(path)).toURI().toURL());
-                Scenario model = handler.getScenarioModel();
-                model.getGenerator().setClazz(scenarioDialog.getGeneratorName());
-                model.getSender().setClazz(scenarioDialog.getSenderName());
-                handler.save();
-                //return new PsiElement[]{PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.SCENARIO, scenarioDialog.getName(), FileTemplateManager.getInstance().getDefaultProperties(project), project, project.getBaseDir().findChild("Scenarios"))};
-            } catch (Exception e) {
-                e.printStackTrace();
+                handler = ScenarioHandler.createFromTemplate(scenarioPath, false);
+            } catch (FileAlreadyExistsException e) {
+                log.warn("Scenario with this name already exists", e);
+                int result = Messages.showYesNoDialog(project, "Scenario with this name already exists. Do you want to overwrite existing file?", "Scenario exists", Messages.getWarningIcon());
+                if (result == Messages.YES) {
+                    try {
+                        handler = ScenarioHandler.createFromTemplate(scenarioPath, true);
+                    } catch (FileAlreadyExistsException ignored) {
+                        //cannot happen, overwrite is true
+                    } catch (PerfCakeIDEAException e1) {
+                        PerfCakeIdeaUtil.showError(project, "Error creating template scenario", e);
+                        return PsiElement.EMPTY_ARRAY;
+                    }
+                } else {
+                    return PsiElement.EMPTY_ARRAY;
+                }
+            } catch (PerfCakeIDEAException e) {
+                PerfCakeIdeaUtil.showError(project, "Error creating template scenario", e);
+                return PsiElement.EMPTY_ARRAY;
             }
+            //set chosen values and save scenario
+            Scenario model = handler.getScenarioModel();
+            model.getGenerator().setClazz(scenarioDialog.getGeneratorName());
+            model.getSender().setClazz(scenarioDialog.getSenderName());
+            handler.save();
+
+            //refresh Scenarios directory to see new scenario
+            scenariosDir.refresh(false, false);
+            VirtualFile newScenario = scenariosDir.findChild(scenarioName);
+            return new PsiElement[]{PsiManager.getInstance(project).findFile(newScenario)};
+
         }
-        scenarioDialog = null;
+        //Dialog closed without OK button
         return PsiElement.EMPTY_ARRAY;
     }
 

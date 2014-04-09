@@ -1,6 +1,5 @@
 package org.perfcake.idea.module;
 
-import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModuleType;
@@ -47,10 +46,8 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
     }
 
     public void setupRootModel(ModifiableRootModel rootModel) throws ConfigurationException {
-        System.err.println(getGenerator());
-        System.err.println(getSender());
-
         super.setupRootModel(rootModel);
+
 
         VirtualFile[] roots = rootModel.getContentRoots();
         final VirtualFile root = roots[0];
@@ -80,8 +77,8 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
         try {
             VirtualFile scenariosDir = root.createChildDirectory(this, "Scenarios");
             VirtualFile messagesDir = root.createChildDirectory(this, "Messages");
-            PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.SCENARIO, "Scenario", FileTemplateManager.getInstance().getDefaultProperties(project), project, scenariosDir);
-            PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.MESSAGE, "Text Message", FileTemplateManager.getInstance().getDefaultProperties(project), project, messagesDir);
+            //PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.SCENARIO, "Scenario", FileTemplateManager.getInstance().getDefaultProperties(project), project, scenariosDir);
+            //PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.MESSAGE, "Text Message", FileTemplateManager.getInstance().getDefaultProperties(project), project, messagesDir);
         } catch (Exception ignore) {
         }
     }

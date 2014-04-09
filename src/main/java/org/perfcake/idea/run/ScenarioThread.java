@@ -1,10 +1,11 @@
 package org.perfcake.idea.run;
 
-import org.apache.log4j.Logger;
+import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.PerfCakeException;
 import org.perfcake.Scenario;
 import org.perfcake.idea.Constants;
+import org.perfcake.idea.util.PerfCakeIDEAException;
 import org.perfcake.idea.util.ScenarioHandler;
 
 import java.io.OutputStream;
@@ -14,8 +15,7 @@ import java.io.PrintStream;
  * Created by miron on 9.3.2014.
  */
 public class ScenarioThread extends Thread {
-    private static final Logger log = Logger.getLogger(ScenarioThread.class);
-
+    private static final Logger log = Logger.getInstance(ScenarioThread.class);
     private PerfCakeRunConfiguration runConfiguration;
     private PrintStream scenarioOutput;
     private PrintStream scenarioErrOutput;
@@ -28,7 +28,6 @@ public class ScenarioThread extends Thread {
 
     @Override
     public void run() {
-        //redirect System output (perfcake) to scenarioOutput
         PrintStream systemOut = System.out;
         System.setOut(scenarioOutput);
 
@@ -41,7 +40,8 @@ public class ScenarioThread extends Thread {
             System.out.println("Running scenario " + runConfiguration.getScenarioName());
             Scenario scenario = handler.buildScenario();
             runScenario(scenario);
-        } catch (Exception e) {
+
+        } catch (PerfCakeException | PerfCakeIDEAException e) {
             log.error("Error running scenario file", e);
             System.err.println("Error running scenario file: " + e.getMessage());
         }
