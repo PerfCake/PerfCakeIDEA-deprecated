@@ -13,9 +13,10 @@ import java.net.URL;
  */
 public class LoggerInitializer implements ModuleComponent {
     private static final Logger log = Logger.getInstance(ModuleComponent.class);
-    private static final com.intellij.openapi.diagnostic.Logger ideaLogger = com.intellij.openapi.diagnostic.Logger.getInstance(ModuleComponent.class);
+    private final Module module;
 
     public LoggerInitializer(Module module) {
+        this.module = module;
     }
 
     public void initComponent() {

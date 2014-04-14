@@ -9,11 +9,13 @@ import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.PerfCakeConst;
 import org.perfcake.idea.Constants;
 import org.perfcake.idea.util.PerfCakeIDEAException;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
@@ -22,6 +24,7 @@ import org.perfcake.model.Scenario;
 
 import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.Map;
 
 /**
  * Created by miron on 10.3.2014.
@@ -38,11 +41,20 @@ public class NewScenarioAction extends CreateElementActionBase {
     protected PsiElement[] invokeDialog(Project project, PsiDirectory directory) {
         NewScenarioDialog scenarioDialog = new NewScenarioDialog(project);
         scenarioDialog.show();
+
         if (scenarioDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
-            //create scenario with specified values in Scenarios directory
-            final VirtualFile scenariosDir = project.getBaseDir().findChild("Scenarios");
+            //create scenario with specified values in module's Scenarios directory
+            Map<String, VirtualFile> moduleDirs = null;
+            try {
+                moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(project, directory.getVirtualFile());
+            } catch (PerfCakeIDEAException e) {
+                PerfCakeIdeaUtil.showError(project, "Error creating template scenario", e);
+                return PsiElement.EMPTY_ARRAY;
+            }
+            final VirtualFile scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY);
             String scenarioName = scenarioDialog.getName().endsWith(".xml") ? scenarioDialog.getName() : scenarioDialog.getName() + ".xml";
-            final String scenarioPath = scenariosDir.getPath() + File.separator + scenarioName;
+            final String scenarioPath = FileUtil.toSystemDependentName(scenariosDir.getPath()) + File.separator + scenarioName;
+
 
             ScenarioHandler handler = null;
             try {

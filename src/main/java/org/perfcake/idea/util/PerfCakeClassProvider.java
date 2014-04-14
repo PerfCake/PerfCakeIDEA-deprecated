@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
@@ -19,9 +20,9 @@ public class PerfCakeClassProvider {
 
     /**
      * Finds all subclasses names in a jar file of the superclass
-     * @param superclass
+     * @param superclass for which to find subclasses
      * @param pckage package in superclass's jar to search
-     * @return list of subclasses names
+     * @return list of sorted subclass names, which are not abstract
      * @throws PerfCakeClassProviderException when an error occures during the search
      */
     private String[] getSubclasses(Class<?> superclass, String pckage) throws PerfCakeClassProviderException {
@@ -54,7 +55,7 @@ public class PerfCakeClassProvider {
         } catch (IOException e) {
             throw new PerfCakeClassProviderException("Could not open jar file URL " + jarURL.toString() + " to get " + superclass.getName() + " subclasses", e);
         }
-        ZipEntry entry = null;
+        ZipEntry entry;
         try {
             while ((entry = jar.getNextEntry()) != null) {
                 String entryName = entry.getName();
@@ -74,7 +75,10 @@ public class PerfCakeClassProvider {
         } catch (IOException e) {
             throw new PerfCakeClassProviderException("Error while getting classes from jar file", e);
         }
-        return subclasses.toArray(new String[0]);
+        //sort the result
+        String[] arraySubclasses = subclasses.toArray(new String[0]);
+        Arrays.sort(arraySubclasses);
+        return arraySubclasses;
     }
 
     /**

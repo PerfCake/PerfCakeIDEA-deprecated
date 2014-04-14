@@ -5,7 +5,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.DumbAwareRunnable;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -52,8 +51,6 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
         VirtualFile[] roots = rootModel.getContentRoots();
         final VirtualFile root = roots[0];
 
-        final Project project = rootModel.getProject();
-
         StartupManager.getInstance(rootModel.getProject()).runWhenProjectIsInitialized(new DumbAwareRunnable() {
             @Override
             public void run() {
@@ -63,7 +60,7 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
                         ApplicationManager.getApplication().runWriteAction(new Runnable() {
                             @Override
                             public void run() {
-                                createStructure(root, project);
+                                createStructure(root);
                             }
                         });
                     }
@@ -73,12 +70,10 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
 
     }
 
-    private void createStructure(VirtualFile root, Project project) {
+    private void createStructure(VirtualFile root) {
         try {
             VirtualFile scenariosDir = root.createChildDirectory(this, "Scenarios");
             VirtualFile messagesDir = root.createChildDirectory(this, "Messages");
-            //PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.SCENARIO, "Scenario", FileTemplateManager.getInstance().getDefaultProperties(project), project, scenariosDir);
-            //PerfCakeFileTemplates.createFromTemplate(PerfCakeFileTemplates.MESSAGE, "Text Message", FileTemplateManager.getInstance().getDefaultProperties(project), project, messagesDir);
         } catch (Exception ignore) {
         }
     }

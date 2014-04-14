@@ -38,7 +38,7 @@ public class ScenarioFileEditor implements FileEditor {
     @NotNull
     @Override
     public String getName() {
-        return "Scenario Editor";
+        return "Designer";
     }
 
     @NotNull

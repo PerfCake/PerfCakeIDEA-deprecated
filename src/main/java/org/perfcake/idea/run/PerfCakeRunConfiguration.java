@@ -5,12 +5,14 @@ import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.components.PathMacroManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizerUtil;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -19,14 +21,20 @@ import com.intellij.refactoring.listeners.RefactoringElementListener;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.PerfCakeConst;
+import org.perfcake.idea.util.PerfCakeIDEAException;
+import org.perfcake.idea.util.PerfCakeIdeaUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by miron on 4.2.2014.
  */
 public class PerfCakeRunConfiguration extends LocatableConfigurationBase implements PerfCakeRunConfigurationParams, RefactoringListenerProvider {
+    private static final Logger LOG = Logger.getInstance(PerfCakeRunConfiguration.class);
+
     private final String SCENARIO_NAME = "SCENARIO_NAME";
     private String scenarioName;
 
@@ -54,6 +62,34 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
     @Override
     public void setScenarioName(String name) {
         this.scenarioName = name;
+        try {
+            setPerfCakeRunProperties(name);
+        } catch (PerfCakeIDEAException e) {
+            LOG.error(e);
+        }
+    }
+
+    /**
+     * sets PerfCake System properties according to scenario which we want to run
+     *
+     * @param scenarioPath scenario to run
+     * @throws PerfCakeIDEAException when we could not resolve properties for current module
+     */
+    private void setPerfCakeRunProperties(String scenarioPath) throws PerfCakeIDEAException {
+        VirtualFile scenarioVFile = LocalFileSystem.getInstance().findFileByIoFile(new File(scenarioPath));
+        Map<String, VirtualFile> moduleDirs = null;
+        try {
+            moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(getProject(), scenarioVFile);
+        } catch (PerfCakeIDEAException e) {
+            throw new PerfCakeIDEAException("Could not set PerfCake run properties for scenario: " + scenarioPath, e);
+        }
+
+        String scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY).getPath();
+        String messagesDir = moduleDirs.get(PerfCakeConst.MESSAGES_DIR_PROPERTY).getPath();
+
+        System.setProperty(PerfCakeConst.SCENARIOS_DIR_PROPERTY, FileUtil.toSystemDependentName(scenariosDir));
+        System.setProperty(PerfCakeConst.MESSAGES_DIR_PROPERTY, FileUtil.toSystemDependentName(messagesDir));
+
     }
 
     public static void copyParams(PerfCakeRunConfigurationParams source, PerfCakeRunConfigurationParams target) {
