@@ -1,5 +1,7 @@
 package org.perfcake.idea.util;
 
+import com.intellij.openapi.diagnostic.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.perfcake.message.generator.AbstractMessageGenerator;
 import org.perfcake.message.sender.AbstractSender;
 
@@ -17,6 +19,7 @@ import java.util.zip.ZipEntry;
  * Created by miron on 18.3.2014.
  */
 public class PerfCakeClassProvider {
+    private static final Logger LOG = Logger.getInstance(PerfCakeClassProvider.class);
 
     /**
      * Finds all subclasses names in a jar file of the superclass
@@ -25,7 +28,8 @@ public class PerfCakeClassProvider {
      * @return list of sorted subclass names, which are not abstract
      * @throws PerfCakeClassProviderException when an error occures during the search
      */
-    private String[] getSubclasses(Class<?> superclass, String pckage) throws PerfCakeClassProviderException {
+    @NotNull
+    private String[] getSubclasses(@NotNull Class<?> superclass, @NotNull String pckage) throws PerfCakeClassProviderException {
         String pckgPath = pckage.replace('.', '/');
         //get URL of the superclass
         URL url = superclass.getResource("/" + pckgPath);
@@ -68,7 +72,7 @@ public class PerfCakeClassProvider {
                             subclasses.add(clazz.getSimpleName());
                         }
                     } catch (ClassNotFoundException e) {
-                        throw new PerfCakeClassProviderException("Could not get listed class from package", e);
+                        LOG.warn("Could not get listed class from package", e);
                     }
                 }
             }
@@ -86,6 +90,7 @@ public class PerfCakeClassProvider {
      * @return array of sender class names
      * @throws PerfCakeClassProviderException if an Exception occurs during the search
      */
+    @NotNull
     public String[] findSenders() throws PerfCakeClassProviderException{
         return getSubclasses(AbstractSender.class, "org.perfcake.message.sender");
     }
@@ -95,6 +100,7 @@ public class PerfCakeClassProvider {
      * @return array of generator class names
      * @throws PerfCakeClassProviderException if an Exception occurs during the search
      */
+    @NotNull
     public String[] findGenerators() throws PerfCakeClassProviderException {
         return getSubclasses(AbstractMessageGenerator.class, "org.perfcake.message.generator");
     }

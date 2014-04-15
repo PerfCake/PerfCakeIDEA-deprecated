@@ -33,7 +33,7 @@ public class NewScenarioAction extends CreateElementActionBase {
     private static final Logger log = Logger.getInstance(CreateElementActionBase.class);
 
     public NewScenarioAction() {
-        super("", "", Constants.NODE_ICON);
+        super("Scenario", "Create new PerfCake scenario", Constants.NODE_ICON);
     }
 
     @NotNull
@@ -120,6 +120,7 @@ public class NewScenarioAction extends CreateElementActionBase {
         //action will be visible only for PerfCake modules
         if (super.isAvailable(dataContext)) {
             Module module = LangDataKeys.MODULE.getData(dataContext);
+            if (module == null) return false;
             ModuleType type = ModuleType.get(module);
             return type instanceof PerfCakeModuleType;
         }

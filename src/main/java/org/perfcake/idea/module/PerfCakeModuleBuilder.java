@@ -13,24 +13,6 @@ import com.intellij.openapi.vfs.VirtualFile;
  * Created by miron on 21.1.2014.
  */
 public class PerfCakeModuleBuilder extends JavaModuleBuilder {
-    private String generator;
-    private String sender;
-
-    public String getGenerator() {
-        return generator;
-    }
-
-    public void setGenerator(String generator) {
-        this.generator = generator;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
 
     public PerfCakeModuleBuilder() {
     }

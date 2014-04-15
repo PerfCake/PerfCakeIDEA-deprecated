@@ -6,6 +6,8 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeConst;
 
 import java.util.HashMap;
@@ -22,7 +24,7 @@ public class PerfCakeIdeaUtil {
      * @param title   error title
      * @param e       exception to show
      */
-    public static void showError(Project project, String title, Throwable e) {
+    public static void showError(@Nullable Project project, @NotNull String title, @NotNull Throwable e) {
         Notifications.Bus.notify(new Notification("PerfCakeIDEA", title, e.getMessage(), NotificationType.ERROR), project);
     }
 
@@ -31,10 +33,11 @@ public class PerfCakeIdeaUtil {
      *
      * @param project current idea project with PerfCake modules
      * @param file    file in one of project modules for which we want to get directories
-     * @return module directories map
+     * @return map of scenarios and messages directories with keys from PerfCakeConst class
      * @throws PerfCakeIDEAException if we could not get module of the file
      */
-    public static Map<String, VirtualFile> resolveModuleDirsForFile(Project project, VirtualFile file) throws PerfCakeIDEAException {
+    @NotNull
+    public static Map<String, VirtualFile> resolveModuleDirsForFile(@NotNull Project project, @NotNull VirtualFile file) throws PerfCakeIDEAException {
         ProjectFileIndex projectFileIndex = ProjectFileIndex.SERVICE.getInstance(project);
         VirtualFile moduleRoot = projectFileIndex.getContentRootForFile(file);
         if (moduleRoot == null) {

@@ -10,6 +10,7 @@ import org.perfcake.idea.util.PerfCakeClassProviderException;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
 
 import javax.swing.*;
+import java.io.File;
 
 /**
  * Created by miron on 11.3.2014.
@@ -35,10 +36,10 @@ public class NewScenarioDialog extends DialogWrapper {
 
         PerfCakeClassProvider classProvider = new PerfCakeClassProvider();
         try {
-            final DefaultComboBoxModel generators = new DefaultComboBoxModel(classProvider.findGenerators());
+            final DefaultComboBoxModel generators = new DefaultComboBoxModel<String>(classProvider.findGenerators());
             generatorComboBox.setModel(generators);
 
-            final DefaultComboBoxModel senders = new DefaultComboBoxModel(classProvider.findSenders());
+            final DefaultComboBoxModel senders = new DefaultComboBoxModel<String>(classProvider.findSenders());
             senderComboBox.setModel(senders);
         } catch (PerfCakeClassProviderException e) {
             log.error("Error finding classes for combobox", e);
@@ -64,6 +65,9 @@ public class NewScenarioDialog extends DialogWrapper {
     protected ValidationInfo doValidate() {
         if (getName().trim().isEmpty()) {
             return new ValidationInfo("Scenario name must be specified", nameField);
+        }
+        if (getName().contains(File.pathSeparator)) {
+            return new ValidationInfo("Scenario name cannot contain " + File.pathSeparator, nameField);
         }
         return null;
     }

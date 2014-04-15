@@ -12,10 +12,14 @@ import org.perfcake.PerfCakeException;
 import org.perfcake.ScenarioBuilder;
 import org.perfcake.model.Scenario;
 import org.perfcake.parser.ScenarioParser;
+import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +37,7 @@ public class ScenarioHandler {
     private URL scenarioURL;
     private Scenario scenarioModel;
 
+    @NotNull
     public Scenario getScenarioModel() {
         return scenarioModel;
     }
@@ -41,7 +46,6 @@ public class ScenarioHandler {
      * Creates new ScenarioHandler with scenario on a given scenarioPath and loads the scenario into model
      *
      * @param scenarioPath absolute path of valid scenario
-     * @throws IllegalArgumentException if the scenarioPath cannot be resolved
      * @throws PerfCakeException        if scenario XML is not valid or cannot be successfully parsed
      */
     public ScenarioHandler(@NotNull String scenarioPath) throws PerfCakeException {
@@ -49,7 +53,7 @@ public class ScenarioHandler {
         try {
             scenarioURL = new File(scenarioPath).toURI().toURL();
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Scenario path cannot be resolved", e);
+            throw new PerfCakeException("Scenario path cannot be resolved: " + scenarioPath, e);
         }
         //load Scenario XML to JAXB class
         scenarioModel = (new ScenarioParser(scenarioURL)).parse();
@@ -58,7 +62,7 @@ public class ScenarioHandler {
     /**
      * Creates new ScenarioHandler with scenario on a given scenarioURL and loads the scenario into model
      *
-     * @param scenarioURL
+     * @param scenarioURL valid URL of a valid scenario
      * @throws PerfCakeException if scenario XML is not valid or cannot be successfully parsed
      */
     public ScenarioHandler(@NotNull URL scenarioURL) throws PerfCakeException {
@@ -72,10 +76,11 @@ public class ScenarioHandler {
      *
      * @param scenarioPath new scenario path
      * @param overwrite    overwrites scenario if already exists
-     * @return ScenarioHandler with a loaded template scenario stored on scenarioPath
+     * @return ScenarioHandler with a loaded scenario stored on scenarioPath
      * @throws FileAlreadyExistsException if the target scenarioPath already exists and overwrite is false
      * @throws PerfCakeIDEAException      if an error occures during template creation
      */
+    @NotNull
     public static ScenarioHandler createFromTemplate(@NotNull String scenarioPath, boolean overwrite) throws FileAlreadyExistsException, PerfCakeIDEAException {
         Path scenarioTarget = Paths.get(scenarioPath);
         URL templateURL = ScenarioHandler.class.getResource("/ScenarioTemplate.xml");
@@ -116,7 +121,21 @@ public class ScenarioHandler {
         try {
             JAXBContext context = JAXBContext.newInstance(Scenario.class);
             final Marshaller marshaller = context.createMarshaller();
-            //marshaller.setSchema(); ?
+
+            String schemaFileName = "perfcake-scenario-" + org.perfcake.Scenario.VERSION + ".xsd";
+            URL schemaUrl = getClass().getResource("/schemas/" + schemaFileName);
+            if (schemaUrl != null) {
+                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                try {
+                    Schema schema = schemaFactory.newSchema(schemaUrl);
+                    marshaller.setSchema(schema);
+                } catch (SAXException e) {
+                    log.warn("Scenario schema is not valid. Scenario saving continues without validation", e);
+                }
+            } else {
+                log.warn("Could not get scenario schema: " + schemaFileName);
+            }
+
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
