@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
-import com.intellij.util.xml.DomManager;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +32,7 @@ public class ScenarioFileEditorProvider implements FileEditorProvider, DumbAware
     @NotNull
     @Override
     public FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile file) {
-        return new ScenarioFileEditor();
+        return new ScenarioFileEditor(file);
     }
 
     @Override

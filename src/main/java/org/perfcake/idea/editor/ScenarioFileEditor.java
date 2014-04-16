@@ -7,6 +7,7 @@ import com.intellij.openapi.fileEditor.FileEditorLocation;
 import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,16 +18,16 @@ import java.beans.PropertyChangeListener;
  * Created by miron on 25.3.2014.
  */
 public class ScenarioFileEditor implements FileEditor {
-    ScenarioFileEditorForm editorForm;
+    ScenarioFileEditorPanel editor;
 
-    public ScenarioFileEditor() {
-        this.editorForm = new ScenarioFileEditorForm();
+    public ScenarioFileEditor(VirtualFile scenario) {
+        this.editor = new ScenarioFileEditorPanel(scenario);
     }
 
     @NotNull
     @Override
     public JComponent getComponent() {
-        return editorForm.getRoot();
+        return editor;
     }
 
     @Nullable
