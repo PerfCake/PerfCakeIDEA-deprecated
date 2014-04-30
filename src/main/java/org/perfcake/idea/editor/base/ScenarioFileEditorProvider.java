@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor;
+package org.perfcake.idea.editor.base;
 
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorPolicy;
@@ -32,7 +32,14 @@ public class ScenarioFileEditorProvider implements FileEditorProvider, DumbAware
     @NotNull
     @Override
     public FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile file) {
-        return new ScenarioFileEditor(file);
+/*        FileDocumentManager.getInstance().getDocument(file).addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                System.out.println(evt.toString());
+            }
+        });*/
+        //System.out.println(FileEditorManager.getInstance(project).getSelectedTextEditor().toString());
+        return new ScenarioFileEditor(project, file);
     }
 
     @Override

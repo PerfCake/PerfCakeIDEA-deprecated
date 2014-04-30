@@ -55,7 +55,7 @@
         <configurationType implementation="org.perfcake.idea.run.PerfCakeConfigurationType"/>
         <runConfigurationProducer implementation="org.perfcake.idea.run.PerfCakeRunConfigurationProducer"/>
         <programRunner implementation="org.perfcake.idea.run.PerfCakeRunner"/>
-        <fileEditorProvider implementation="org.perfcake.idea.editor.ScenarioFileEditorProvider"/>
+        <fileEditorProvider implementation="org.perfcake.idea.editor.base.ScenarioFileEditorProvider"/>
     </extensions>
     <module-components>
 

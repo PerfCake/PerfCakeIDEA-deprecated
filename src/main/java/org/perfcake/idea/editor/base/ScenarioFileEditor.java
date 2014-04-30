@@ -1,15 +1,16 @@
-package org.perfcake.idea.editor;
+package org.perfcake.idea.editor.base;
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorLocation;
-import com.intellij.openapi.fileEditor.FileEditorState;
-import com.intellij.openapi.fileEditor.FileEditorStateLevel;
+import com.intellij.openapi.editor.event.DocumentEvent;
+import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.editor.ui.ScenarioEditorPanel;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
@@ -18,10 +19,24 @@ import java.beans.PropertyChangeListener;
  * Created by miron on 25.3.2014.
  */
 public class ScenarioFileEditor implements FileEditor {
-    ScenarioFileEditorPanel editor;
+    ScenarioEditorPanel editor;
 
-    public ScenarioFileEditor(VirtualFile scenario) {
-        this.editor = new ScenarioFileEditorPanel(scenario);
+
+    public ScenarioFileEditor(Project project, VirtualFile scenario) {
+        FileDocumentManager.getInstance().getCachedDocument(scenario).addDocumentListener(new DocumentListener() {
+            @Override
+            public void beforeDocumentChange(DocumentEvent event) {
+                System.out.println("beforeDocumentChange: " + event.toString());
+            }
+
+            @Override
+            public void documentChanged(DocumentEvent event) {
+                System.out.println("documentChanged: " + event.toString());
+            }
+        });
+        //project.getMessageBus().connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER);
+
+        this.editor = new ScenarioEditorPanel(scenario);
     }
 
     @NotNull
