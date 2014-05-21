@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.model;
+package org.perfcake.idea.model;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -8,56 +8,51 @@ import org.perfcake.model.Scenario;
 /**
  * Created by miron on 22.4.2014.
  */
-public class DestinationModel extends AbstractScenarioModel {
-    public static final String PROPERTY_PROPERTY = "property";
-    public static final String PERIOD_PROPERTY = "period";
-    public static final String CLAZZ_PROPERTY = "clazz";
-    public static final String ENABLED_PROPERTY = "enabled";
+public class ReporterModel extends AbstractScenarioModel {
+    private static final String DESTINATION_PROPERTY = "destination";
+    private static final Logger LOG = Logger.getInstance(ReporterModel.class);
+    private static final String PROPERTY_PROPERTY = "property";
+    private static final String CLAZZ_PROPERTY = "clazz";
+    private static final String ENABLED_PROPERTY = "enabled";
+    private Scenario.Reporting.Reporter reporter;
 
-    private static final Logger LOG = Logger.getInstance(DestinationModel.class);
-    private Scenario.Reporting.Reporter.Destination destination;
-
-    public DestinationModel(Scenario.Reporting.Reporter.Destination destination) {
-        this.destination = destination;
-    }
-
-    public Scenario.Reporting.Reporter.Destination getDestination() {
-        return destination;
+    public ReporterModel(Scenario.Reporting.Reporter reporter) {
+        this.reporter = reporter;
     }
 
     /**
      * Adds new property at a specified position given by the index. Existent properties in this position will be moved after this property.
      *
      * @param index    at which should the property be placed
-     * @param period to add
+     * @param property to add
      */
-    public void addPeriod(int index, @NotNull Scenario.Reporting.Reporter.Destination.Period period) {
-        destination.getPeriod().add(index, period);
-        fireChangeEvent(PERIOD_PROPERTY, null, period);
+    public void addDestination(int index, @NotNull Scenario.Reporting.Reporter.Destination destination) {
+        reporter.getDestination().add(index, destination);
+        fireChangeEvent(DESTINATION_PROPERTY, null, destination);
     }
 
     /**
      * Adds new property to the end.
      *
-     * @param period to add
+     * @param property to add
      */
-    public void addPeriod(@NotNull Scenario.Reporting.Reporter.Destination.Period period) {
-        destination.getPeriod().add(period);
-        fireChangeEvent(PERIOD_PROPERTY, null, period);
+    public void addDestination(@NotNull Scenario.Reporting.Reporter.Destination destination) {
+        reporter.getDestination().add(destination);
+        fireChangeEvent(DESTINATION_PROPERTY, null, destination);
     }
 
     /**
      * Deletes property object from this model.
      *
-     * @param period property to delete
+     * @param property property to delete
      */
-    public void deletePeriod(@NotNull Scenario.Reporting.Reporter.Destination.Period period) {
-        boolean success = destination.getPeriod().remove(period);
+    public void deleteDestination(@NotNull Scenario.Reporting.Reporter.Destination destination) {
+        boolean success = reporter.getDestination().remove(destination);
         if (!success) {
-            LOG.error("Period was not found in PerfCake JAXB model");
+            LOG.error("Destination was not found in PerfCake JAXB model");
             return;
         }
-        fireChangeEvent(PERIOD_PROPERTY, period, null);
+        fireChangeEvent(DESTINATION_PROPERTY, destination, null);
     }
 
     /**
@@ -67,7 +62,7 @@ public class DestinationModel extends AbstractScenarioModel {
      * @param property to add
      */
     public void addProperty(int index, @NotNull Property property) {
-        destination.getProperty().add(index, property);
+        reporter.getProperty().add(index, property);
         fireChangeEvent(PROPERTY_PROPERTY, null, property);
     }
 
@@ -77,7 +72,7 @@ public class DestinationModel extends AbstractScenarioModel {
      * @param property to add
      */
     public void addProperty(@NotNull Property property) {
-        destination.getProperty().add(property);
+        reporter.getProperty().add(property);
         fireChangeEvent(PROPERTY_PROPERTY, null, property);
     }
 
@@ -87,7 +82,7 @@ public class DestinationModel extends AbstractScenarioModel {
      * @param property property to delete
      */
     public void deleteProperty(@NotNull Property property) {
-        boolean success = destination.getProperty().remove(property);
+        boolean success = reporter.getProperty().remove(property);
         if (!success) {
             LOG.error("Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
             return;
@@ -96,16 +91,14 @@ public class DestinationModel extends AbstractScenarioModel {
     }
 
     public void setClazz(String clazz) {
-        String old = destination.getClazz();
-        destination.setClazz(clazz);
+        String old = reporter.getClazz();
+        reporter.setClazz(clazz);
         fireChangeEvent(CLAZZ_PROPERTY, old, clazz);
     }
 
     public void setEnabled(Boolean enabled) {
-        boolean old = destination.isEnabled();
-        destination.setEnabled(enabled);
+        boolean old = reporter.isEnabled();
+        reporter.setEnabled(enabled);
         fireChangeEvent(ENABLED_PROPERTY, old, enabled);
     }
-
-
 }

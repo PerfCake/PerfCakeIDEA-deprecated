@@ -11,7 +11,7 @@ import java.awt.geom.RoundRectangle2D;
 public class RoundedRectangleUI extends PanelUI {
     private final int arcWidth = 10;
     private final int arcHeight = 10;
-    private final float thickness = 1;
+    private float thickness = 1;
 
     @Override
     public void installUI(JComponent c) {
@@ -20,6 +20,8 @@ public class RoundedRectangleUI extends PanelUI {
     @Override
     public void paint(Graphics g, JComponent c) {
         super.paint(g, c);
+
+        thickness = ((JRoundedRectangle) c).isSelected() ? 3 : 1;
 
         //compute component drawing area with respect to insets
         Rectangle area = computeArea(c);

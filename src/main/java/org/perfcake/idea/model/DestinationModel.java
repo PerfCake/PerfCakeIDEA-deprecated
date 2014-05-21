@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.model;
+package org.perfcake.idea.model;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -9,12 +9,11 @@ import org.perfcake.model.Scenario;
  * Created by miron on 22.4.2014.
  */
 public class DestinationModel extends AbstractScenarioModel {
-    public static final String PROPERTY_PROPERTY = "property";
-    public static final String PERIOD_PROPERTY = "period";
-    public static final String CLAZZ_PROPERTY = "clazz";
-    public static final String ENABLED_PROPERTY = "enabled";
-
+    private static final String PROPERTY_PROPERTY = "property";
     private static final Logger LOG = Logger.getInstance(DestinationModel.class);
+    private static final String PERIOD_PROPERTY = "period";
+    private static final String CLAZZ_PROPERTY = "clazz";
+    private static final String ENABLED_PROPERTY = "enabled";
     private Scenario.Reporting.Reporter.Destination destination;
 
     public DestinationModel(Scenario.Reporting.Reporter.Destination destination) {
@@ -29,7 +28,7 @@ public class DestinationModel extends AbstractScenarioModel {
      * Adds new property at a specified position given by the index. Existent properties in this position will be moved after this property.
      *
      * @param index    at which should the property be placed
-     * @param period to add
+     * @param property to add
      */
     public void addPeriod(int index, @NotNull Scenario.Reporting.Reporter.Destination.Period period) {
         destination.getPeriod().add(index, period);
@@ -39,7 +38,7 @@ public class DestinationModel extends AbstractScenarioModel {
     /**
      * Adds new property to the end.
      *
-     * @param period to add
+     * @param property to add
      */
     public void addPeriod(@NotNull Scenario.Reporting.Reporter.Destination.Period period) {
         destination.getPeriod().add(period);
@@ -49,7 +48,7 @@ public class DestinationModel extends AbstractScenarioModel {
     /**
      * Deletes property object from this model.
      *
-     * @param period property to delete
+     * @param property property to delete
      */
     public void deletePeriod(@NotNull Scenario.Reporting.Reporter.Destination.Period period) {
         boolean success = destination.getPeriod().remove(period);

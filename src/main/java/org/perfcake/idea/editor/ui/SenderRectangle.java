@@ -26,7 +26,7 @@ public class SenderRectangle extends JTitledRoundedRectangle implements Property
         for (Property p : model.getSender().getProperty()) {
             PropertyModel propertyModel = new PropertyModel(p);
             PropertyRectangle propertyRectangle = new PropertyRectangle(propertyModel);
-            add(propertyRectangle);
+            panel.add(propertyRectangle);
         }
     }
 
@@ -42,12 +42,12 @@ public class SenderRectangle extends JTitledRoundedRectangle implements Property
 
             if (oldValue == null && newValue != null) {
                 PropertyRectangle propertyRectangle = new PropertyRectangle(new PropertyModel(newValue));
-                add(propertyRectangle);
+                panel.add(propertyRectangle);
             }
 
             if (oldValue != null && newValue == null) {
                 synchronized (getTreeLock()) {
-                    Component[] components = getComponents();
+                    Component[] components = panel.getComponents();
                     for (Component c : components) {
                         if (c instanceof PropertyRectangle) {
                             if (((PropertyRectangle) c).getModel().getProperty() == oldValue) {

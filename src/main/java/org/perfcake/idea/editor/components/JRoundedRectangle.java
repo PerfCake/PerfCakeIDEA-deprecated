@@ -8,6 +8,7 @@ import java.awt.*;
  */
 public class JRoundedRectangle extends JPanel {
     private static final String uiClassID = "RoundedRectangleUI";
+    private Boolean selected = Boolean.FALSE;
 
     public JRoundedRectangle() {
         //set default layout
@@ -38,5 +39,17 @@ public class JRoundedRectangle extends JPanel {
         }
     }
 
+    //TODO write to model?
+    public Boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
+        repaint();
+    }
+
+    public void invokeDialog() {
+    }
 
 }

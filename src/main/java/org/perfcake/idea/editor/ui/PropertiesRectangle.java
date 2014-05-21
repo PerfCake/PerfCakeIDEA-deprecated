@@ -28,8 +28,7 @@ public class PropertiesRectangle extends JTitledRoundedRectangle implements Prop
             for (Property p : this.model.getProperties()) {
                 PropertyModel propertyModel = new PropertyModel(p);
                 PropertyRectangle propertyRectangle = new PropertyRectangle(propertyModel);
-                propertyRectangle.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-                add(propertyRectangle, BorderLayout.WEST);
+                panel.add(propertyRectangle);
             }
         }
     }
@@ -43,12 +42,12 @@ public class PropertiesRectangle extends JTitledRoundedRectangle implements Prop
             if (oldValue == null && newValue != null) {
                 PropertyRectangle propertyRectangle = new PropertyRectangle(new PropertyModel(newValue));
                 propertyRectangle.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-                add(propertyRectangle, BorderLayout.WEST);
+                panel.add(propertyRectangle, BorderLayout.WEST);
             }
 
             if (oldValue != null && newValue == null) {
                 synchronized (getTreeLock()) {
-                    Component[] components = getComponents();
+                    Component[] components = panel.getComponents();
                     for (Component c : components) {
                         if (c instanceof PropertyRectangle) {
                             if (((PropertyRectangle) c).getModel().getProperty() == oldValue) {

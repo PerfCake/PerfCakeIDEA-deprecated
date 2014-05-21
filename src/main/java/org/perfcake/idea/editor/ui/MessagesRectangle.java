@@ -26,7 +26,7 @@ public class MessagesRectangle extends JTitledRoundedRectangle implements Proper
             for (Scenario.Messages.Message m : model.getMessages().getMessage()) {
                 MessageModel messageModel = new MessageModel(m);
                 MessageRectangle messageRectangle = new MessageRectangle(messageModel);
-                add(messageRectangle);
+                panel.add(messageRectangle);
             }
         }
     }
@@ -39,12 +39,12 @@ public class MessagesRectangle extends JTitledRoundedRectangle implements Proper
 
             if (oldValue == null && newValue != null) {
                 MessageRectangle messageRectangle = new MessageRectangle(new MessageModel(newValue));
-                add(messageRectangle, BorderLayout.WEST);
+                panel.add(messageRectangle);
             }
 
             if (oldValue != null && newValue == null) {
                 synchronized (getTreeLock()) {
-                    Component[] components = getComponents();
+                    Component[] components = panel.getComponents();
                     for (Component c : components) {
                         if (c instanceof MessageRectangle) {
                             if (((MessageRectangle) c).getModel().getMessage() == oldValue) {
