@@ -20,4 +20,4 @@ This repository does not use any special workflow and everything is commited dir
 Bug reporting
 -------------
 
-Please report bugs d irectly to the issues in this repository.
+Please report bugs directly to the issues in this repository.
