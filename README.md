@@ -3,14 +3,21 @@ PerfCakeIDEA
 
 A PerfCake plugin for IntelliJ IDEA.
 
-<br/>
+Building the project
+--------------------
 
-<h5>To build the project with Maven, first download</h5>
+First download http://download.jetbrains.com/idea/ideaIU-13.0.2.zip to your local Maven repository under folder
+`MAVEN_REPOSITORY/org/jetbrains/ideaIU/13.0.2/`
 
-http://download.jetbrains.com/idea/ideaIU-13.0.2.zip
+Built plugin can be installed to Intellij Idea by:
+`File | Settings | IDE Settings | Plugins | Install plugin from disk...`
 
-to your local Maven repository under folder:<br/>
-MAVEN_REPOSITORY/org/jetbrains/ideaIU/13.0.2/
+Versioning
+----------
 
-Builded plugin can be installed to Intellij Idea by: <br/>
-File | Settings | IDE Settings | Plugins | Install plugin from disk...
+This repository does not use any special workflow and everything is commited directly to master for now.
+
+Bug reporting
+-------------
+
+Please report bugs d irectly to the issues in this repository.
