@@ -1,9 +1,9 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.MessageModel;
-import org.perfcake.idea.editor.model.MessagesModel;
+import org.perfcake.idea.model.MessageModel;
+import org.perfcake.idea.model.MessagesModel;
 import org.perfcake.model.Scenario;
 
 import java.awt.*;
@@ -22,6 +22,10 @@ public class MessagesRectangle extends JTitledRoundedRectangle implements Proper
         super(TITLE);
         this.model = model;
         model.addPropertyChangeListener(this);
+        addMessages();
+    }
+
+    private void addMessages() {
         if (model.getMessages() != null) {
             for (Scenario.Messages.Message m : model.getMessages().getMessage()) {
                 MessageModel messageModel = new MessageModel(m);
@@ -33,7 +37,7 @@ public class MessagesRectangle extends JTitledRoundedRectangle implements Proper
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName() == MessagesModel.MESSAGE_PROPERTY) {
+        if (evt.getPropertyName().equals(MessagesModel.MESSAGE_PROPERTY)) {
             Scenario.Messages.Message oldValue = (Scenario.Messages.Message) evt.getOldValue();
             Scenario.Messages.Message newValue = (Scenario.Messages.Message) evt.getNewValue();
 
@@ -48,14 +52,31 @@ public class MessagesRectangle extends JTitledRoundedRectangle implements Proper
                     for (Component c : components) {
                         if (c instanceof MessageRectangle) {
                             if (((MessageRectangle) c).getModel().getMessage() == oldValue) {
-                                remove(c);
+                                panel.remove(c);
                                 return;
                             }
                         }
                     }
-                    LOG.error("PropertyRectangle with property " + oldValue.toString() + " was not found in PropertiesRectangle");
+                    LOG.error(getClass().getName() + ": MessageRectangle with message " + oldValue.getUri() + " was not found.");
                 }
             }
         }
+        if(evt.getPropertyName().equals(MessagesModel.MESSAGES_PROPERTY)){
+            updateRectangle();
+        }
+    }
+
+    private void updateRectangle() {
+        //model changed, first remove all messages
+        synchronized (getTreeLock()) {
+            Component[] components = panel.getComponents();
+            for (Component c : components) {
+                if (c instanceof MessageRectangle) {
+                    panel.remove(c);
+                }
+            }
+        }
+        //add messages from updated model
+        addMessages();
     }
 }

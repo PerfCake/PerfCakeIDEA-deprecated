@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by miron on 25.3.2014.
  */
-public class ScenarioFileEditorProvider implements FileEditorProvider, DumbAware {
+public class ScenarioEditorProvider implements FileEditorProvider, DumbAware {
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile file) {
         // Accept files that have "xmlExample" as the root tag
@@ -32,14 +32,14 @@ public class ScenarioFileEditorProvider implements FileEditorProvider, DumbAware
     @NotNull
     @Override
     public FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile file) {
-/*        FileDocumentManager.getInstance().getDocument(file).addPropertyChangeListener(new PropertyChangeListener() {
+        /*FileDocumentManager.getInstance().getDocument(file).addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println(evt.toString());
             }
         });*/
         //System.out.println(FileEditorManager.getInstance(project).getSelectedTextEditor().toString());
-        return new ScenarioFileEditor(project, file);
+        return new ScenarioEditor(project, file);
     }
 
     @Override

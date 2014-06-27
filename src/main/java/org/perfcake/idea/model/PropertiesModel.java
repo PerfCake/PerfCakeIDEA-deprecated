@@ -7,9 +7,6 @@ import org.perfcake.model.ObjectFactory;
 import org.perfcake.model.Property;
 import org.perfcake.model.Scenario;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Created by miron on 22.4.2014.
  */
@@ -17,24 +14,39 @@ public class PropertiesModel extends AbstractScenarioModel {
     private static final Logger LOG = Logger.getInstance(PropertiesModel.class);
 
     public static final String PROPERTY_PROPERTY = "property";
+    public static final String PROPERTIES_PROPERTY = "properties";
+
     private Scenario scenario;
     private Scenario.Properties properties;
 
-    public PropertiesModel(Scenario scenario) {
+    /**
+     * Creates new PropertiesModel from scenario properties.
+     * @param scenario which properties model should be created.
+     */
+    public PropertiesModel(@NotNull Scenario scenario) {
         this.scenario = scenario;
         this.properties = scenario.getProperties();
     }
 
     /**
-     * @return List of PropertyModel
+     * @return PerfCake properties model intended for read only or null if no properties are present.
      */
     @Nullable
-    public List<Property> getProperties() {
-        //TODO not to modify
-        if (properties != null) {
-            return Collections.unmodifiableList(properties.getProperty());
-        }
-        return null;
+    public Scenario.Properties getProperties() {
+        return this.properties;
+    }
+
+    /**
+     * Sets new scenario properties from scenario
+     * @param scenario which properties should be set
+     */
+    public void setProperties(@NotNull Scenario scenario) {
+        Scenario.Properties old = this.properties;
+
+        this. scenario = scenario;
+        this.properties = scenario.getProperties();
+
+        fireChangeEvent(PROPERTIES_PROPERTY, old, properties);
     }
 
     /**
@@ -61,14 +73,14 @@ public class PropertiesModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes property object from this model.
+     * Deletes property object from this model. Property object should be in this model, otherwise error log is written.
      *
      * @param property property to delete
      */
     public void deleteProperty(@NotNull Property property) {
         boolean success = properties == null ? false : properties.getProperty().remove(property);
         if (!success) {
-            LOG.error("Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": Property " + property.getName() + " : " + property.getValue() + " was not found in PerfCake JAXB model");
             return;
         }
         deletePropertiesIfEmpty();

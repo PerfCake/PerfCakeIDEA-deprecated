@@ -1,7 +1,8 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.MessageModel;
+import org.perfcake.idea.model.MessageModel;
+import org.perfcake.idea.model.RunModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -24,8 +25,15 @@ public class MessageRectangle extends JTitledRoundedRectangle implements Propert
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName() == MessageModel.URI_PROPERTY) {
+        if (evt.getPropertyName().equals(MessageModel.URI_PROPERTY)) {
             model.setUri((String) evt.getNewValue());
         }
+        if(evt.getPropertyName().equals(MessageModel.MESSAGE_PROPERTY)){
+            updateRectangle();
+        }
+    }
+
+    private void updateRectangle() {
+        model.setUri((String) model.getMessage().getUri());
     }
 }

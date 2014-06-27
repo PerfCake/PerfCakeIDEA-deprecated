@@ -1,5 +1,6 @@
 package org.perfcake.idea.model;
 
+import org.jetbrains.annotations.NotNull;
 import org.perfcake.model.Property;
 
 /**
@@ -8,22 +9,27 @@ import org.perfcake.model.Property;
 public class PropertyModel extends AbstractScenarioModel {
     public static final String NAME_PROPERTY = "name";
     public static final String VALUE_PROPERTY = "value";
+    public static final String PROPERTY_PROPERTY = "property";
 
     private Property property;
 
-    public PropertyModel(Property property) {
+    public PropertyModel(@NotNull Property property) {
         this.property = property;
     }
 
-    /*public PropertyModel(String name, String value){
-        property = new ObjectFactory().createProperty();
-        property.setName(name);
-        property.setValue(value);
-        fireChangeEvent(PropertiesModel, null, );
-
-    }*/
+    /**
+     *
+     * @return PerfCake property model intended for read only.
+     */
+    @NotNull
     public Property getProperty() {
         return property;
+    }
+
+    public void setProperty(@NotNull Property property) {
+        Property old = this.property;
+        this.property = property;
+        fireChangeEvent(PROPERTY_PROPERTY, old, property);
     }
 
     public void setName(String name) {
@@ -40,6 +46,6 @@ public class PropertyModel extends AbstractScenarioModel {
 
     @Override
     public String toString() {
-        return property.getName() + ":" + property.getValue();
+        return property.getName() + " : " + property.getValue();
     }
 }

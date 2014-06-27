@@ -42,12 +42,12 @@ public class PropertyEditDialog extends DialogWrapper {
     }
 
     protected ValidationInfo doValidate() {
-        if (getNameText().trim().isEmpty()) {
+        /*if (getNameText().trim().isEmpty()) {
             return new ValidationInfo("Please specify property name", nameTextField);
         }
         if (getValueText().trim().isEmpty()) {
             return new ValidationInfo("Please specify property value", valueTextField);
-        }
+        }*/
         return null;
     }
 }

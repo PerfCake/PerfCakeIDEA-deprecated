@@ -9,6 +9,8 @@ import org.perfcake.model.Scenario;
  */
 public class ValidationModel extends AbstractScenarioModel {
     public static final String VALIDATOR_PROPERTY = "validator";
+    public static final String VALIDATION_PROPERTY = "validation";
+
     private static final Logger LOG = Logger.getInstance(ValidationModel.class);
     private Scenario.Validation validation;
 
@@ -16,8 +18,18 @@ public class ValidationModel extends AbstractScenarioModel {
         this.validation = validation;
     }
 
+    /**
+     *
+     * @return PerfCake Validation model intended for read only.
+     */
     public Scenario.Validation getValidation() {
         return validation;
+    }
+
+    public void setValidation(Scenario.Validation validation) {
+        Scenario.Validation old = this.validation;
+        this.validation = validation;
+        fireChangeEvent(VALIDATION_PROPERTY, old, validation);
     }
 
     /**
@@ -42,14 +54,14 @@ public class ValidationModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes property object from this model.
+     * Deletes validator object from this model. Validator object should exist in this model.
      *
      * @param validator property to delete
      */
     public void deleteValidator(@NotNull Scenario.Validation.Validator validator) {
         boolean success = validation.getValidator().remove(validator);
         if (!success) {
-            LOG.error("Validator " + validator.getClazz() + " was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": Validator " + validator.getClazz() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(VALIDATOR_PROPERTY, validator, null);

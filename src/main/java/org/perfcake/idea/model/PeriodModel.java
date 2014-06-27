@@ -8,15 +8,26 @@ import org.perfcake.model.Scenario;
 public class PeriodModel extends AbstractScenarioModel {
     private static final String TYPE_PROPERTY = "type";
     private static final String VALUE_PROPERTY = "value";
+    private static final String PERIOD_PROPERTY = "period";
+
     private Scenario.Reporting.Reporter.Destination.Period period;
 
     public PeriodModel(Scenario.Reporting.Reporter.Destination.Period period) {
-
         this.period = period;
     }
 
+    /**
+     *
+     * @return PerfCake Period model intended for read only.
+     */
     public Scenario.Reporting.Reporter.Destination.Period getPeriod() {
         return period;
+    }
+
+    public void setPeriod(Scenario.Reporting.Reporter.Destination.Period period) {
+        Scenario.Reporting.Reporter.Destination.Period old = this.period;
+        this.period = period;
+        fireChangeEvent(PERIOD_PROPERTY, old, period);
     }
 
     public void setType(String type) {

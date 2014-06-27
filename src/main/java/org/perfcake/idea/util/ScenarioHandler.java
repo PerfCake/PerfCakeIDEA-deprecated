@@ -12,17 +12,19 @@ import org.perfcake.PerfCakeException;
 import org.perfcake.ScenarioBuilder;
 import org.perfcake.model.Scenario;
 import org.perfcake.parser.ScenarioParser;
+import org.perfcake.util.Utils;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -133,7 +135,7 @@ public class ScenarioHandler {
                     log.warn("Scenario schema is not valid. Scenario saving continues without validation", e);
                 }
             } else {
-                log.warn("Could not get scenario schema: " + schemaFileName);
+                log.warn("Could not get scenario schema: " + schemaFileName + ".Scenario reparsing continues without schema validation");
             }
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -151,6 +153,42 @@ public class ScenarioHandler {
         } catch (JAXBException e) {
             log.error("Error saving scenario", e);
             PerfCakeIdeaUtil.showError(getFocusedProject(), "Error saving scenario", e);
+        }
+    }
+
+    /**
+     * Reparses current model from scenarioString. Old model will be lost
+     * @param scenarioString scenario string to reparse from
+     * @return reparsed scenario model
+     * @throws PerfCakeException
+     */
+    public org.perfcake.model.Scenario reparseFrom(String scenarioString) throws PerfCakeException {
+
+        try {
+            Source scenarioXML = new StreamSource(new ByteArrayInputStream(scenarioString.getBytes(Utils.getDefaultEncoding())));
+            String schemaFileName = "perfcake-scenario-" + org.perfcake.Scenario.VERSION + ".xsd";
+
+            JAXBContext context = JAXBContext.newInstance(org.perfcake.model.Scenario.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+
+            URL schemaUrl = getClass().getResource("/schemas/" + schemaFileName);
+            if (schemaUrl != null) {
+                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                try {
+                    Schema schema = schemaFactory.newSchema(schemaUrl);
+                    unmarshaller.setSchema(schema);
+                } catch (SAXException e) {
+                    log.warn("Scenario schema is not valid. Scenario reparsing continues without schema validation", e);
+                }
+            } else {
+                log.warn("Could not get scenario schema: " + schemaFileName + ".Scenario reparsing continues without schema validation");
+            }
+            scenarioModel = (org.perfcake.model.Scenario) unmarshaller.unmarshal(scenarioXML);
+            return scenarioModel;
+        } catch (JAXBException e) {
+            throw new PerfCakeException("Cannot parse scenario from String: ", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new PerfCakeException("PerfCake set encoding is not supported: ", e);
         }
     }
 

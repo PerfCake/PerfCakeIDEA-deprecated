@@ -13,21 +13,33 @@ public class GeneratorModel extends AbstractScenarioModel {
     public static final String RUN_PROPERTY = "run";
     public static final String PROPERTY_PROPERTY = "property";
     public static final String CLAZZ_PROPERTY = "clazz";
-    public static final String THREADS_PROPERTY = "clazz";
+    public static final String THREADS_PROPERTY = "threads";
+    public static final String GENERATOR_PROPERTY = "generator";
 
     private static final Logger LOG = Logger.getInstance(GeneratorModel.class);
 
     private Scenario.Generator generator;
 
-    public GeneratorModel(Scenario.Generator generator) {
+    public GeneratorModel(@NotNull Scenario.Generator generator) {
         this.generator = generator;
     }
 
+    /**
+     *
+     * @return PerfCake Generator model intended for read only.
+     */
+    @NotNull
     public Scenario.Generator getGenerator() {
         return generator;
     }
 
-    public void setRun(Scenario.Generator.Run run) {
+    public void setGenerator(@NotNull Scenario.Generator generator) {
+        Scenario.Generator old = this.generator;
+        this.generator = generator;
+        fireChangeEvent(GENERATOR_PROPERTY, old, generator);
+    }
+
+    public void setRun(@NotNull Scenario.Generator.Run run) {
         Scenario.Generator.Run old = generator.getRun();
         generator.setRun(run);
         fireChangeEvent(RUN_PROPERTY, old, run);
@@ -55,14 +67,14 @@ public class GeneratorModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes property object from this model.
+     * Deletes property object from this model. Property object should be contained in this model, otherwise error log is written.
      *
      * @param property property to delete
      */
     public void deleteProperty(@NotNull Property property) {
         boolean success = generator.getProperty().remove(property);
         if (!success) {
-            LOG.error("Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
+            LOG.error(this.getClass().getName() + " Property " + property.getName() + " : " + property.getValue() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(PROPERTY_PROPERTY, property, null);

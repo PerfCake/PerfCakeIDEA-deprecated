@@ -1,9 +1,9 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.DestinationModel;
-import org.perfcake.idea.editor.model.ReporterModel;
+import org.perfcake.idea.model.DestinationModel;
+import org.perfcake.idea.model.ReporterModel;
 import org.perfcake.model.Scenario;
 
 import java.awt.*;
@@ -22,17 +22,19 @@ public class ReporterRectangle extends JTitledRoundedRectangle implements Proper
     public ReporterRectangle(ReporterModel model) {
         super(model.getReporter().getClazz());
         this.model = model;
-
         model.addPropertyChangeListener(this);
-        List<Scenario.Reporting.Reporter.Destination> destinations = this.model.getReporter().getDestination();
-        if (!destinations.isEmpty()) {
-            for (Scenario.Reporting.Reporter.Destination d : destinations) {
+
+        addDestinations();
+    }
+
+    private void addDestinations() {
+        if(this.model.getReporter() != null){
+            for (Scenario.Reporting.Reporter.Destination d : this.model.getReporter().getDestination()) {
                 DestinationModel destinationModel = new DestinationModel(d);
                 DestinationRectangle destinationRectangle = new DestinationRectangle(destinationModel);
                 panel.add(destinationRectangle);
             }
         }
-
     }
 
     public ReporterModel getModel() {
@@ -65,14 +67,34 @@ public class ReporterRectangle extends JTitledRoundedRectangle implements Proper
                     for (Component c : components) {
                         if (c instanceof DestinationRectangle) {
                             if (((DestinationRectangle) c).getModel().getDestination() == oldValue) {
-                                remove(c);
+                                panel.remove(c);
                                 return;
                             }
                         }
                     }
-                    LOG.error("DestinationRectangle with destination clazz " + oldValue.getClazz() + " was not found in ReporterRectangle");
+                    LOG.error(getClass().getName() + ": DestinationRectangle with destination clazz " + oldValue.getClazz() + " was not found");
                 }
             }
         }
+        if(property.equals(ReporterModel.REPORTER_PROPERTY)){
+            updateRectangle();
+        }
+    }
+
+    private void updateRectangle() {
+        //update label
+        label.setText((String) model.getReporter().getClazz());
+
+        //remove old and add new destinations
+        synchronized (getTreeLock()) {
+            Component[] components = panel.getComponents();
+            for (Component c : components) {
+                if (c instanceof DestinationRectangle) {
+                    panel.remove(c);
+                }
+            }
+        }
+
+        addDestinations();
     }
 }

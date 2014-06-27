@@ -9,7 +9,10 @@ import org.perfcake.model.Scenario;
  */
 public class MessagesModel extends AbstractScenarioModel {
     public static final String MESSAGE_PROPERTY = "message";
+    public static final String MESSAGES_PROPERTY = "messages";
+
     private static final Logger LOG = Logger.getInstance(MessagesModel.class);
+
     private Scenario.Messages messages;
 
     public MessagesModel(Scenario.Messages messages) {
@@ -18,6 +21,12 @@ public class MessagesModel extends AbstractScenarioModel {
 
     public Scenario.Messages getMessages() {
         return messages;
+    }
+
+    public void setMessages(Scenario.Messages messages) {
+        Scenario.Messages old = this.messages;
+        this.messages = messages;
+        fireChangeEvent(MESSAGES_PROPERTY, old, messages);
     }
 
     /**
@@ -36,20 +45,20 @@ public class MessagesModel extends AbstractScenarioModel {
      *
      * @param message to add
      */
-    public void addProperty(@NotNull Scenario.Messages.Message message) {
+    public void addMessage(@NotNull Scenario.Messages.Message message) {
         messages.getMessage().add(message);
         fireChangeEvent(MESSAGE_PROPERTY, null, message);
     }
 
     /**
-     * Deletes message object from this model.
+     * Deletes message object from this model. Message object shoul be present in this model.
      *
      * @param message message to delete
      */
-    public void deleteProperty(@NotNull Scenario.Messages.Message message) {
+    public void deleteMessage(@NotNull Scenario.Messages.Message message) {
         boolean success = messages.getMessage().remove(message);
         if (!success) {
-            LOG.error("Message " + message.getUri() + " was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": Message " + message.getUri() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(MESSAGE_PROPERTY, message, null);

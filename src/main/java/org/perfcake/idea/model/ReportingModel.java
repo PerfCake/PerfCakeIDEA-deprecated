@@ -9,24 +9,37 @@ import org.perfcake.model.Scenario;
  * Created by miron on 22.4.2014.
  */
 public class ReportingModel extends AbstractScenarioModel {
-    private static final String REPORTER_PROPERTY = "reporter";
+    public static final String REPORTER_PROPERTY = "reporter";
+    public static final String PROPERTY_PROPERTY = "property";
+    public static final String REPORTING_PROPERTY = "reporting";
+
     private static final Logger LOG = Logger.getInstance(ReportingModel.class);
-    private static final String PROPERTY_PROPERTY = "property";
+
     private Scenario.Reporting reporting;
 
     public ReportingModel(Scenario.Reporting reporting) {
         this.reporting = reporting;
     }
 
+    /**
+     *
+     * @return PerfCake Reporting model intended for read only.
+     */
     public Scenario.Reporting getReporting() {
         return reporting;
     }
 
+    public void setReporting(Scenario.Reporting reporting) {
+        Scenario.Reporting old = this.reporting;
+        this.reporting = reporting;
+        fireChangeEvent(REPORTING_PROPERTY, old, reporting);
+    }
+
     /**
-     * Adds new property at a specified position given by the index. Existent properties in this position will be moved after this property.
+     * Adds new reporter at a specified position given by the index. Existent reporters in this position will be moved after this reporter.
      *
-     * @param index    at which should the property be placed
-     * @param property to add
+     * @param index    at which should the reporter be placed
+     * @param reporter to add
      */
     public void addReporter(int index, @NotNull Scenario.Reporting.Reporter reporter) {
         reporting.getReporter().add(index, reporter);
@@ -34,9 +47,9 @@ public class ReportingModel extends AbstractScenarioModel {
     }
 
     /**
-     * Adds new property to the end.
+     * Adds new reporter to the end.
      *
-     * @param property to add
+     * @param reporter to add
      */
     public void addReporter(@NotNull Scenario.Reporting.Reporter reporter) {
         reporting.getReporter().add(reporter);
@@ -44,14 +57,14 @@ public class ReportingModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes property object from this model.
+     * Deletes reporter object from this model. Reporter object should exist in this model.
      *
-     * @param property property to delete
+     * @param reporter reporter to delete
      */
     public void deleteReporter(@NotNull Scenario.Reporting.Reporter reporter) {
         boolean success = reporting.getReporter().remove(reporter);
         if (!success) {
-            LOG.error("Reporter was not found in PerfCake JAXB model");
+            LOG.error(this.getClass().getName() + ": Reporter was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(REPORTER_PROPERTY, reporter, null);
@@ -86,7 +99,7 @@ public class ReportingModel extends AbstractScenarioModel {
     public void deleteProperty(@NotNull Property property) {
         boolean success = reporting.getProperty().remove(property);
         if (!success) {
-            LOG.error("Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
+            LOG.error(this.getClass().getName() + ": Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(PROPERTY_PROPERTY, property, null);

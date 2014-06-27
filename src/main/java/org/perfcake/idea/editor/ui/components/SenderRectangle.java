@@ -1,9 +1,9 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.PropertyModel;
-import org.perfcake.idea.editor.model.SenderModel;
+import org.perfcake.idea.model.PropertyModel;
+import org.perfcake.idea.model.SenderModel;
 import org.perfcake.model.Property;
 
 import java.awt.*;
@@ -23,7 +23,11 @@ public class SenderRectangle extends JTitledRoundedRectangle implements Property
         this.model = model;
         model.addPropertyChangeListener(this);
 
-        for (Property p : model.getSender().getProperty()) {
+        addProperties();
+    }
+
+    private void addProperties() {
+        for (Property p : this.model.getSender().getProperty()) {
             PropertyModel propertyModel = new PropertyModel(p);
             PropertyRectangle propertyRectangle = new PropertyRectangle(propertyModel);
             panel.add(propertyRectangle);
@@ -33,10 +37,10 @@ public class SenderRectangle extends JTitledRoundedRectangle implements Property
     //TODO: generalize with PropertiesRectangle
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName() == SenderModel.CLAZZ_PROPERTY) {
+        if (evt.getPropertyName().equals(SenderModel.CLAZZ_PROPERTY)) {
             label.setText((String) evt.getNewValue());
         }
-        if (evt.getPropertyName() == SenderModel.PROPERTY_PROPERTY) {
+        if (evt.getPropertyName().equals(SenderModel.PROPERTY_PROPERTY)) {
             Property oldValue = (Property) evt.getOldValue();
             Property newValue = (Property) evt.getNewValue();
 
@@ -51,7 +55,7 @@ public class SenderRectangle extends JTitledRoundedRectangle implements Property
                     for (Component c : components) {
                         if (c instanceof PropertyRectangle) {
                             if (((PropertyRectangle) c).getModel().getProperty() == oldValue) {
-                                remove(c);
+                                panel.remove(c);
                                 return;
                             }
                         }
@@ -60,7 +64,24 @@ public class SenderRectangle extends JTitledRoundedRectangle implements Property
                 }
             }
         }
+        if(evt.getPropertyName().equals(SenderModel.SENDER_PROPERTY)){
+            updateRectangle();
+        }
 
 
+    }
+
+    private void updateRectangle() {
+        label.setText((String) model.getSender().getClazz());
+
+        synchronized (getTreeLock()) {
+            Component[] components = panel.getComponents();
+            for (Component c : components) {
+                if (c instanceof PropertyRectangle) {
+                    panel.remove(c);
+                }
+            }
+        }
+        addProperties();
     }
 }

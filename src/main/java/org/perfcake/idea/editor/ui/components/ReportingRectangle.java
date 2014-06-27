@@ -1,9 +1,9 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.ReporterModel;
-import org.perfcake.idea.editor.model.ReportingModel;
+import org.perfcake.idea.model.ReporterModel;
+import org.perfcake.idea.model.ReportingModel;
 import org.perfcake.model.Scenario;
 
 import java.awt.*;
@@ -24,18 +24,18 @@ public class ReportingRectangle extends JTitledRoundedRectangle implements Prope
         super(TITLE);
         this.model = model;
         model.addPropertyChangeListener(this);
-        List<Scenario.Reporting.Reporter> reporters = this.model.getReporting() == null ? null : this.model.getReporting().getReporter();
-        if (reporters != null && !reporters.isEmpty()) {
-            for (Scenario.Reporting.Reporter r : reporters) {
-                addReporter(r);
-            }
-        }
+
+        addReporters();
     }
 
-    private void addReporter(Scenario.Reporting.Reporter r) {
-        ReporterModel reporterModel = new ReporterModel(r);
-        ReporterRectangle reporterRectangle = new ReporterRectangle(reporterModel);
-        panel.add(reporterRectangle);
+    private void addReporters() {
+        if(this.model.getReporting() != null){
+            for (Scenario.Reporting.Reporter r : this.model.getReporting().getReporter()) {
+                ReporterModel reporterModel = new ReporterModel(r);
+                ReporterRectangle reporterRectangle = new ReporterRectangle(reporterModel);
+                panel.add(reporterRectangle);
+            }
+        }
     }
 
     @Override
@@ -45,7 +45,9 @@ public class ReportingRectangle extends JTitledRoundedRectangle implements Prope
             Scenario.Reporting.Reporter newValue = (Scenario.Reporting.Reporter) evt.getNewValue();
 
             if (oldValue == null && newValue != null) {
-                addReporter(newValue);
+                ReporterModel reporterModel = new ReporterModel(newValue);
+                ReporterRectangle reporterRectangle = new ReporterRectangle(reporterModel);
+                panel.add(reporterRectangle);
             }
 
             if (oldValue != null && newValue == null) {
@@ -54,7 +56,7 @@ public class ReportingRectangle extends JTitledRoundedRectangle implements Prope
                     for (Component c : components) {
                         if (c instanceof ReporterRectangle) {
                             if (((ReporterRectangle) c).getModel().getReporter() == oldValue) {
-                                remove(c);
+                                panel.remove(c);
                                 return;
                             }
                         }
@@ -63,5 +65,20 @@ public class ReportingRectangle extends JTitledRoundedRectangle implements Prope
                 }
             }
         }
+        if(evt.getPropertyName().equals(ReportingModel.REPORTING_PROPERTY)){
+            updateRectangle();
+        }
+    }
+
+    private void updateRectangle() {
+        synchronized (getTreeLock()) {
+            Component[] components = panel.getComponents();
+            for (Component c : components) {
+                if (c instanceof ReporterRectangle) {
+                    panel.remove(c);
+                }
+            }
+        }
+        addReporters();
     }
 }

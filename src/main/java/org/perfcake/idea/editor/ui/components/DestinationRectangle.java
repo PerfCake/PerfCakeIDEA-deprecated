@@ -1,7 +1,8 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.DestinationModel;
+import org.perfcake.idea.model.DestinationModel;
+import org.perfcake.model.Scenario;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -28,7 +29,14 @@ public class DestinationRectangle extends JTitledRoundedRectangle implements Pro
             label.setText(model.getDestination().getClazz());
         }
         if (evt.getPropertyName().equals(DestinationModel.ENABLED_PROPERTY)) {
-            //TODO
+            //TODO enabled
         }
+        if(evt.getPropertyName().equals(DestinationModel.DESTINATION_PROPERTY)){
+            updateRectangle();
+        }
+    }
+    private void updateRectangle(){
+        label.setText(model.getDestination().getClazz());
+        //TODO enabled
     }
 }

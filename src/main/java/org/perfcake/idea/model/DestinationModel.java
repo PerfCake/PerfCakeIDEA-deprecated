@@ -9,26 +9,39 @@ import org.perfcake.model.Scenario;
  * Created by miron on 22.4.2014.
  */
 public class DestinationModel extends AbstractScenarioModel {
-    private static final String PROPERTY_PROPERTY = "property";
+    public static final String PROPERTY_PROPERTY = "property";
+    public static final String PERIOD_PROPERTY = "period";
+    public static final String CLAZZ_PROPERTY = "clazz";
+    public static final String ENABLED_PROPERTY = "enabled";
+    public static final String DESTINATION_PROPERTY = "destination";
+
     private static final Logger LOG = Logger.getInstance(DestinationModel.class);
-    private static final String PERIOD_PROPERTY = "period";
-    private static final String CLAZZ_PROPERTY = "clazz";
-    private static final String ENABLED_PROPERTY = "enabled";
+
     private Scenario.Reporting.Reporter.Destination destination;
 
     public DestinationModel(Scenario.Reporting.Reporter.Destination destination) {
         this.destination = destination;
     }
 
+    /**
+     *
+     * @return PerfCake Destination model intended for read only
+     */
     public Scenario.Reporting.Reporter.Destination getDestination() {
         return destination;
     }
 
+    public void setDestination(Scenario.Reporting.Reporter.Destination destination) {
+        Scenario.Reporting.Reporter.Destination old = this.destination;
+        this.destination = destination;
+        fireChangeEvent(DESTINATION_PROPERTY, old, destination);
+    }
+
     /**
-     * Adds new property at a specified position given by the index. Existent properties in this position will be moved after this property.
+     * Adds new period at a specified position given by the index. Existent periods in this position will be moved after this period.
      *
-     * @param index    at which should the property be placed
-     * @param property to add
+     * @param index    at which should the period be placed
+     * @param period to add
      */
     public void addPeriod(int index, @NotNull Scenario.Reporting.Reporter.Destination.Period period) {
         destination.getPeriod().add(index, period);
@@ -36,9 +49,9 @@ public class DestinationModel extends AbstractScenarioModel {
     }
 
     /**
-     * Adds new property to the end.
+     * Adds new period to the end.
      *
-     * @param property to add
+     * @param period to add
      */
     public void addPeriod(@NotNull Scenario.Reporting.Reporter.Destination.Period period) {
         destination.getPeriod().add(period);
@@ -46,14 +59,14 @@ public class DestinationModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes property object from this model.
+     * Deletes period object from this model. Period object should exist in this model.
      *
-     * @param property property to delete
+     * @param period to delete
      */
     public void deletePeriod(@NotNull Scenario.Reporting.Reporter.Destination.Period period) {
         boolean success = destination.getPeriod().remove(period);
         if (!success) {
-            LOG.error("Period was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": Period was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(PERIOD_PROPERTY, period, null);
@@ -88,7 +101,7 @@ public class DestinationModel extends AbstractScenarioModel {
     public void deleteProperty(@NotNull Property property) {
         boolean success = destination.getProperty().remove(property);
         if (!success) {
-            LOG.error("Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": Property " + property.getName() + " : " + property.getValue() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(PROPERTY_PROPERTY, property, null);

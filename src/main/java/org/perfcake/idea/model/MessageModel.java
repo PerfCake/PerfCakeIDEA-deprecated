@@ -15,6 +15,7 @@ public class MessageModel extends AbstractScenarioModel {
     public static final String VALIDATOR_REF_PROPERTY = "validatorRef";
     public static final String URI_PROPERTY = "uri";
     public static final String MULTIPLICITY_PROPERTY = "multiplicity";
+    public static final String MESSAGE_PROPERTY = "message";
 
     private static final Logger LOG = Logger.getInstance(MessageModel.class);
 
@@ -24,8 +25,18 @@ public class MessageModel extends AbstractScenarioModel {
         this.message = message;
     }
 
+    /**
+     *
+     * @return PerfCake Message model intended for read only.
+     */
     public Scenario.Messages.Message getMessage() {
         return message;
+    }
+
+    public void setMessage(Scenario.Messages.Message message) {
+        Scenario.Messages.Message old = this.message;
+        this.message = message;
+        fireChangeEvent(MESSAGE_PROPERTY, old, message);
     }
 
     /**
@@ -50,14 +61,14 @@ public class MessageModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes header object from this model.
+     * Deletes header object from this model. Header object should exist in this model.
      *
      * @param header header to delete
      */
     public void deleteHeader(@NotNull Header header) {
         boolean success = message.getHeader().remove(header);
         if (!success) {
-            LOG.error("Header " + header.getName() + " : " + header.getValue() + " was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": Header " + header.getName() + " : " + header.getValue() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(HEADER_PROPERTY, header, null);
@@ -85,14 +96,14 @@ public class MessageModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes property object from this model.
+     * Deletes property object from this model. Property object should exist in this model.
      *
      * @param property property to delete
      */
     public void deleteProperty(@NotNull Property property) {
         boolean success = message.getProperty().remove(property);
         if (!success) {
-            LOG.error("Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": Property " + property.getName() + " : " + property.getValue() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(PROPERTY_PROPERTY, property, null);
@@ -127,7 +138,7 @@ public class MessageModel extends AbstractScenarioModel {
     public void deleteValidatorRef(@NotNull Scenario.Messages.Message.ValidatorRef validatorRef) {
         boolean success = message.getValidatorRef().remove(validatorRef);
         if (!success) {
-            LOG.error("ValidatorRef " + validatorRef.getId() + " was not found in PerfCake JAXB model");
+            LOG.error(getClass().getName() + ": ValidatorRef " + validatorRef.getId() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(VALIDATOR_REF_PROPERTY, validatorRef, null);

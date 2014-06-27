@@ -11,17 +11,29 @@ import org.perfcake.model.Scenario;
 public class SenderModel extends AbstractScenarioModel {
     private static final Logger LOG = Logger.getInstance(SenderModel.class);
 
-    public static final String CLAZZ_PROPERTY = "name";
-    public static final String PROPERTY_PROPERTY = "name";
+    public static final String CLAZZ_PROPERTY = "clazz";
+    public static final String PROPERTY_PROPERTY = "property";
+    public static final String SENDER_PROPERTY = "sender";
 
     private Scenario.Sender sender;
 
-    public SenderModel(Scenario.Sender sender) {
+    public SenderModel(@NotNull Scenario.Sender sender) {
         this.sender = sender;
     }
 
+    /**
+     *
+     * @return PerfCake sender model intended for read only.
+     */
+    @NotNull
     public Scenario.Sender getSender() {
         return sender;
+    }
+
+    public void setSender(@NotNull Scenario.Sender sender) {
+        Scenario.Sender old = this.sender;
+        this.sender = sender;
+        fireChangeEvent(SENDER_PROPERTY, old, sender);
     }
 
     public void setClazz(String clazz) {
@@ -52,14 +64,14 @@ public class SenderModel extends AbstractScenarioModel {
     }
 
     /**
-     * Deletes property object from this model.
+     * Deletes property object from this model. Property object should exist in this model, otherwise error is logged.
      *
      * @param property property to delete
      */
     public void deleteProperty(@NotNull Property property) {
         boolean success = sender.getProperty().remove(property);
         if (!success) {
-            LOG.error("Property " + property.getName() + ":" + property.getValue() + " was not found in PerfCake JAXB model");
+            LOG.error(this.getClass().getName() + ": Property " + property.getName() + " : " + property.getValue() + " was not found in PerfCake JAXB model");
             return;
         }
         fireChangeEvent(PROPERTY_PROPERTY, property, null);

@@ -1,12 +1,15 @@
 package org.perfcake.idea.editor.components;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
+
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * Created by miron on 15.4.2014.
  */
-public class JRoundedRectangle extends JPanel {
+public class JRoundedRectangle extends JPanel implements Selectable {
     private static final String uiClassID = "RoundedRectangleUI";
     private Boolean selected = Boolean.FALSE;
 
@@ -39,17 +42,29 @@ public class JRoundedRectangle extends JPanel {
         }
     }
 
+    @Override
+    public void select() {
+        if(!selected){
+            selected = Boolean.TRUE;
+            repaint();
+        }
+    }
+
+    @Override
+    public void deselect() {
+        if(selected){
+            selected = Boolean.FALSE;
+            repaint();
+        }
+    }
+
     //TODO write to model?
     public Boolean isSelected() {
         return selected;
     }
 
-    public void setSelected(Boolean selected) {
-        this.selected = selected;
-        repaint();
-    }
 
-    public void invokeDialog() {
+    public void invokeDialog(PsiFile scenarioPsi) {
     }
 
 }

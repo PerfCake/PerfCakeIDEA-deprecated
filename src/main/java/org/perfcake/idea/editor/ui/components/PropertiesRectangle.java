@@ -1,9 +1,9 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.PropertiesModel;
-import org.perfcake.idea.editor.model.PropertyModel;
+import org.perfcake.idea.model.PropertiesModel;
+import org.perfcake.idea.model.PropertyModel;
 import org.perfcake.model.Property;
 
 import javax.swing.*;
@@ -24,8 +24,12 @@ public class PropertiesRectangle extends JTitledRoundedRectangle implements Prop
         super(PROPERTIES_TITLE);
         this.model = model;
         model.addPropertyChangeListener(this);
+        addProperties();
+    }
+
+    private void addProperties() {
         if (this.model.getProperties() != null) {
-            for (Property p : this.model.getProperties()) {
+            for (Property p : this.model.getProperties().getProperty()) {
                 PropertyModel propertyModel = new PropertyModel(p);
                 PropertyRectangle propertyRectangle = new PropertyRectangle(propertyModel);
                 panel.add(propertyRectangle);
@@ -41,8 +45,8 @@ public class PropertiesRectangle extends JTitledRoundedRectangle implements Prop
 
             if (oldValue == null && newValue != null) {
                 PropertyRectangle propertyRectangle = new PropertyRectangle(new PropertyModel(newValue));
-                propertyRectangle.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-                panel.add(propertyRectangle, BorderLayout.WEST);
+                //propertyRectangle.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+                panel.add(propertyRectangle);//, BorderLayout.WEST);
             }
 
             if (oldValue != null && newValue == null) {
@@ -51,7 +55,7 @@ public class PropertiesRectangle extends JTitledRoundedRectangle implements Prop
                     for (Component c : components) {
                         if (c instanceof PropertyRectangle) {
                             if (((PropertyRectangle) c).getModel().getProperty() == oldValue) {
-                                remove(c);
+                                panel.remove(c);
                                 return;
                             }
                         }
@@ -60,5 +64,21 @@ public class PropertiesRectangle extends JTitledRoundedRectangle implements Prop
                 }
             }
         }
+        if(evt.getPropertyName().equals(PropertiesModel.PROPERTIES_PROPERTY)){
+            updateRectangle();
+        }
+    }
+
+    private void updateRectangle() {
+        //model changed, remove old and add new properties
+        synchronized (getTreeLock()) {
+            Component[] components = panel.getComponents();
+            for (Component c : components) {
+                if (c instanceof PropertyRectangle) {
+                    panel.remove(c);
+                }
+            }
+        }
+        addProperties();
     }
 }

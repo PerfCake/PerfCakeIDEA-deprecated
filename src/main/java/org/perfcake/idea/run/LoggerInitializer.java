@@ -3,9 +3,6 @@ package org.perfcake.idea.run;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiTreeChangeAdapter;
-import com.intellij.psi.PsiTreeChangeEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,13 +17,7 @@ public class LoggerInitializer implements ModuleComponent {
 
     public LoggerInitializer(Module module) {
         this.module = module;
-        PsiManager.getInstance(module.getProject()).addPsiTreeChangeListener(new PsiTreeChangeAdapter() {
-            @Override
-            public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("Element: " + event.getElement() + "\nProperty name:" +
-                        event.getPropertyName() + "\nOld value:" + event.getOldValue() + "\nNew value:" + event.getNewValue());
-            }
-        });
+
     }
 
     public void initComponent() {

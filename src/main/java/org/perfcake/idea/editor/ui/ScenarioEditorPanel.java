@@ -1,38 +1,137 @@
 package org.perfcake.idea.editor.ui;
 
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import org.perfcake.model.Scenario;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.IllegalStateException;
 
 /**
  * Created by miron on 19.4.2014.
  */
 public class ScenarioEditorPanel extends JPanel {
+    private Scenario scenario;
+    private PsiFile scenarioPsi;
 
-    public ScenarioEditorPanel(VirtualFile scenario) {
-        //set layout to allow split pane take whole area
+    private JSplitPane validPanel;
+    private ScenarioEditorInvalidPanel invalidPanel;
+
+    private Boolean isValidShowed;
+
+
+    /**
+     * Constructs invalid Editor panel
+     */
+    public ScenarioEditorPanel(PsiFile scenarioPsi) {
+        this.scenarioPsi = scenarioPsi;
+
+        //set layout to allow panel to take whole area
         setLayout(new BorderLayout());
 
-        //create resizable split pane for panels
-        final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        initInvalidPanel();
+    }
+
+    private void initInvalidPanel() {
+        invalidPanel = new ScenarioEditorInvalidPanel();
+        add(invalidPanel, BorderLayout.CENTER);
+        isValidShowed = Boolean.FALSE;
+    }
+
+    /**
+     * Constructs valid Editor panel for scenario
+     * @param scenario valid scenario model to show
+     */
+    public ScenarioEditorPanel(PsiFile scenarioPsi, Scenario scenario) {
+        this.scenarioPsi = scenarioPsi;
+
+        //set layout to allow panel to take whole area
+        setLayout(new BorderLayout());
+
+        initValidPanel(scenario);
+    }
+
+    private void initValidPanel(Scenario scenario){
+        this.scenario = scenario;
+
+        //create resizable split pane for inner panels
+        validPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         //splitPane.setBorder(BorderFactory.createLineBorder(Color.BLUE, 10));
 
         //set divider size
         //splitPane.setDividerSize(10);
 
         //set divider default location
-        splitPane.setDividerLocation(200);
-        add(splitPane, BorderLayout.CENTER);
+        validPanel.setDividerLocation(200);
 
         //create new scenario toolbar panel which will be positioned on the left side
-        ScenarioToolbarPanel toolbarPanel = new ScenarioToolbarPanel();
+        ScenarioEditorToolbarPanel toolbarPanel = new ScenarioEditorToolbarPanel();
 
-        //create new scenario file editor panel on the right side
-        ScenarioFileEditorPanel fileEditorPanel = new ScenarioFileEditorPanel(scenario);
+        //create new scenario content panel on the right side
+        ScenarioEditorContentPanel contentPanel = new ScenarioEditorContentPanel(scenarioPsi, scenario);
 
         //add panels to split pane
-        splitPane.setLeftComponent(toolbarPanel);
-        splitPane.setRightComponent(fileEditorPanel);
+        validPanel.setLeftComponent(toolbarPanel);
+        validPanel.setRightComponent(contentPanel);
+
+        //add panel to editor
+        add(validPanel, BorderLayout.CENTER);
+        isValidShowed = Boolean.TRUE;
     }
+
+    /**
+     * Shows scenarioModel in this Scenario Editor.
+     * If the model is the same as it was before, Editor content remains.
+     * If the model is new, Editor content is updated.
+     */
+    public void showValidPanel(Scenario scenarioModel) {
+        if(this.scenario == null){
+            //valid panel was never showed, we need to remove invalid one and init valid panel.
+            remove(invalidPanel);
+            initValidPanel(scenarioModel);
+        } else{
+            //valid panel exists already
+            if(this.scenario == scenarioModel){
+                //model from method parameter is the same as ours, we just need to show valid panel.
+                if(isValidShowed) {
+                    return;
+                }else{
+                    //Invalid panel is showed. Just show valid one, because models are same.
+                    remove(invalidPanel);
+                    //Valid panel exists, because this.scenario is not null, so the valid panel had to be initialized already.
+                    add(validPanel, BorderLayout.CENTER);
+                    isValidShowed = Boolean.TRUE;
+                }
+            } else {
+                //new model, we need to update valid editor.
+                this.scenario = scenarioModel;
+                ((ScenarioEditorContentPanel)validPanel.getRightComponent()).setModelAndRefresh(scenarioPsi, this.scenario);
+
+                if(isValidShowed){
+                    return;
+                }else{
+                    remove(invalidPanel);
+                    add(validPanel, BorderLayout.CENTER);
+                    isValidShowed = Boolean.TRUE;
+                }
+            }
+        }
+    }
+
+    /**
+     * Shows Editor with error message
+     */
+    public void showInvalidPanel(){
+        if(isValidShowed) {
+            remove(validPanel);
+            if(invalidPanel == null){
+                initInvalidPanel();
+            }else{
+                remove(validPanel);
+                add(invalidPanel, BorderLayout.CENTER);
+                isValidShowed = Boolean.FALSE;
+            }
+        }
+    }
+
 }

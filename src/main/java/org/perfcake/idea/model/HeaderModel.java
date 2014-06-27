@@ -8,6 +8,7 @@ import org.perfcake.model.Header;
 public class HeaderModel extends AbstractScenarioModel {
     public static final String NAME_PROPERTY = "name";
     public static final String VALUE_PROPERTY = "value";
+    public static final String HEADER_PROPERTY = "header";
 
 
     private Header header;
@@ -16,8 +17,18 @@ public class HeaderModel extends AbstractScenarioModel {
         this.header = header;
     }
 
+    /**
+     *
+     * @return PerfCake Header model intended for read only.
+     */
     public Header getHeader() {
         return header;
+    }
+
+    public void setHeader(Header header) {
+        Header old = this.header;
+        this.header = header;
+        fireChangeEvent(HEADER_PROPERTY, old, header);
     }
 
     public void setName(String name) {

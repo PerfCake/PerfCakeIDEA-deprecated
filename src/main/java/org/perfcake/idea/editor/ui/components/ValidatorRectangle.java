@@ -1,7 +1,7 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.ui.components;
 
 import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
-import org.perfcake.idea.editor.model.ValidatorModel;
+import org.perfcake.idea.model.ValidatorModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -25,7 +25,9 @@ public class ValidatorRectangle extends JTitledRoundedRectangle implements Prope
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName() == ValidatorModel.ID_PROPERTY || evt.getPropertyName() == ValidatorModel.CLAZZ_PROPERTY) {
+        if (evt.getPropertyName().equals(ValidatorModel.ID_PROPERTY) ||
+                evt.getPropertyName() == ValidatorModel.CLAZZ_PROPERTY ||
+                evt.getPropertyName().equals(ValidatorModel.VALIDATOR_PROPERTY)) {
             label.setText("(" + model.getValidator().getId() + ") " + model.getValidator().getClazz());
         }
     }

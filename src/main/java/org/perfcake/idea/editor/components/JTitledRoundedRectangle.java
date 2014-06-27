@@ -19,7 +19,6 @@ public class JTitledRoundedRectangle extends JRoundedRectangle {
 
         panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         panel.setOpaque(Boolean.FALSE);
-        //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         add(panel, BorderLayout.CENTER);
 
 
