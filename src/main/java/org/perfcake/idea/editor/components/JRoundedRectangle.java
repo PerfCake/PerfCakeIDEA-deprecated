@@ -1,6 +1,5 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 
 import javax.swing.*;
@@ -44,7 +43,7 @@ public class JRoundedRectangle extends JPanel implements Selectable {
 
     @Override
     public void select() {
-        if(!selected){
+        if (!selected) {
             selected = Boolean.TRUE;
             repaint();
         }
@@ -52,13 +51,13 @@ public class JRoundedRectangle extends JPanel implements Selectable {
 
     @Override
     public void deselect() {
-        if(selected){
+        if (selected) {
             selected = Boolean.FALSE;
             repaint();
         }
     }
 
-    //TODO write to model?
+    //TODO write to oldmodel?
     public Boolean isSelected() {
         return selected;
     }

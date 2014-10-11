@@ -57,6 +57,7 @@
         <programRunner implementation="org.perfcake.idea.run.PerfCakeRunner"/>
         <fileEditorProvider implementation="org.perfcake.idea.editor.base.ScenarioEditorProvider"/>
         <applicationConfigurable instance="org.perfcake.idea.module.PerfCakeIdeSettings"/>
+        <dom.fileDescription implementation="org.perfcake.idea.module.ScenarioDomFileDescription"/>
     </extensions>
     <module-components>
 

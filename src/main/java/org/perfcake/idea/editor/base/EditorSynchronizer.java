@@ -20,9 +20,9 @@ public class EditorSynchronizer implements ModuleComponent {
 
             @Override
             public void selectionChanged(@NotNull FileEditorManagerEvent event) {
-                if(event.getOldEditor() instanceof TextEditor && event.getNewEditor() instanceof ScenarioEditor &&
-                        event.getOldFile().getPath().equals(event.getNewFile().getPath())){
-                    //Tab switch from TextEditor to ScenarioEditor, we should update GUI model from TextEditor file content
+                if (event.getOldEditor() instanceof TextEditor && event.getNewEditor() instanceof ScenarioEditor &&
+                        event.getOldFile().getPath().equals(event.getNewFile().getPath())) {
+                    //Tab switch from TextEditor to ScenarioEditorProvider, we should update GUI oldmodel from TextEditor file content
                     ((ScenarioEditor) event.getNewEditor()).updateEditor();
                 }
             }

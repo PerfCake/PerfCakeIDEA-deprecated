@@ -1,0 +1,43 @@
+package org.perfcake.idea.editor.editor;
+
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.xml.XmlFile;
+import com.intellij.util.xml.DomManager;
+import com.intellij.util.xml.ui.DomFileEditor;
+import com.intellij.util.xml.ui.PerspectiveFileEditor;
+import com.intellij.util.xml.ui.PerspectiveFileEditorProvider;
+import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.Constants;
+import org.perfcake.idea.model.Property;
+import org.perfcake.idea.model.Scenario;
+
+/**
+ * Created by miron on 10. 10. 2014.
+ */
+public class ScenarioEditorProvider extends PerspectiveFileEditorProvider {
+    @Override
+    public boolean accept(@NotNull Project project, @NotNull VirtualFile file) {
+        // Accept files that have "xmlExample" as the root tag
+        PsiManager psiMgr = PsiManager.getInstance(project);
+        PsiFile psiFile = psiMgr.findFile(file);
+        if (psiFile == null || !(psiFile instanceof XmlFile)) {
+            return false;
+        }
+        return true;
+        //TODO accept only scenario files not all XMLs
+    }
+
+    @NotNull
+    @Override
+    public PerspectiveFileEditor createEditor(@NotNull Project project, @NotNull VirtualFile file) {
+        PsiManager psiMan = PsiManager.getInstance(project);
+        XmlFile scenario = (XmlFile) psiMan.findFile(file);
+        Scenario s = (Scenario) DomManager.getDomManager(project).getFileElement(scenario, Scenario.class).getRootElement();
+        Property p = s.getProperties().getProperties().get(0);
+
+        return DomFileEditor.createDomFileEditor("Scenario Editor", Constants.BIG_ICON, p, new PropertyComponentFactory(p));
+    }
+}

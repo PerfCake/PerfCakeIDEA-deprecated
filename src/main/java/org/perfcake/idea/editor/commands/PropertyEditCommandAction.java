@@ -1,13 +1,9 @@
 package org.perfcake.idea.editor.commands;
 
 import com.intellij.openapi.application.Result;
-import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.xml.XmlDocument;
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.PropertyEditDialog;
@@ -30,10 +26,8 @@ public class PropertyEditCommandAction extends WriteCommandAction {
             XmlTag xmlParent = root.findFirstSubTag( "someTag" );
             if(xmlParent != null){
                 CommandProcessor.getInstance().executeCommand(xmlFile.getProject(), new CommandPsiWriteTag, "Add child tags", "My Group");
-                model.commit;*/
+                oldmodel.commit;*/
     }
-
-
 
 
     @Override

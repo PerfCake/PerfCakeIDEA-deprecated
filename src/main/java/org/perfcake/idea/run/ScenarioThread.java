@@ -3,10 +3,10 @@ package org.perfcake.idea.run;
 import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.PerfCakeException;
-import org.perfcake.Scenario;
 import org.perfcake.idea.Constants;
 import org.perfcake.idea.util.PerfCakeIDEAException;
 import org.perfcake.idea.util.ScenarioHandler;
+import org.perfcake.scenario.Scenario;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

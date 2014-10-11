@@ -13,11 +13,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.perfcake.PerfCakeException;
-import org.perfcake.idea.editor.ui.ScenarioEditorInvalidPanel;
-import org.perfcake.idea.editor.ui.ScenarioEditorPanel;
+import org.perfcake.idea.editor.oldui.ScenarioEditorPanel;
 import org.perfcake.idea.util.PerfCakeIDEAException;
-import org.perfcake.idea.util.ScenarioHandler;
 import org.perfcake.idea.util.ScenarioUtil;
 import org.perfcake.model.Scenario;
 
@@ -37,9 +34,9 @@ public class ScenarioEditor implements FileEditor {
 
 
     public ScenarioEditor(final Project project, final VirtualFile scenario) {
-        //Text Editor document model
+        //Text Editor document oldmodel
         this.scenarioDocument = FileDocumentManager.getInstance().getCachedDocument(scenario);
-        //Text Editor PSI model
+        //Text Editor PSI oldmodel
         this.scenarioPsi = PsiManager.getInstance(project).findFile(scenario);
 
         editorManager = FileEditorManager.getInstance(project);
@@ -64,9 +61,9 @@ public class ScenarioEditor implements FileEditor {
     }
 
     /**
-     * Updates Editor from Text Editor content. Text Editor should contain valid PerfCake XML scenario model, otherwise Eror editor will be showed.
+     * Updates Editor from Text Editor content. Text Editor should contain valid PerfCake XML scenario oldmodel, otherwise Eror editor will be showed.
      */
-    public void updateEditor(){
+    public void updateEditor() {
         Scenario scenarioModel;
         try {
             scenarioModel = ScenarioUtil.parse(scenarioDocument.getText());

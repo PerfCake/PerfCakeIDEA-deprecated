@@ -8,10 +8,9 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.PerfCakeConst;
 import org.perfcake.PerfCakeException;
-import org.perfcake.ScenarioBuilder;
 import org.perfcake.model.Scenario;
-import org.perfcake.parser.ScenarioParser;
 import org.perfcake.util.Utils;
 import org.xml.sax.SAXException;
 
@@ -39,16 +38,11 @@ public class ScenarioHandler {
     private URL scenarioURL;
     private Scenario scenarioModel;
 
-    @NotNull
-    public Scenario getScenarioModel() {
-        return scenarioModel;
-    }
-
     /**
-     * Creates new ScenarioHandler with scenario on a given scenarioPath and loads the scenario into model
+     * Creates new ScenarioHandler with scenario on a given scenarioPath and loads the scenario into oldmodel
      *
      * @param scenarioPath absolute path of valid scenario
-     * @throws PerfCakeException        if scenario XML is not valid or cannot be successfully parsed
+     * @throws PerfCakeException if scenario XML is not valid or cannot be successfully parsed
      */
     public ScenarioHandler(@NotNull String scenarioPath) throws PerfCakeException {
         //get an URL of a Scenario file
@@ -58,19 +52,15 @@ public class ScenarioHandler {
             throw new PerfCakeException("Scenario path cannot be resolved: " + scenarioPath, e);
         }
         //load Scenario XML to JAXB class
-        scenarioModel = (new ScenarioParser(scenarioURL)).parse();
-    }
-
-    /**
-     * Creates new ScenarioHandler with scenario on a given scenarioURL and loads the scenario into model
-     *
-     * @param scenarioURL valid URL of a valid scenario
-     * @throws PerfCakeException if scenario XML is not valid or cannot be successfully parsed
-     */
-    public ScenarioHandler(@NotNull URL scenarioURL) throws PerfCakeException {
-        this.scenarioURL = scenarioURL;
-        //load Scenario XML to JAXB class
-        scenarioModel = (new ScenarioParser(scenarioURL)).parse();
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(scenarioPath));
+            String s = new String(encoded);
+            scenarioModel = ScenarioUtil.parse(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PerfCakeIDEAException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -102,29 +92,34 @@ public class ScenarioHandler {
         }
     }
 
+    @NotNull
+    public Scenario getScenarioModel() {
+        return scenarioModel;
+    }
+
     /**
-     * Builds scenario for running from scenario model
+     * Builds scenario for running from scenario oldmodel
      *
      * @return scenario to run
      * @throws PerfCakeIDEAException if scenario cannot be build
      */
-    public org.perfcake.Scenario buildScenario() throws PerfCakeIDEAException {
+    public org.perfcake.scenario.Scenario buildScenario() throws PerfCakeIDEAException {
         try {
-            return (new ScenarioBuilder()).load(scenarioModel).build();
+            return ScenarioUtil.buildScenario(scenarioModel);
         } catch (Exception e) {
-            throw new PerfCakeIDEAException("Cannot build scenario model", e);
+            throw new PerfCakeIDEAException("Cannot build scenario oldmodel", e);
         }
     }
 
     /**
-     * Save current scenario model
+     * Save current scenario oldmodel
      */
     public void save() {
         try {
             JAXBContext context = JAXBContext.newInstance(Scenario.class);
             final Marshaller marshaller = context.createMarshaller();
 
-            String schemaFileName = "perfcake-scenario-" + org.perfcake.Scenario.VERSION + ".xsd";
+            String schemaFileName = "perfcake-scenario-" + PerfCakeConst.XSD_SCHEMA_VERSION + ".xsd";
             URL schemaUrl = getClass().getResource("/schemas/" + schemaFileName);
             if (schemaUrl != null) {
                 SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -157,16 +152,16 @@ public class ScenarioHandler {
     }
 
     /**
-     * Reparses current model from scenarioString. Old model will be lost
+     * Reparses current oldmodel from scenarioString. Old oldmodel will be lost
      * @param scenarioString scenario string to reparse from
-     * @return reparsed scenario model
+     * @return reparsed scenario oldmodel
      * @throws PerfCakeException
      */
     public org.perfcake.model.Scenario reparseFrom(String scenarioString) throws PerfCakeException {
 
         try {
             Source scenarioXML = new StreamSource(new ByteArrayInputStream(scenarioString.getBytes(Utils.getDefaultEncoding())));
-            String schemaFileName = "perfcake-scenario-" + org.perfcake.Scenario.VERSION + ".xsd";
+            String schemaFileName = "perfcake-scenario-" + PerfCakeConst.XSD_SCHEMA_VERSION + ".xsd";
 
             JAXBContext context = JAXBContext.newInstance(org.perfcake.model.Scenario.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
