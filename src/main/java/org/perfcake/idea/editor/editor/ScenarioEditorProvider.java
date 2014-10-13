@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
+import com.intellij.util.xml.impl.DomApplicationComponent;
 import com.intellij.util.xml.ui.DomFileEditor;
 import com.intellij.util.xml.ui.PerspectiveFileEditor;
 import com.intellij.util.xml.ui.PerspectiveFileEditorProvider;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.Constants;
 import org.perfcake.idea.model.Property;
 import org.perfcake.idea.model.Scenario;
+import org.perfcake.idea.module.ScenarioDomFileDescription;
 
 /**
  * Created by miron on 10. 10. 2014.
@@ -37,7 +39,6 @@ public class ScenarioEditorProvider extends PerspectiveFileEditorProvider {
         XmlFile scenario = (XmlFile) psiMan.findFile(file);
         Scenario s = (Scenario) DomManager.getDomManager(project).getFileElement(scenario, Scenario.class).getRootElement();
         Property p = s.getProperties().getProperties().get(0);
-
-        return DomFileEditor.createDomFileEditor("Scenario Editor", Constants.BIG_ICON, p, new PropertyComponentFactory(p));
+        return DomFileEditor.createDomFileEditor("Designer", Constants.BIG_ICON, p, new PropertyComponentFactory(p));
     }
 }

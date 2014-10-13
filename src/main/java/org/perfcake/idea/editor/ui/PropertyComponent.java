@@ -11,13 +11,13 @@ import java.awt.*;
  */
 public class PropertyComponent extends BasicDomElementComponent<Property> {
 
-    private JPanel myPane;
-    private Label name;
-    private Label value;
+    private JPanel myPane = new JPanel();
+    private JLabel name = new JLabel("aa");
+    private JLabel value = new JLabel("bb");
 
     public PropertyComponent(Property domElement) {
         super(domElement);
-        bindProperties();
+        //  bindProperties();
 
         myPane.add(name);
         myPane.add(value);
