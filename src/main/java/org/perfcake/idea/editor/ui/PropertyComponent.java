@@ -1,6 +1,8 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
+import com.intellij.util.xml.ui.TextControl;
+import com.intellij.util.xml.ui.TextPanel;
 import org.perfcake.idea.model.Property;
 
 import javax.swing.*;
@@ -12,12 +14,12 @@ import java.awt.*;
 public class PropertyComponent extends BasicDomElementComponent<Property> {
 
     private JPanel myPane = new JPanel();
-    private JLabel name = new JLabel("aa");
-    private JLabel value = new JLabel("bb");
+    private TextPanel name;
+    private TextPanel value;
 
     public PropertyComponent(Property domElement) {
         super(domElement);
-        //  bindProperties();
+        bindProperties();
 
         myPane.add(name);
         myPane.add(value);

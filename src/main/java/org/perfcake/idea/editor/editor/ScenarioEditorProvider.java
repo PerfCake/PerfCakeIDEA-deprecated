@@ -22,14 +22,13 @@ import org.perfcake.idea.module.ScenarioDomFileDescription;
 public class ScenarioEditorProvider extends PerspectiveFileEditorProvider {
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile file) {
-        // Accept files that have "xmlExample" as the root tag
         PsiManager psiMgr = PsiManager.getInstance(project);
         PsiFile psiFile = psiMgr.findFile(file);
         if (psiFile == null || !(psiFile instanceof XmlFile)) {
             return false;
         }
-        return true;
-        //TODO accept only scenario files not all XMLs
+        DomManager manager = DomManager.getDomManager(project);
+        return !(manager.getFileElement((XmlFile) psiFile, Scenario.class) == null);
     }
 
     @NotNull

@@ -25,7 +25,7 @@ public class ScenarioEditorProvider implements FileEditorProvider, DumbAware {
         if (psiFile == null || !(psiFile instanceof XmlFile)) {
             return false;
         }
-        return true;
+        return false    ;
         //TODO accept only scenario files not all XMLs
     }
 
