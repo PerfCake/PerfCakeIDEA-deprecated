@@ -18,6 +18,8 @@ public interface Property extends DomElement {
 	 * @return the value of the name child.
 	 */
 	@NotNull
+    @Attribute("name")
+    @SubTag
 	GenericAttributeValue<String> getName();
 
 
@@ -26,6 +28,8 @@ public interface Property extends DomElement {
 	 * @return the value of the value child.
 	 */
 	@NotNull
+    @Attribute("value")
+    @SubTag
 	GenericAttributeValue<String> getValue();
 
 

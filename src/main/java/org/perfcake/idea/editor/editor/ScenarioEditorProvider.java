@@ -12,6 +12,7 @@ import com.intellij.util.xml.ui.PerspectiveFileEditor;
 import com.intellij.util.xml.ui.PerspectiveFileEditorProvider;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.Constants;
+import org.perfcake.idea.editor.ui.PropertyComponent;
 import org.perfcake.idea.model.Property;
 import org.perfcake.idea.model.Scenario;
 import org.perfcake.idea.module.ScenarioDomFileDescription;
@@ -28,7 +29,8 @@ public class ScenarioEditorProvider extends PerspectiveFileEditorProvider {
             return false;
         }
         DomManager manager = DomManager.getDomManager(project);
-        return !(manager.getFileElement((XmlFile) psiFile, Scenario.class) == null);
+        boolean accept = !(manager.getFileElement((XmlFile) psiFile, Scenario.class) == null);
+        return accept;
     }
 
     @NotNull
@@ -36,8 +38,10 @@ public class ScenarioEditorProvider extends PerspectiveFileEditorProvider {
     public PerspectiveFileEditor createEditor(@NotNull Project project, @NotNull VirtualFile file) {
         PsiManager psiMan = PsiManager.getInstance(project);
         XmlFile scenario = (XmlFile) psiMan.findFile(file);
-        Scenario s = (Scenario) DomManager.getDomManager(project).getFileElement(scenario, Scenario.class).getRootElement();
+        Scenario s = DomManager.getDomManager(project).getFileElement(scenario, Scenario.class).getRootElement();
+
         Property p = s.getProperties().getProperties().get(0);
-        return DomFileEditor.createDomFileEditor("Designer", Constants.BIG_ICON, p, new PropertyComponentFactory(p));
+        return new DomFileEditor<PropertyComponent>(s, "Designer", new PropertyComponent(p));
+        //return DomFileEditor.createDomFileEditor("Designer", Constants.BIG_ICON, p, new PropertyComponentFactory(p));
     }
 }
