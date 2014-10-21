@@ -55,17 +55,14 @@
         <configurationType implementation="org.perfcake.idea.run.PerfCakeConfigurationType"/>
         <runConfigurationProducer implementation="org.perfcake.idea.run.PerfCakeRunConfigurationProducer"/>
         <programRunner implementation="org.perfcake.idea.run.PerfCakeRunner"/>
+        <dom.fileDescription implementation="org.perfcake.idea.module.ScenarioDomFileDescription"/>
         <fileEditorProvider implementation="org.perfcake.idea.editor.editor.ScenarioEditorProvider"/>
         <applicationConfigurable instance="org.perfcake.idea.module.PerfCakeIdeSettings"/>
-        <dom.fileDescription implementation="org.perfcake.idea.module.ScenarioDomFileDescription"/>
     </extensions>
     <module-components>
 
         <component>
             <implementation-class>org.perfcake.idea.run.LoggerInitializer</implementation-class>
-        </component>
-        <component>
-            <implementation-class>org.perfcake.idea.editor.base.EditorSynchronizer</implementation-class>
         </component>
     </module-components>
 </idea-plugin>

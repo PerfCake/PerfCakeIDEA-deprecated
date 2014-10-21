@@ -23,4 +23,24 @@ public class JTitledRoundedRectangle extends JRoundedRectangle {
 
 
     }
+
+    public String getTitle() {
+        return label.getText();
+    }
+
+    public void setTitle(String title) {
+        label.setText(title);
+    }
+
+    public void addComponent(Component c) {
+        panel.add(c);
+    }
+
+    public void removeComponent(Component c) {
+        panel.remove(c);
+    }
+
+    public void removeAllComponents() {
+        panel.removeAll();
+    }
 }
