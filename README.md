@@ -6,8 +6,8 @@ A PerfCake plugin for IntelliJ IDEA.
 Building the project
 --------------------
 
-First download http://download.jetbrains.com/idea/ideaIU-13.0.2.zip to your local Maven repository under folder
-`MAVEN_REPOSITORY/org/jetbrains/ideaIU/13.0.2/`
+First download http://download.jetbrains.com/idea/ideaIU-13.1.5.zip to your local Maven repository under folder
+`MAVEN_REPOSITORY/org/jetbrains/ideaIU/13.1.5/`
 
 Built plugin can be installed to Intellij Idea by:
 `File | Settings | IDE Settings | Plugins | Install plugin from disk...`
