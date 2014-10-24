@@ -30,7 +30,7 @@ import java.util.Map;
  * Created by miron on 10.3.2014.
  */
 public class NewScenarioAction extends CreateElementActionBase {
-    private static final Logger log = Logger.getInstance(CreateElementActionBase.class);
+    private static final Logger log = Logger.getInstance(NewScenarioAction.class);
 
     public NewScenarioAction() {
         super("Scenario", "Create new PerfCake scenario", Constants.NODE_ICON);
@@ -48,7 +48,7 @@ public class NewScenarioAction extends CreateElementActionBase {
             try {
                 moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(project, directory.getVirtualFile());
             } catch (PerfCakeIDEAException e) {
-                PerfCakeIdeaUtil.showError(project, "Error creating template scenario", e);
+                log.error("Error creating template scenario", e);
                 return PsiElement.EMPTY_ARRAY;
             }
             final VirtualFile scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY);
@@ -68,14 +68,14 @@ public class NewScenarioAction extends CreateElementActionBase {
                     } catch (FileAlreadyExistsException ignored) {
                         //cannot happen, overwrite is true
                     } catch (PerfCakeIDEAException e1) {
-                        PerfCakeIdeaUtil.showError(project, "Error creating template scenario", e);
+                        log.error("Error creating template scenario", e);
                         return PsiElement.EMPTY_ARRAY;
                     }
                 } else {
                     return PsiElement.EMPTY_ARRAY;
                 }
             } catch (PerfCakeIDEAException e) {
-                PerfCakeIdeaUtil.showError(project, "Error creating template scenario", e);
+                log.error("Error creating template scenario", e);
                 return PsiElement.EMPTY_ARRAY;
             }
             //set chosen values and save scenario

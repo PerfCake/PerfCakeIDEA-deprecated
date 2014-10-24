@@ -9,12 +9,12 @@
     <version>0.0.1</version>
 
 
-    <description>PerfCake plugin for IntellijIdea.
+    <description>PerfCake plugin for Intellij Idea.
         PerfCake is a lightweight performance testing tool and a load generator.
     </description>
     <properties>
         <vendor.url></vendor.url>
-        <vendor.email>m.michalko@aol.com</vendor.email>
+        <vendor.email>michalko.miron@gmail.com</vendor.email>
         <vendor.name>Miron Michalko</vendor.name>
         <!-->property for "Intellij plugin development with Maven" Intellij plugin<-->
         <ij.plugin>true</ij.plugin>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>ideaIU</artifactId>
-            <version>13.0.2</version>
+            <version>13.1.5</version>
             <type>zip</type>
             <scope>provided</scope>
         </dependency>
@@ -32,24 +32,10 @@
             <groupId>org.perfcake</groupId>
             <artifactId>perfcake</artifactId>
             <version>3.2</version>
-            <!--<exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>-->
         </dependency>
     </dependencies>
 
     <build>
-        <!--><resources>
-            <resource>
-                <directory>src/main/resources</directory>
-		<includes>
-	                <include>META-INF/plugin.xml</include>
-		</includes>
-            </resource>
-        </resources><-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -125,7 +111,6 @@
                         <version>1.7.0</version>
                         <scope>system</scope>
                         <systemPath>${java.home}/../lib/tools.jar</systemPath>
-                        <!--<systemPath>/usr/lib/jvm/java-1.7.0-openjdk-amd64/lib/tools.jar</systemPath>-->
                     </dependency>
                 </dependencies>
             </plugin>
