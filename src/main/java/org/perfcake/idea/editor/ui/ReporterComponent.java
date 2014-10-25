@@ -40,6 +40,9 @@ public class ReporterComponent extends BasicDomElementComponent<Reporter> {
     @Override
     public void reset() {
         super.reset();
+
+        reporterGui.setTitle(getDomElement().getClazz().getStringValue());
+
         getChildren().clear();
         reporterGui.removeAllComponents();
 

@@ -29,6 +29,8 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
     public void reset() {
         super.reset();
 
+        senderGui.setTitle(getDomElement().getClazz().getStringValue());
+
         getChildren().clear();
         senderGui.removeAllComponents();
 

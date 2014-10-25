@@ -1,16 +1,31 @@
 package org.perfcake.idea.util;
 
 import com.intellij.ide.DataManager;
+import com.intellij.ide.highlighter.JavaFileType;
+import com.intellij.ide.highlighter.XmlFileType;
+import com.intellij.ide.highlighter.XmlLikeFileType;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.Result;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlFile;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.Url;
 import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.indices.ModuleExcludeIndex;
 import org.perfcake.PerfCakeConst;
 import org.perfcake.PerfCakeException;
 import org.perfcake.model.Scenario;
@@ -30,6 +45,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 /**
@@ -194,8 +210,44 @@ public class ScenarioUtil {
         return null;
     }
 
-    public org.perfcake.idea.model.Scenario getTemplateModel(Project project){
+    /**
+     * Gets template scenario XMLFile
+     * @param project Intellij project
+     * @param name name of the new XMLFile
+     * @return new XML File
+     */
+    public static XmlFile getTemplateModel(Project project, String name){
+        URL templateUrl = ScenarioUtil.class.getResource("/ScenarioTemplate.xml");
+        String templateString = "";
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(templateUrl.toURI()));
+            templateString = (new String(encoded, StandardCharsets.UTF_8)).replaceAll("\r", "");
+        } catch (IOException|URISyntaxException e) {
+            //TODO log
+        }
+        return (XmlFile) PsiFileFactory.getInstance(project).createFileFromText(name, XmlFileType.INSTANCE, templateString);
+        /*XmlTag root = templatePsi.getRootTag();
+        XmlTag generator = root.findFirstSubTag("generator");
+        XmlAttribute aClass = generator.getAttribute("class");
+        aClass.setValue();
+
         DomManager domManager = DomManager.getDomManager(project);
-        domManager.createMockElement()
+        return (org.perfcake.idea.model.Scenario) domManager.getDomElement(((XmlFile)templatePsi).getRootTag());*/
+
+    }
+
+    /**
+     * Saves scenario to specified directory and returns saved scenario
+     * @param dir to which to save
+     * @param scenario to save
+     * @return saved scenario element
+     */
+    public static PsiElement saveScenarioPsiToDir(final PsiDirectory dir, final XmlFile scenario){
+        return new WriteAction<PsiElement>() {
+            @Override
+            protected void run(@NotNull Result<PsiElement> result) throws Throwable {
+                result.setResult(dir.add(scenario));
+            }
+        }.execute().getResultObject();
     }
 }
