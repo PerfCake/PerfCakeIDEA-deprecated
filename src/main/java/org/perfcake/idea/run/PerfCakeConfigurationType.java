@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.Extensions;
 import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.Constants;
+import org.perfcake.idea.util.Constants;
 
 import javax.swing.*;
 
@@ -42,7 +42,7 @@ public class PerfCakeConfigurationType implements ConfigurationType {
 
     @Override
     public Icon getIcon() {
-        return Constants.NODE_ICON;
+        return Constants.ICON_16P;
     }
 
     @NotNull

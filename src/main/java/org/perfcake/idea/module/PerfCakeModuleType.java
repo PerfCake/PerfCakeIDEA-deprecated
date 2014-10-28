@@ -5,7 +5,7 @@ import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.Constants;
+import org.perfcake.idea.util.Constants;
 
 import javax.swing.*;
 
@@ -51,11 +51,11 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder> {
 
     @Override
     public Icon getBigIcon() {
-        return Constants.BIG_ICON;
+        return Constants.ICON_24P;
     }
 
     @Override
     public Icon getNodeIcon(boolean isOpened) {
-        return Constants.NODE_ICON;
+        return Constants.ICON_16P;
     }
 }

@@ -43,7 +43,6 @@ public class NewScenarioDialog extends DialogWrapper {
             senderComboBox.setModel(senders);
         } catch (PerfCakeClassProviderException e) {
             log.error("Error finding classes for combobox", e);
-            PerfCakeIdeaUtil.showError(project, "Error finding classes for combobox", e);
         }
     }
 
@@ -71,6 +70,4 @@ public class NewScenarioDialog extends DialogWrapper {
         }
         return null;
     }
-
-
 }

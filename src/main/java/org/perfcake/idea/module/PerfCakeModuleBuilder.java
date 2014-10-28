@@ -2,6 +2,7 @@ package org.perfcake.idea.module;
 
 import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.DumbAwareRunnable;
@@ -13,6 +14,7 @@ import com.intellij.openapi.vfs.VirtualFile;
  * Created by miron on 21.1.2014.
  */
 public class PerfCakeModuleBuilder extends JavaModuleBuilder {
+    private static final Logger LOG = Logger.getInstance(PerfCakeModuleBuilder.class);
 
     public PerfCakeModuleBuilder() {
     }
@@ -56,9 +58,8 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
         try {
             VirtualFile scenariosDir = root.createChildDirectory(this, "Scenarios");
             VirtualFile messagesDir = root.createChildDirectory(this, "Messages");
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            LOG.error("Error creating PerfCakeIDEA Project Structure", e);
         }
     }
-
-
 }

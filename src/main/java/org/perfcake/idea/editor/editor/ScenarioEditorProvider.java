@@ -37,6 +37,6 @@ public class ScenarioEditorProvider extends PerspectiveFileEditorProvider {
         Scenario s = DomManager.getDomManager(project).getFileElement(scenario, Scenario.class).getRootElement();
 
         return new DomFileEditor<ScenarioComponent>(s, "Designer", new ScenarioComponent(s));
-        //return DomFileEditor.createDomFileEditor("Designer", Constants.BIG_ICON, p, new PropertyComponentFactory(p));
+        //return DomFileEditor.createDomFileEditor("Designer", Constants.ICON_24P, p, new PropertyComponentFactory(p));
     }
 }

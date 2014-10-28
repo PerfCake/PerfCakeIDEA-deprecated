@@ -1,7 +1,7 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.components.JTitledRoundedRectangle;
+import org.perfcake.idea.editor.swing.JTitledRoundedRectangle;
 import org.perfcake.idea.model.Validation;
 import org.perfcake.idea.model.Validator;
 

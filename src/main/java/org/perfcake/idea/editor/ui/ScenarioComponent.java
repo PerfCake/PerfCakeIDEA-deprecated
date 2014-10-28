@@ -1,7 +1,7 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.components.JRoundedRectangle;
+import org.perfcake.idea.editor.swing.JRoundedRectangle;
 import org.perfcake.idea.model.Scenario;
 
 import javax.swing.*;

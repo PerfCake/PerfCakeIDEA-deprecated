@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.components;
+package org.perfcake.idea.editor.swing;
 
 import javax.swing.*;
 import java.awt.*;

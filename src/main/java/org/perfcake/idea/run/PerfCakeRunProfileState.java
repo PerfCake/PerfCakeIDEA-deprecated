@@ -67,10 +67,12 @@ public class PerfCakeRunProfileState implements RunProfileState {
                     log.error("Error connecting pipes", e);
                     return;
                 }
-                ScenarioThread scenarioThread = new ScenarioThread(runConfiguration, pipeOut, pipeErrOut);
+                Thread scenarioThread = new Thread(new ScenarioThread(runConfiguration, pipeOut, pipeErrOut));
                 scenarioThread.setContextClassLoader(getClass().getClassLoader());
                 scenarioThread.start();
-                (new ConsoleWriterThread(console, pipeIn, pipeErrIn)).start();
+
+                Thread consoleWriterThread = new Thread(new ConsoleWriterThread(console, pipeIn, pipeErrIn));
+                consoleWriterThread.start();
             }
         });
         return null;

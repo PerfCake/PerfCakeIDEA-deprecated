@@ -37,8 +37,9 @@ public class PerfCakeRunConfigurationForm implements PerfCakeRunConfigurationPar
 
                 if (fileChooser.getSelectedFile() != null) {
                     String name = fileChooser.getSelectedFile().getVirtualFile().getPath();
-                    setScenarioName(name);
+                    setScenarioPath(name);
                 }
+                //TODO view only scenario xmls
             }
         };
         scenarioTextField.addActionListener(listener);
@@ -50,12 +51,12 @@ public class PerfCakeRunConfigurationForm implements PerfCakeRunConfigurationPar
     }
 
     @Override
-    public String getScenarioName() {
+    public String getScenarioPath() {
         return FileUtil.toSystemIndependentName(scenarioTextField.getText().trim());
     }
 
     @Override
-    public void setScenarioName(String name) {
+    public void setScenarioPath(String name) {
         scenarioTextField.setText(name == null ? "" : FileUtil.toSystemDependentName(name));
     }
 }

@@ -17,16 +17,6 @@ import java.util.Map;
  * Created by miron on 2.4.2014.
  */
 public class PerfCakeIdeaUtil {
-    /**
-     * Shows user PerfCakeIDEA error
-     *
-     * @param project current idea project
-     * @param title   error title
-     * @param e       exception to show
-     */
-    public static void showError(@Nullable Project project, @NotNull String title, @NotNull Throwable e) {
-        Notifications.Bus.notify(new Notification("PerfCakeIDEA", title, e.getMessage(), NotificationType.ERROR), project);
-    }
 
     /**
      * resolves module directories for storing scenarios and messages

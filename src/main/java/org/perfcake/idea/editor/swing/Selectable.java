@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.components;
+package org.perfcake.idea.editor.swing;
 
 /**
  * Created by miron on 2.6.2014.

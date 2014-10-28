@@ -2,23 +2,22 @@ package org.perfcake.idea.run;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.perfcake.PerfCakeException;
-import org.perfcake.idea.Constants;
-import org.perfcake.idea.util.PerfCakeIDEAException;
-import org.perfcake.idea.util.ScenarioHandler;
-import org.perfcake.scenario.Scenario;
+import org.perfcake.ScenarioExecution;
+import org.perfcake.idea.util.Constants;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
 
 /**
+ * Thread that runs PerfCake scenario using PerfCake API
  * Created by miron on 9.3.2014.
  */
-public class ScenarioThread extends Thread {
+public class ScenarioThread implements Runnable {
     private static final Logger log = Logger.getInstance(ScenarioThread.class);
     private PerfCakeRunConfiguration runConfiguration;
     private PrintStream scenarioOutput;
     private PrintStream scenarioErrOutput;
+
 
     public ScenarioThread(@NotNull PerfCakeRunConfiguration runConfiguration, @NotNull OutputStream scenarioOutput, @NotNull OutputStream scenarioErrOutput) {
         this.runConfiguration = runConfiguration;
@@ -35,16 +34,13 @@ public class ScenarioThread extends Thread {
         PrintStream errOut = System.err;
         System.setErr(scenarioErrOutput);
 
-        try {
-            ScenarioHandler handler = new ScenarioHandler(runConfiguration.getScenarioName());
-            System.out.println("Running scenario " + runConfiguration.getScenarioName());
-            Scenario scenario = handler.buildScenario();
-            runScenario(scenario);
 
-        } catch (PerfCakeException | PerfCakeIDEAException e) {
-            log.error("Error running scenario file", e);
-            System.err.println("Error running scenario file: " + e.getMessage());
-        }
+        String[] perfCakeArgs = createArgs();
+
+        //runs the scenario
+        ScenarioExecution.main(perfCakeArgs);
+
+
         //send message to console thread, that it can stop
         System.out.println(Constants.SCENARIO_FINISHED_MARK);
 
@@ -55,12 +51,22 @@ public class ScenarioThread extends Thread {
         scenarioErrOutput.close();
     }
 
-    private void runScenario(Scenario scenario) throws PerfCakeException {
-        try {
-            scenario.init();
-            scenario.run();
-        } finally {
-            scenario.close();
-        }
+    /**
+     * Creates arguments for PerfCake to run the scenario
+     * @return
+     */
+    private String[] createArgs() {
+        String scenarioPath = runConfiguration.getScenarioPath();
+        String scenarioName = scenarioPath.substring(scenarioPath.lastIndexOf("/") + 1, scenarioPath.length() - 4);
+
+        String[] args = new String[6];
+        args[0] = "-s";
+        args[1] = scenarioName;
+        args[2] = "-sd";
+        args[3] = runConfiguration.getScenariosDirPath();
+        args[4] = "-md";
+        args[5] = runConfiguration.getMessagesDirPath();
+
+        return args;
     }
 }

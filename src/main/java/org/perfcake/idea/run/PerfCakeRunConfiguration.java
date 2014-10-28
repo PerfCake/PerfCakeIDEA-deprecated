@@ -35,120 +35,176 @@ import java.util.Map;
 public class PerfCakeRunConfiguration extends LocatableConfigurationBase implements PerfCakeRunConfigurationParams, RefactoringListenerProvider {
     private static final Logger LOG = Logger.getInstance(PerfCakeRunConfiguration.class);
 
-    private final String SCENARIO_NAME = "SCENARIO_NAME";
-    private String scenarioName;
+    //parameters for persisting of configuration after Idea close
+    private final String SCENARIO_PATH = "SCENARIO_PATH";
+    private final String SCENARIOS_DIR_PATH = "SCENARIOS_DIR_PATH";
+    private final String MESSAGES_DIR_PATH = "MESSAGES_DIR_PATH";
+
+    private String scenarioPath;
+
+    private String scenariosDirPath;
+    private String messagesDirPath;
+
+    public String getScenariosDirPath() {
+        return scenariosDirPath;
+    }
+
+    private void setScenariosDirPath(String scenariosDirPath) {
+        this.scenariosDirPath = scenariosDirPath;
+    }
+
+    public String getMessagesDirPath() {
+        return messagesDirPath;
+    }
+
+    private void setMessagesDirPath(String messagesDirPath) {
+        this.messagesDirPath = messagesDirPath;
+    }
+
+    @Override
+    public String getScenarioPath() {
+        return scenarioPath;
+    }
+
+    /**
+     * Sets scenario file path and configures according to this path PerfCake run parameters
+     * @param path scenario file path
+     */
+    @Override
+    public void setScenarioPath(String path) {
+        this.scenarioPath = path;
+        setPerfCakeConfiguration(path);
+    }
+
+    /**
+     * Resolves PerfCake dirs according to scenario (Module) location
+     * @param scenarioPath scenario file path
+     */
+    private void setPerfCakeConfiguration(String scenarioPath) {
+        File myScenario = new File(scenarioPath);
+        VirtualFile scenario = LocalFileSystem.getInstance().findFileByIoFile(myScenario);
+        if(myScenario.getPath().isEmpty() || scenario == null){
+            //Idea continuos configuration commit, we dont want to set anything
+            return;
+        }
+        Map<String, VirtualFile> moduleDirs;
+        try{
+            moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(getProject(), scenario);
+        }catch (PerfCakeIDEAException e){
+            LOG.error("Could not set PerfCake run properties for scenario: " + scenarioPath, e);
+            return;
+        }
+
+        String scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY).getPath();
+        String messagesDir = moduleDirs.get(PerfCakeConst.MESSAGES_DIR_PROPERTY).getPath();
+
+        setScenariosDirPath(scenariosDir);
+        setMessagesDirPath(messagesDir);
+    }
+
+
 
     protected PerfCakeRunConfiguration(Project project, ConfigurationFactory factory, String name) {
         super(project, factory, name);
     }
 
+    /**
+     * Gets GUI Editor for PerfCake configuration
+     * @return
+     */
     @NotNull
     @Override
     public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
         return new PerfCakeRunConfigurationEditor(this);
     }
 
+    /**
+     * Gets PerfCakeIDEA run state which runs the scenario in console
+     * @param executor
+     * @param env
+     * @return
+     * @throws ExecutionException
+     */
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env) throws ExecutionException {
         return new PerfCakeRunProfileState(this);
     }
 
-    @Override
-    public String getScenarioName() {
-        return scenarioName;
-    }
 
-    @Override
-    public void setScenarioName(String name) {
-        this.scenarioName = name;
-        try {
-            setPerfCakeRunProperties(name);
-        } catch (PerfCakeIDEAException e) {
-            LOG.error(e);
-        }
+    public static void copyParams(PerfCakeRunConfigurationParams source, PerfCakeRunConfigurationParams target) {
+        target.setScenarioPath(source.getScenarioPath());
     }
 
     /**
-     * sets PerfCake System properties according to scenario which we want to run
-     *
-     * @param scenarioPath scenario to run
-     * @throws PerfCakeIDEAException when we could not resolve properties for current module
+     * Checks validity of this configuration
+     * @throws RuntimeConfigurationException on invalid configuration
      */
-    private void setPerfCakeRunProperties(String scenarioPath) throws PerfCakeIDEAException {
-        VirtualFile scenarioVFile = LocalFileSystem.getInstance().findFileByIoFile(new File(scenarioPath));
-        Map<String, VirtualFile> moduleDirs = null;
-        try {
-            moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(getProject(), scenarioVFile);
-        } catch (PerfCakeIDEAException e) {
-            throw new PerfCakeIDEAException("Could not set PerfCake run properties for scenario: " + scenarioPath, e);
-        }
-
-        String scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY).getPath();
-        String messagesDir = moduleDirs.get(PerfCakeConst.MESSAGES_DIR_PROPERTY).getPath();
-
-        System.setProperty(PerfCakeConst.SCENARIOS_DIR_PROPERTY, FileUtil.toSystemDependentName(scenariosDir));
-        System.setProperty(PerfCakeConst.MESSAGES_DIR_PROPERTY, FileUtil.toSystemDependentName(messagesDir));
-
-    }
-
-    public static void copyParams(PerfCakeRunConfigurationParams source, PerfCakeRunConfigurationParams target) {
-        target.setScenarioName(source.getScenarioName());
-    }
-
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
-        if (scenarioName == null) {
+        if (scenarioPath == null) {
             throw new RuntimeConfigurationError("Scenario not specified!");
+        }
+        if(scenariosDirPath == null || messagesDirPath == null){
+            throw new RuntimeConfigurationError("PerfCake run properties was not properly set!");
         }
     }
 
     @Override
     public String suggestedName() {
-        if (scenarioName != null) {
-            String name = (new File(scenarioName)).getName();
-            if (name.length() > 4) return name.substring(0, name.length() - 4);
+        if (scenarioPath != null) {
+            String name = (new File(scenarioPath)).getName();
         }
         return null;
     }
+
+
 
     @Override
     public void readExternal(Element element) throws InvalidDataException {
         PathMacroManager.getInstance(getProject()).expandPaths(element);
         super.readExternal(element);
-        scenarioName = JDOMExternalizerUtil.readField(element, SCENARIO_NAME);
+
+        scenarioPath = JDOMExternalizerUtil.readField(element, SCENARIO_PATH);
+        scenariosDirPath = JDOMExternalizerUtil.readField(element, SCENARIOS_DIR_PATH);
+        messagesDirPath = JDOMExternalizerUtil.readField(element, MESSAGES_DIR_PATH);
     }
 
     @Override
     public void writeExternal(Element element) throws WriteExternalException {
         super.writeExternal(element);
-        JDOMExternalizerUtil.writeField(element, SCENARIO_NAME, scenarioName);
+
+        JDOMExternalizerUtil.writeField(element, SCENARIO_PATH, scenarioPath);
+        JDOMExternalizerUtil.writeField(element, SCENARIOS_DIR_PATH, scenariosDirPath);
+        JDOMExternalizerUtil.writeField(element, MESSAGES_DIR_PATH, messagesDirPath);
+
         PathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
     }
 
+    //refactoring support, @see super
     @Nullable
     @Override
     public RefactoringElementListener getRefactoringElementListener(PsiElement element) {
         if (element instanceof PsiFile) {
             VirtualFile virtualFile = ((PsiFile) element).getVirtualFile();
             try {
-                if (virtualFile != null && (new File(virtualFile.getPath())).getCanonicalPath().equals((new File(scenarioName)).getCanonicalPath())) {
+                if (virtualFile != null && (new File(virtualFile.getPath())).getCanonicalPath().equals((new File(scenarioPath)).getCanonicalPath())) {
                     return new RefactoringElementAdapter() {
                         @Override
                         protected void elementRenamedOrMoved(@NotNull PsiElement newElement) {
                             VirtualFile newFile = ((PsiFile) newElement).getVirtualFile();
                             if (newFile != null) {
-                                scenarioName = FileUtil.toSystemIndependentName(newFile.getPath());
+                                setScenarioPath(FileUtil.toSystemIndependentName(newFile.getPath()));
                             }
                         }
 
                         @Override
                         public void undoElementMovedOrRenamed(@NotNull PsiElement newElement, @NotNull String oldQualifiedName) {
-                            scenarioName = FileUtil.toSystemIndependentName(oldQualifiedName);
+                            setScenarioPath(FileUtil.toSystemIndependentName(oldQualifiedName));
                         }
                     };
                 }
-            } catch (IOException ignore) {
+            } catch (IOException ignore) {//just return null
             }
         }
         return null;

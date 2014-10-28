@@ -8,8 +8,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -17,21 +15,17 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
-import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.PerfCakeConst;
-import org.perfcake.idea.Constants;
+import org.perfcake.idea.util.Constants;
 import org.perfcake.idea.util.PerfCakeIDEAException;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
-import org.perfcake.idea.util.ScenarioHandler;
 import org.perfcake.idea.util.ScenarioUtil;
-import org.perfcake.model.Scenario;
 
-import java.io.File;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Map;
 
 /**
+ * This class handles creation of a new Scenario from menu
  * Created by miron on 10.3.2014.
  */
 public class NewScenarioAction extends CreateElementActionBase {
@@ -39,7 +33,7 @@ public class NewScenarioAction extends CreateElementActionBase {
     NewScenarioDialog scenarioDialog;
 
     public NewScenarioAction() {
-        super("Scenario", "Create new PerfCake scenario", Constants.NODE_ICON);
+        super("Scenario", "Create new PerfCake scenario", Constants.ICON_16P);
     }
 
     @NotNull
