@@ -101,7 +101,7 @@ public class ScenarioComponent extends BasicDomElementComponent<Scenario> {
             }
 
             if (e.getClickCount() == 2 && selected != null) {
-                //selected.invokeDialog(scenarioPsi);
+                selected.invokeDialog();
             }
         }
 

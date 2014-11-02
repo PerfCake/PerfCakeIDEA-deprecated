@@ -4,6 +4,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.editor.editor.ColorSettingForm;
 
 import javax.swing.*;
 
@@ -11,6 +12,8 @@ import javax.swing.*;
  * Created by miron on 21.5.2014.
  */
 public class PerfCakeIdeSettings implements Configurable {
+    private ColorSettingForm form = new ColorSettingForm();
+
     @Nls
     @Override
     public String getDisplayName() {
@@ -26,17 +29,17 @@ public class PerfCakeIdeSettings implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        return null;
+        return form.getColorPanel();
     }
 
     @Override
     public boolean isModified() {
-        return false;
+        return true;
     }
 
     @Override
     public void apply() throws ConfigurationException {
-
+        form.getColors();
     }
 
     @Override
