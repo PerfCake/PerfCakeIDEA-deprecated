@@ -1,7 +1,8 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.swing.JTitledRoundedRectangle;
+import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Validator;
 
 import javax.swing.*;
@@ -11,12 +12,12 @@ import javax.swing.*;
  */
 public class ValidatorComponent extends BasicDomElementComponent<Validator> {
 
-    private JTitledRoundedRectangle validatorGui;
+    private JPerfCakeIdeaRectangle validatorGui;
 
     public ValidatorComponent(Validator domElement) {
         super(domElement);
 
-        validatorGui = new JTitledRoundedRectangle(getGuiText());
+        validatorGui = new JPerfCakeIdeaRectangle(getGuiText(), ColorType.VALIDATOR_FOREGROUND, ColorType.VALIDATOR_BACKGROUND);
     }
 
     @Override

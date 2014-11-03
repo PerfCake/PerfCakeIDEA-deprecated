@@ -1,13 +1,12 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.editor.ColorComponents;
-import org.perfcake.idea.editor.swing.JTitledRoundedRectangle;
+import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Message;
 import org.perfcake.idea.model.Messages;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by miron on 21.10.2014.
@@ -15,12 +14,12 @@ import java.awt.*;
 public class MessagesComponent extends BasicDomElementComponent<Messages> {
 
     private static final String TITLE = "Messages";
-    private JTitledRoundedRectangle messagesGui;
+    private JPerfCakeIdeaRectangle messagesGui;
 
     public MessagesComponent(Messages domElement) {
         super(domElement);
 
-        messagesGui = new JTitledRoundedRectangle(TITLE);
+        messagesGui = new JPerfCakeIdeaRectangle(TITLE, ColorType.MESSAGES_FOREGROUND, ColorType.MESSAGES_BACKGROUND);
 
         addMessages();
     }

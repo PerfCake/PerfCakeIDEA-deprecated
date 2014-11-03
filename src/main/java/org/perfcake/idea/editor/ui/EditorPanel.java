@@ -7,9 +7,15 @@ import java.awt.*;
  * Created by miron on 22.10.2014.
  */
 public class EditorPanel extends JPanel {
+    JPanel toolbarPanel;
+    ScenarioPanel scenarioPanel;
 
-    public EditorPanel(JPanel toolbarPanel, JPanel scenarioPanel) {
+    public EditorPanel(JPanel toolbarPanel, ScenarioPanel scenarioPanel) {
         super(new BorderLayout());
+
+        this.toolbarPanel = toolbarPanel;
+        this.scenarioPanel = scenarioPanel;
+
         //create resizable split pane for inner panels
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         //splitPane.setBorder(BorderFactory.createLineBorder(Color.BLUE, 10));
@@ -26,5 +32,13 @@ public class EditorPanel extends JPanel {
 
         //add split pane to editor
         add(splitPane, BorderLayout.CENTER);
+    }
+
+    public JPanel getToolbarPanel() {
+        return toolbarPanel;
+    }
+
+    public ScenarioPanel getScenarioPanel() {
+        return scenarioPanel;
     }
 }

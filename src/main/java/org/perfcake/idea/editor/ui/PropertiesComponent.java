@@ -1,7 +1,8 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.swing.JTitledRoundedRectangle;
+import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Properties;
 import org.perfcake.idea.model.Property;
 
@@ -13,12 +14,12 @@ import javax.swing.*;
 public class PropertiesComponent extends BasicDomElementComponent<Properties> {
 
     private static final String PROPERTIES_TITLE = "Scenario Properties";
-    private JTitledRoundedRectangle propertiesGui;
+    private JPerfCakeIdeaRectangle propertiesGui;
 
     public PropertiesComponent(Properties domElement) {
         super(domElement);
 
-        propertiesGui = new JTitledRoundedRectangle(PROPERTIES_TITLE);
+        propertiesGui = new JPerfCakeIdeaRectangle(PROPERTIES_TITLE, ColorType.PROPERTIES_FOREGROUND, ColorType.PROPERTIES_BACKGROUND);
         addProperties();
     }
 

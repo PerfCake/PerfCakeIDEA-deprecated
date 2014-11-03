@@ -1,7 +1,8 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.swing.JTitledRoundedRectangle;
+import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Generator;
 
 import javax.swing.*;
@@ -11,12 +12,12 @@ import javax.swing.*;
  */
 public class GeneratorComponent extends BasicDomElementComponent<Generator> {
 
-    private JTitledRoundedRectangle generatorGui;
+    private JPerfCakeIdeaRectangle generatorGui;
 
     public GeneratorComponent(Generator domElement) {
         super(domElement);
 
-        generatorGui = new JTitledRoundedRectangle(getGuiTitle());
+        generatorGui = new JPerfCakeIdeaRectangle(getGuiTitle(), ColorType.GENERATOR_FOREGROUND, ColorType.GENERATOR_BACKGROUND);
 
         RunComponent runComponent = new RunComponent(domElement.getRun());
         generatorGui.addComponent(runComponent.getComponent());

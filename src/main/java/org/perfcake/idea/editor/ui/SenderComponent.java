@@ -1,7 +1,8 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.swing.JTitledRoundedRectangle;
+import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Property;
 import org.perfcake.idea.model.Sender;
 
@@ -12,12 +13,12 @@ import javax.swing.*;
  */
 public class SenderComponent extends BasicDomElementComponent<Sender> {
 
-    private JTitledRoundedRectangle senderGui;
+    private JPerfCakeIdeaRectangle senderGui;
 
     public SenderComponent(Sender domElement) {
         super(domElement);
 
-        senderGui = new JTitledRoundedRectangle(domElement.getClazz().getStringValue());
+        senderGui = new JPerfCakeIdeaRectangle(domElement.getClazz().getStringValue(), ColorType.SENDER_FOREGROUND, ColorType.SENDER_BACKGROUND);
     }
 
     @Override

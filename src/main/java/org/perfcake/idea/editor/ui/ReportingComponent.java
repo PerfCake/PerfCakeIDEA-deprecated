@@ -1,7 +1,8 @@
 package org.perfcake.idea.editor.ui;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.perfcake.idea.editor.swing.JTitledRoundedRectangle;
+import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Reporter;
 import org.perfcake.idea.model.Reporting;
 
@@ -14,12 +15,12 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
 
     private static final String TITLE = "Reporting";
 
-    private JTitledRoundedRectangle reportingGui;
+    private JPerfCakeIdeaRectangle reportingGui;
 
     public ReportingComponent(Reporting domElement) {
         super(domElement);
 
-        reportingGui = new JTitledRoundedRectangle(TITLE);
+        reportingGui = new JPerfCakeIdeaRectangle(TITLE, ColorType.REPORTING_FOREGROUND, ColorType.REPORTING_BACKGROUND);
 
         addReporters();
     }
