@@ -1,138 +1,129 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.perfcake.idea</groupId>
-    <artifactId>PerfCakeIDEA</artifactId>
-    <version>0.0.1</version>
-
-
-    <description>PerfCake plugin for Intellij Idea.
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.perfcake.idea</groupId>
+   <artifactId>PerfCakeIDEA</artifactId>
+   <version>3.3</version>
+   <description>PerfCake plugin for Intellij Idea.
         PerfCake is a lightweight performance testing tool and a load generator.
     </description>
-    <properties>
-        <vendor.url></vendor.url>
-        <vendor.email>michalko.miron@gmail.com</vendor.email>
-        <vendor.name>Miron Michalko</vendor.name>
-        <!-->property for "Intellij plugin development with Maven" Intellij plugin<-->
-        <ij.plugin>true</ij.plugin>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>ideaIU</artifactId>
-            <version>13.1.5</version>
-            <type>zip</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.perfcake</groupId>
-            <artifactId>perfcake</artifactId>
-            <version>3.2</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <compilerArguments>
-                        <extdirs>${project.build.directory}/dependency/IntelliJ-IDEA-CE/lib/</extdirs>
-                    </compilerArguments>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <id>unzip-distribution</id>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>ideaIU</includeArtifactIds>
-                            <outputDirectory>${project.build.directory}/dependency/IntelliJ-IDEA-CE</outputDirectory>
-                            <includes>**/*.jar</includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>compile-forms</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <path id="maven.plugin.complete.classpath">
-                                    <path refid="maven.plugin.classpath"/>
-                                    <fileset dir="${project.build.directory}/dependency/IntelliJ-IDEA-CE/lib">
-                                        <include name="**/*.jar"/>
-                                    </fileset>
-                                </path>
-                                <taskdef name="instrumentIdeaExtensions"
-                                         classname="com.intellij.ant.InstrumentIdeaExtensions"
-                                         classpathref="maven.plugin.complete.classpath"/>
-                                <path id="sourcepath">
-                                    <dirset dir="${project.basedir}">
-                                        <include name="src/main/java"/>
-                                        <include name="src/main/resources"/>
-                                    </dirset>
-                                </path>
-                                <instrumentIdeaExtensions destdir="${project.build.outputDirectory}"
-                                                          extdirs="${project.build.directory}/dependency/IntelliJ-IDEA-CE/lib">
-                                    <classpath refid="maven.compile.classpath"/>
-                                    <src refid="sourcepath"/>
-                                </instrumentIdeaExtensions>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun</groupId>
-                        <artifactId>tools</artifactId>
-                        <version>1.7.0</version>
-                        <scope>system</scope>
-                        <systemPath>${java.home}/../lib/tools.jar</systemPath>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/zip.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--><plugin>
+   <properties>
+      <vendor.url/>
+      <vendor.email>michalko.miron@gmail.com</vendor.email>
+      <vendor.name>Miron Michalko</vendor.name>
+      <!-->property for "Intellij plugin development with Maven" Intellij plugin<-->
+      <ij.plugin>true</ij.plugin>
+      <perfcake.version>3.3</perfcake.version>
+   </properties>
+   <dependencies>
+      <dependency>
+         <groupId>org.jetbrains</groupId>
+         <artifactId>ideaIU</artifactId>
+         <version>13.1.5</version>
+         <type>zip</type>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.perfcake</groupId>
+         <artifactId>perfcake</artifactId>
+         <version>${perfcake.version}</version>
+      </dependency>
+   </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>
+               <compilerArguments>
+                  <extdirs>${project.build.directory}/dependency/IntelliJ-IDEA-CE/lib/</extdirs>
+               </compilerArguments>
+               <source>1.7</source>
+               <target>1.7</target>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.3</version>
+            <executions>
+               <execution>
+                  <id>unzip-distribution</id>
+                  <goals>
+                     <goal>unpack-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <includeArtifactIds>ideaIU</includeArtifactIds>
+                     <outputDirectory>${project.build.directory}/dependency/IntelliJ-IDEA-CE</outputDirectory>
+                     <includes>**/*.jar</includes>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <executions>
+               <execution>
+                  <id>compile-forms</id>
+                  <phase>process-classes</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <target>
+                        <path id="maven.plugin.complete.classpath">
+                           <path refid="maven.plugin.classpath"/>
+                           <fileset dir="${project.build.directory}/dependency/IntelliJ-IDEA-CE/lib">
+                              <include name="**/*.jar"/>
+                           </fileset>
+                        </path>
+                        <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="maven.plugin.complete.classpath"/>
+                        <path id="sourcepath">
+                           <dirset dir="${project.basedir}">
+                              <include name="src/main/java"/>
+                              <include name="src/main/resources"/>
+                           </dirset>
+                        </path>
+                        <instrumentIdeaExtensions destdir="${project.build.outputDirectory}" extdirs="${project.build.directory}/dependency/IntelliJ-IDEA-CE/lib">
+                           <classpath refid="maven.compile.classpath"/>
+                           <src refid="sourcepath"/>
+                        </instrumentIdeaExtensions>
+                     </target>
+                  </configuration>
+               </execution>
+            </executions>
+            <dependencies>
+               <dependency>
+                  <groupId>com.sun</groupId>
+                  <artifactId>tools</artifactId>
+                  <version>1.7.0</version>
+                  <scope>system</scope>
+                  <systemPath>${java.home}/../lib/tools.jar</systemPath>
+               </dependency>
+            </dependencies>
+         </plugin>
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+               <descriptors>
+                  <descriptor>src/main/assembly/zip.xml</descriptor>
+               </descriptors>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>make-assembly</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <!--><plugin>
                <artifactId>maven-jar-plugin</artifactId>
                <version>2.3.1</version>
                <executions>
@@ -143,25 +134,25 @@
                    </execution>
                </executions>
                 </plugin><-->
-        </plugins>
-    </build>
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unzip-distribution</id>
-                                <phase>skip</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+      </plugins>
+   </build>
+   <profiles>
+      <profile>
+         <id>dev</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>unzip-distribution</id>
+                        <phase>skip</phase>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 </project>
