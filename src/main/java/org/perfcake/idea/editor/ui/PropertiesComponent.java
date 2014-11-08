@@ -17,7 +17,7 @@ public class PropertiesComponent extends BasicDomElementComponent<Properties> {
     private JPerfCakeIdeaRectangle propertiesGui;
 
     public PropertiesComponent(Properties domElement) {
-        super(domElement);
+        super((Properties) domElement.createStableCopy());
 
         propertiesGui = new JPerfCakeIdeaRectangle(PROPERTIES_TITLE, ColorType.PROPERTIES_FOREGROUND, ColorType.PROPERTIES_BACKGROUND);
         addProperties();

@@ -3,10 +3,14 @@ package org.perfcake.idea.editor.ui;
 import org.perfcake.idea.editor.colors.ColorComponents;
 import org.perfcake.idea.editor.colors.ColorType;
 import org.perfcake.idea.editor.swing.ColorAdjustable;
+import org.perfcake.idea.editor.swing.EditDialog;
 import org.perfcake.idea.editor.swing.JRoundedRectangle;
+import org.perfcake.idea.editor.swing.Selectable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -82,7 +86,7 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
     }
 
     private class MyMouseAdapter extends MouseAdapter {
-        private JRoundedRectangle selected = null;
+        private Selectable selected = null;
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -98,7 +102,9 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
             }
 
             if (e.getClickCount() == 2 && selected != null) {
-                selected.invokeDialog();
+                if(selected instanceof EditDialog){
+                    ((EditDialog)selected).invokeDialog();
+                }
             }
         }
 

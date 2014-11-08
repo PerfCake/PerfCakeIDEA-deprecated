@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * urn:perfcake:scenario:3.0:scenarioElemType interface.
  * @author Miron
  */
+@DefinesXml
 public interface Scenario extends DomElement {
 
     public static final String TAG_NAME = "scenario";

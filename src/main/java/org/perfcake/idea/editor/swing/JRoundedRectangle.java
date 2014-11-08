@@ -63,7 +63,4 @@ public class JRoundedRectangle extends JPanel implements Selectable {
     }
 
 
-    public void invokeDialog() {
-    }
-
 }

@@ -15,7 +15,7 @@ public class MessageComponent extends BasicDomElementComponent<Message> {
     private JPerfCakeIdeaRectangle messageGui;
 
     public MessageComponent(Message domElement) {
-        super(domElement);
+        super((Message) domElement.createStableCopy());
 
         messageGui = new JPerfCakeIdeaRectangle(domElement.getUri().getStringValue(), ColorType.MESSAGE_FOREGROUND, ColorType.MESSAGE_BACKGROUND);
     }
@@ -28,6 +28,8 @@ public class MessageComponent extends BasicDomElementComponent<Message> {
     @Override
     public void reset() {
         super.reset();
-        messageGui.setTitle(myDomElement.getUri().getStringValue());
+        if(getDomElement().isValid()){
+            messageGui.setTitle(getDomElement().getUri().getStringValue());
+        }
     }
 }

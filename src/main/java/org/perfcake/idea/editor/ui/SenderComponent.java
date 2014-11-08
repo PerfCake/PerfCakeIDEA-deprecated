@@ -16,7 +16,7 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
     private JPerfCakeIdeaRectangle senderGui;
 
     public SenderComponent(Sender domElement) {
-        super(domElement);
+        super((Sender) domElement.createStableCopy());
 
         senderGui = new JPerfCakeIdeaRectangle(domElement.getClazz().getStringValue(), ColorType.SENDER_FOREGROUND, ColorType.SENDER_BACKGROUND);
     }
@@ -39,10 +39,12 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
     }
 
     private void addProperties() {
-        for (Property p : myDomElement.getProperties()) {
-            PropertyComponent propertyComponent = new PropertyComponent(p);
-            addComponent(propertyComponent);
-            senderGui.addComponent(propertyComponent.getComponent());
+        if(getDomElement().isValid()){
+            for (Property p : myDomElement.getProperties()) {
+                PropertyComponent propertyComponent = new PropertyComponent(p);
+                addComponent(propertyComponent);
+                senderGui.addComponent(propertyComponent.getComponent());
+            }
         }
     }
 }

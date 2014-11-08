@@ -15,7 +15,7 @@ public class GeneratorComponent extends BasicDomElementComponent<Generator> {
     private JPerfCakeIdeaRectangle generatorGui;
 
     public GeneratorComponent(Generator domElement) {
-        super(domElement);
+        super((Generator) domElement.createStableCopy());
 
         generatorGui = new JPerfCakeIdeaRectangle(getGuiTitle(), ColorType.GENERATOR_FOREGROUND, ColorType.GENERATOR_BACKGROUND);
 

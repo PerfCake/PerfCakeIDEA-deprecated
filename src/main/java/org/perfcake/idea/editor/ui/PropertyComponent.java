@@ -1,7 +1,13 @@
 package org.perfcake.idea.editor.ui;
 
+import com.intellij.openapi.application.Result;
+import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
+import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.dialogs.PropertyEditDialog;
+import org.perfcake.idea.editor.gui.JProperty;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Property;
 
@@ -12,12 +18,13 @@ import javax.swing.*;
  */
 public class PropertyComponent extends BasicDomElementComponent<Property> {
 
-    private JPerfCakeIdeaRectangle propertyGui;
+    private JProperty propertyGui;
+    private PropertyEditDialog editDialog;
 
 
-    public PropertyComponent(Property domElement) {
-        super(domElement);
-        propertyGui = new JPerfCakeIdeaRectangle(getTitle(), ColorType.PROPERTY_FOREGROUND, ColorType.PROPERTY_BACKGROUND);
+    public PropertyComponent(final Property domElement) {
+        super((Property) domElement.createStableCopy());
+        propertyGui = new JProperty(domElement.getName().getStringValue(), domElement.getValue().getStringValue());
 
     }
 
@@ -26,15 +33,29 @@ public class PropertyComponent extends BasicDomElementComponent<Property> {
         return propertyGui;
     }
 
+    @Override
+    public void commit() {
+        super.commit();
+
+        new WriteCommandAction(getDomElement().getModule().getProject(), "Set Property DOM Model" ,getDomElement().getXmlElement().getContainingFile()) {
+            @Override
+            protected void run(@NotNull Result result) throws Throwable {
+                getDomElement().getName().setStringValue(propertyGui.getName());
+                getDomElement().getValue().setStringValue(propertyGui.getValue());
+            }
+        }.execute();
+    }
 
     @Override
     public void reset() {
         super.reset();
-        propertyGui.setTitle(getTitle());
+        if(getDomElement().isValid()){
+            propertyGui.setName(getDomElement().getName().getStringValue());
+            propertyGui.setValue(getDomElement().getValue().getStringValue());
+        }else{
+
+        }
     }
 
-    private String getTitle() {
-        return myDomElement.getName().getStringValue() + ":" + myDomElement.getValue().getStringValue();
-    }
 }
 

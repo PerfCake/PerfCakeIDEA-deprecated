@@ -18,7 +18,7 @@ public class ValidationComponent extends BasicDomElementComponent<Validation> {
     private JPerfCakeIdeaRectangle validationGui;
 
     public ValidationComponent(Validation domElement) {
-        super(domElement);
+        super((Validation) domElement.createStableCopy());
 
         validationGui = new JPerfCakeIdeaRectangle(TITLE, ColorType.VALIDATION_FOREGROUND, ColorType.VALIDATION_BACKGROUND);
 

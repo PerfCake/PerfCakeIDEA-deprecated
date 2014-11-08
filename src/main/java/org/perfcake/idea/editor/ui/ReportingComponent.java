@@ -18,7 +18,7 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
     private JPerfCakeIdeaRectangle reportingGui;
 
     public ReportingComponent(Reporting domElement) {
-        super(domElement);
+        super((Reporting) domElement.createStableCopy());
 
         reportingGui = new JPerfCakeIdeaRectangle(TITLE, ColorType.REPORTING_FOREGROUND, ColorType.REPORTING_BACKGROUND);
 

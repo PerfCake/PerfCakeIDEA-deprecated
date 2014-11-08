@@ -15,7 +15,7 @@ public class DestinationComponent extends BasicDomElementComponent<Destination> 
     private JPerfCakeIdeaRectangle destinationGui;
 
     public DestinationComponent(Destination domElement) {
-        super(domElement);
+        super((Destination) domElement.createStableCopy());
 
         destinationGui = new JPerfCakeIdeaRectangle(domElement.getClazz().getStringValue(), ColorType.DESTINATION_FOREGROUND, ColorType.DESTINATION_BACKGROUND);
     }

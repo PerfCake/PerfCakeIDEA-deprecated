@@ -16,7 +16,7 @@ public class ReporterComponent extends BasicDomElementComponent<Reporter> {
     private JPerfCakeIdeaRectangle reporterGui;
 
     public ReporterComponent(Reporter domElement) {
-        super(domElement);
+        super((Reporter) domElement.createStableCopy());
 
         reporterGui = new JPerfCakeIdeaRectangle(domElement.getClazz().getStringValue(), ColorType.REPORTER_FOREGROUND, ColorType.REPORTER_BACKGROUND);
 

@@ -13,7 +13,7 @@ public class RunComponent extends BasicDomElementComponent<Run> {
     private JLabel runGui;
 
     public RunComponent(Run domElement) {
-        super(domElement);
+        super((Run) domElement.createStableCopy());
         runGui = new JLabel(getGuiText());
 
     }

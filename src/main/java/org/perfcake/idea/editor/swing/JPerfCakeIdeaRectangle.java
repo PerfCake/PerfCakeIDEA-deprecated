@@ -33,9 +33,6 @@ public class JPerfCakeIdeaRectangle extends JRoundedRectangle implements ColorAd
         updateColors();
     }
 
-    public String getTitle() {
-        return label.getText();
-    }
 
     public void setTitle(String title) {
         label.setText(title);
