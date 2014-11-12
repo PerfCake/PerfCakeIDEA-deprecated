@@ -1,7 +1,6 @@
 package org.perfcake.idea.editor.gui;
 
 import org.perfcake.idea.editor.colors.ColorType;
-import org.perfcake.idea.editor.dialogs.PropertyEditDialog;
 import org.perfcake.idea.editor.swing.EditDialog;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 
@@ -20,22 +19,16 @@ public class JProperty extends JPerfCakeIdeaRectangle implements EditDialog {
         this.value = value;
     }
 
-    private String getTitleText(){
+    private String getTitleText() {
         return name + " : " + value;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public void setName(String name) {
         this.name = name;
         setTitle(getTitleText());
     }
 
-    public String getValue() {
-        return value;
-    }
 
     public void setValue(String value) {
         this.value = value;
@@ -44,11 +37,5 @@ public class JProperty extends JPerfCakeIdeaRectangle implements EditDialog {
 
     @Override
     public void invokeDialog() {
-        PropertyEditDialog editDialog = new PropertyEditDialog(this, getName(), getValue());
-        boolean ok = editDialog.showAndGet();
-        if(ok){
-            setName(editDialog.getNameText());
-            setValue(editDialog.getValueText());
-        }
     }
 }

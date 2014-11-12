@@ -1,10 +1,10 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.model.Property;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,14 +17,24 @@ public class PropertyEditDialog extends DialogWrapper {
     private JTextField valueTextField;
     private JPanel rootPanel;
 
-    public  PropertyEditDialog(@NotNull Component parent, String initialName, String initialValue) {
+    private Property mockCopy;
+
+    public PropertyEditDialog(@NotNull Component parent, Property mockCopy) {
         super(parent, true);
         init();
         setTitle("Edit Property");
-        nameTextField.setText(initialName);
-        valueTextField.setText(initialValue);
+
+        this.mockCopy = mockCopy;
+
+        nameTextField.setText(mockCopy.getName().getStringValue());
+        valueTextField.setText(mockCopy.getValue().getStringValue());
     }
 
+    public Property getMockCopy() {
+        mockCopy.getName().setStringValue(nameTextField.getText());
+        mockCopy.getValue().setStringValue(valueTextField.getText());
+        return mockCopy;
+    }
 
     @Nullable
     @Override
@@ -32,13 +42,6 @@ public class PropertyEditDialog extends DialogWrapper {
         return rootPanel;
     }
 
-    public String getNameText() {
-        return nameTextField.getText();
-    }
-
-    public String getValueText() {
-        return valueTextField.getText();
-    }
 
     protected ValidationInfo doValidate() {
         /*if (getNameText().trim().isEmpty()) {
