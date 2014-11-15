@@ -3,8 +3,10 @@
 
 package org.perfcake.idea.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
  * urn:perfcake:scenario:3.0:generatorElemType interface.
  * @author Miron
  */
-public interface Generator extends DomElement {
+public interface Generator extends DomElement, IProperties {
 
 	/**
 	 * Returns the value of the class child.

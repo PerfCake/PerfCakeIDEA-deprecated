@@ -1,13 +1,12 @@
 package org.perfcake.idea.editor.gui;
 
 import org.perfcake.idea.editor.colors.ColorType;
-import org.perfcake.idea.editor.swing.EditDialog;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 
 /**
  * Created by miron on 12.11.2014.
  */
-public class GeneratorGui extends JPerfCakeIdeaRectangle implements EditDialog {
+public class GeneratorGui extends JPerfCakeIdeaRectangle {
 
     private String threads;
     private String clazz;
@@ -25,14 +24,12 @@ public class GeneratorGui extends JPerfCakeIdeaRectangle implements EditDialog {
 
     public void setThreads(String threads) {
         this.threads = threads;
+        setTitle(getTitleText());
     }
 
     public void setClazz(String clazz) {
         this.clazz = clazz;
+        setTitle(getTitleText());
     }
 
-    @Override
-    public void invokeDialog() {
-
-    }
 }

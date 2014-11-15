@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 /**
  * Created by miron on 22.10.2014.

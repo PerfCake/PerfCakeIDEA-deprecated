@@ -9,9 +9,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.components.panels.Wrapper;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.components.EditorPanel;
+import org.perfcake.idea.editor.components.ScenarioPanel;
 import org.perfcake.idea.editor.swing.ColorAdjustable;
-import org.perfcake.idea.editor.ui.EditorPanel;
-import org.perfcake.idea.editor.ui.ScenarioPanel;
 
 import javax.swing.*;
 import java.awt.*;

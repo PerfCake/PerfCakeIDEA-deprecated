@@ -12,14 +12,14 @@ import java.awt.*;
 /**
  * Created by miron on 21.5.2014.
  */
-public class PropertyEditDialog extends DialogWrapper {
+public class PropertyDialog extends DialogWrapper {
     private JTextField nameTextField;
     private JTextField valueTextField;
     private JPanel rootPanel;
 
     private Property mockCopy;
 
-    public PropertyEditDialog(@NotNull Component parent, Property mockCopy) {
+    public PropertyDialog(@NotNull Component parent, Property mockCopy) {
         super(parent, true);
         init();
         setTitle("Edit Property");

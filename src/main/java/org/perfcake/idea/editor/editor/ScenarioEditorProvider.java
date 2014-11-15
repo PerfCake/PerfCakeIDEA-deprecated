@@ -10,7 +10,7 @@ import com.intellij.util.xml.ui.DomFileEditor;
 import com.intellij.util.xml.ui.PerspectiveFileEditor;
 import com.intellij.util.xml.ui.PerspectiveFileEditorProvider;
 import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.ui.ScenarioComponent;
+import org.perfcake.idea.editor.components.ScenarioComponent;
 import org.perfcake.idea.model.Scenario;
 
 /**

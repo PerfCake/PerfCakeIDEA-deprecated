@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
 import org.perfcake.idea.editor.colors.ColorType;
@@ -32,10 +32,12 @@ public class ValidationComponent extends BasicDomElementComponent<Validation> {
     }
 
     private void addValidators() {
-        for (Validator v : myDomElement.getValidators()) {
-            ValidatorComponent validatorComponent = new ValidatorComponent(v);
-            addComponent(validatorComponent);
-            validationGui.addComponent(validatorComponent.getComponent());
+        if (getDomElement().isValid()) {
+            for (Validator v : myDomElement.getValidators()) {
+                ValidatorComponent validatorComponent = new ValidatorComponent(v);
+                addComponent(validatorComponent);
+                validationGui.addComponent(validatorComponent.getComponent());
+            }
         }
     }
 

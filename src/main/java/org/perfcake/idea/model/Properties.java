@@ -3,7 +3,6 @@
 
 package org.perfcake.idea.model;
 
-import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * urn:perfcake:scenario:3.0:propertiesElemType interface.
  * @author Miron
  */
-public interface Properties extends DomElement {
+public interface Properties extends DomElement, IProperties {
 
 	/**
 	 * Returns the list of property children.

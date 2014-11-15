@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
 import org.perfcake.idea.editor.colors.ColorType;
@@ -32,6 +32,8 @@ public class ValidatorComponent extends BasicDomElementComponent<Validator> {
     @Override
     public void reset() {
         super.reset();
-        validatorGui.setTitle(getGuiText());
+        if (getDomElement().isValid()) {
+            validatorGui.setTitle(getGuiText());
+        }
     }
 }

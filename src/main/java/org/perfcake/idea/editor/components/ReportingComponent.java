@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
 import org.perfcake.idea.editor.colors.ColorType;
@@ -32,10 +32,12 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
     }
 
     private void addReporters() {
-        for (Reporter r : myDomElement.getReporters()) {
-            ReporterComponent reporterComponent = new ReporterComponent(r);
-            addComponent(reporterComponent);
-            reportingGui.addComponent(reporterComponent.getComponent());
+        if (getDomElement().isValid()) {
+            for (Reporter r : myDomElement.getReporters()) {
+                ReporterComponent reporterComponent = new ReporterComponent(r);
+                addComponent(reporterComponent);
+                reportingGui.addComponent(reporterComponent.getComponent());
+            }
         }
     }
 

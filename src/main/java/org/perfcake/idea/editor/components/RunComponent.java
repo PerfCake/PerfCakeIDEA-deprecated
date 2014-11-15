@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
 import org.perfcake.idea.model.Run;
@@ -26,7 +26,9 @@ public class RunComponent extends BasicDomElementComponent<Run> {
     @Override
     public void reset() {
         super.reset();
-        runGui.setText(getGuiText());
+        if (getDomElement().isValid()) {
+            runGui.setText(getGuiText());
+        }
     }
 
     private String getGuiText() {

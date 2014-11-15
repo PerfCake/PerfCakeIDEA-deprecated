@@ -3,8 +3,9 @@
 
 package org.perfcake.idea.model;
 
-import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * urn:perfcake:scenario:3.0:messageElemType interface.
  * @author Miron
  */
-public interface Message extends DomElement {
+public interface Message extends DomElement, IProperties {
 
 	/**
 	 * Returns the value of the uri child.

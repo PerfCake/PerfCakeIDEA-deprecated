@@ -2,7 +2,7 @@ package org.perfcake.idea.editor.editor;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.ui.DomFileEditor;
-import org.perfcake.idea.editor.ui.ScenarioComponent;
+import org.perfcake.idea.editor.components.ScenarioComponent;
 
 /**
  * Created by miron on 3.11.2014.

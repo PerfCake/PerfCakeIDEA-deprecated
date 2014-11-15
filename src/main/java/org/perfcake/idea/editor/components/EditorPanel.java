@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +16,7 @@ public class EditorPanel extends JPanel {
         this.toolbarPanel = toolbarPanel;
         this.scenarioPanel = scenarioPanel;
 
+        //TODO JBSplitter
         //create resizable split pane for inner panels
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         //splitPane.setBorder(BorderFactory.createLineBorder(Color.BLUE, 10));

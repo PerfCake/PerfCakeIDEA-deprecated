@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 import org.perfcake.idea.editor.colors.ColorComponents;
 import org.perfcake.idea.editor.colors.ColorType;
@@ -9,8 +9,6 @@ import org.perfcake.idea.editor.swing.Selectable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -23,6 +21,13 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
     public ScenarioPanel(ScenarioComponent scenarioComponent) {
         super(new GridBagLayout());
         this.scenarioComponent = scenarioComponent;
+        setFocusable(true);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                requestFocusInWindow();
+            }
+        });
         init();
         updateColors();
     }
@@ -82,7 +87,7 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
         add(propertiesComponent.getComponent(), constraints);
         scenarioComponent.addComponent(propertiesComponent);
 
-        addMouseListener(new MyMouseAdapter());
+        //addMouseListener(new MyMouseAdapter());
     }
 
     private class MyMouseAdapter extends MouseAdapter {

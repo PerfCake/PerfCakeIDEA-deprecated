@@ -1,9 +1,11 @@
 package org.perfcake.idea.editor.swing;
 
-import com.intellij.psi.PsiFile;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by miron on 15.4.2014.
@@ -18,6 +20,24 @@ public class JRoundedRectangle extends JPanel implements Selectable {
         setLayout(new BorderLayout());
         //this component is rounded, so we will set opacity to false to see background in corners
         setOpaque(Boolean.FALSE);
+        setFocusable(true);
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                select();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                deselect();
+            }
+        });
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                requestFocusInWindow();
+            }
+        });
     }
 
     public String getUIClassID() {

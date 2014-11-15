@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.ui;
+package org.perfcake.idea.editor.components;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
 import org.perfcake.idea.editor.colors.ColorType;
@@ -28,6 +28,8 @@ public class DestinationComponent extends BasicDomElementComponent<Destination> 
     @Override
     public void reset() {
         super.reset();
-        destinationGui.setTitle(myDomElement.getClazz().getStringValue());
+        if (getDomElement().isValid()) {
+            destinationGui.setTitle(myDomElement.getClazz().getStringValue());
+        }
     }
 }
