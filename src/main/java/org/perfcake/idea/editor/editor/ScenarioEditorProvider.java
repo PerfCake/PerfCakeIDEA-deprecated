@@ -39,4 +39,5 @@ public class ScenarioEditorProvider extends PerspectiveFileEditorProvider {
         return new DomFileEditor<ScenarioComponent>(s, "Designer", new ScenarioComponent(s));
         //return DomFileEditor.createDomFileEditor("Designer", Constants.ICON_24P, p, new PropertyComponentFactory(p));
     }
+
 }

@@ -16,7 +16,7 @@ public class PropertiesGui extends JPerfCakeIdeaRectangle {
         //this.properties = properties;
     }
 
-//    public List<Property> getMockCopy() {
+//    public List<Property> getMockPair() {
 //        return properties;
 //    }
 

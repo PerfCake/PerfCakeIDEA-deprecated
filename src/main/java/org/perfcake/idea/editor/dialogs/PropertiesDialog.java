@@ -3,6 +3,7 @@ package org.perfcake.idea.editor.dialogs;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
 import org.perfcake.idea.model.Properties;
 
 import javax.swing.*;

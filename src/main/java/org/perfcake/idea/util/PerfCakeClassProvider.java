@@ -4,6 +4,9 @@ import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.message.generator.AbstractMessageGenerator;
 import org.perfcake.message.sender.AbstractSender;
+import org.perfcake.reporting.destinations.Destination;
+import org.perfcake.reporting.reporters.AbstractReporter;
+import org.perfcake.validation.MessageValidator;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -104,4 +107,34 @@ public class PerfCakeClassProvider {
     public String[] findGenerators() throws PerfCakeClassProviderException {
         return getSubclasses(AbstractMessageGenerator.class, "org.perfcake.message.generator");
     }
+
+    /**
+     * Finds all validator class's names in PerfCake library in package org.perfcake.message.validation
+     *
+     * @return array of balidator class names
+     * @throws PerfCakeClassProviderException if an Exception occurs during the search
+     */
+    @NotNull
+    public String[] findValidators() throws PerfCakeClassProviderException {
+        return getSubclasses(MessageValidator.class, "org.perfcake.validation");
+    }
+
+    /**
+     * Finds all validator class's names in PerfCake library in package org.perfcake.message.validation
+     *
+     * @return array of balidator class names
+     * @throws PerfCakeClassProviderException if an Exception occurs during the search
+     */
+    @NotNull
+    public String[] findDestinations() throws PerfCakeClassProviderException {
+        return getSubclasses(Destination.class, "org.perfcake.reporting.destinations");
+    }
+
+    public String[] findReporters() throws PerfCakeClassProviderException {
+        return getSubclasses(AbstractReporter.class, "org.perfcake.reporting.reporters");
+    }
+
+
+
+
 }

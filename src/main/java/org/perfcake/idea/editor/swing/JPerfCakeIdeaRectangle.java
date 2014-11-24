@@ -21,6 +21,8 @@ public class JPerfCakeIdeaRectangle extends JRoundedRectangle implements ColorAd
         this.foregroundColor = foregroundColor;
         this.backGroundColor = backgroundColor;
 
+        add(new JEnabledCircle(), BorderLayout.NORTH);
+
         label = new JLabel(title);
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));

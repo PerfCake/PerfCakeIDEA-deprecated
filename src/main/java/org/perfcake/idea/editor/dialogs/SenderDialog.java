@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
 import org.perfcake.idea.model.Sender;
 import org.perfcake.idea.util.PerfCakeClassProvider;
 import org.perfcake.idea.util.PerfCakeClassProviderException;
@@ -47,7 +48,7 @@ public class SenderDialog extends DialogWrapper {
         try {
             senders = new DefaultComboBoxModel<String>(classProvider.findSenders());
         } catch (PerfCakeClassProviderException e) {
-            LOG.error("Error finding generators for GeneratorDialog ComboBox", e);
+            LOG.error("Error finding senders for SenderDialog ComboBox", e);
         }
         senderComboBox = new ComboBox(senders);
         //set selected sender from model

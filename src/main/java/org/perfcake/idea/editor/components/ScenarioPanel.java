@@ -3,9 +3,6 @@ package org.perfcake.idea.editor.components;
 import org.perfcake.idea.editor.colors.ColorComponents;
 import org.perfcake.idea.editor.colors.ColorType;
 import org.perfcake.idea.editor.swing.ColorAdjustable;
-import org.perfcake.idea.editor.swing.EditDialog;
-import org.perfcake.idea.editor.swing.JRoundedRectangle;
-import org.perfcake.idea.editor.swing.Selectable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,43 +83,5 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
         constraints.gridheight = 1;
         add(propertiesComponent.getComponent(), constraints);
         scenarioComponent.addComponent(propertiesComponent);
-
-        //addMouseListener(new MyMouseAdapter());
-    }
-
-    private class MyMouseAdapter extends MouseAdapter {
-        private Selectable selected = null;
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (selected != null) {
-                selected.deselect();
-                selected = null;
-            }
-            synchronized (getTreeLock()) {
-                traverseComponents(e, getComponents());
-            }
-            if (selected != null) {
-                selected.select();
-            }
-
-            if (e.getClickCount() == 2 && selected != null) {
-                if(selected instanceof EditDialog){
-                    ((EditDialog)selected).invokeDialog();
-                }
-            }
-        }
-
-        private void traverseComponents(MouseEvent e, Component[] components) {
-            for (Component c : components) {
-                Point convertPoint = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), c);
-                if (c.contains(convertPoint)) {
-                    if (c instanceof JRoundedRectangle) {
-                        selected = (JRoundedRectangle) c;
-                    }
-                    traverseComponents(e, ((Container) c).getComponents());
-                }
-            }
-        }
     }
 }

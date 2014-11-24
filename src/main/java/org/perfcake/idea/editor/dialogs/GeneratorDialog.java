@@ -4,14 +4,13 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
 import org.perfcake.idea.model.Generator;
 import org.perfcake.idea.util.PerfCakeClassProvider;
 import org.perfcake.idea.util.PerfCakeClassProviderException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by miron on 14. 11. 2014.
@@ -35,13 +34,6 @@ public class GeneratorDialog extends DialogWrapper {
 
         durationField.setText(mockCopy.getRun().getValue().getStringValue());
         threadsField.setText(mockCopy.getThreads().getStringValue());
-
-        durationField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
     }
 
     public Generator getMockCopy() {

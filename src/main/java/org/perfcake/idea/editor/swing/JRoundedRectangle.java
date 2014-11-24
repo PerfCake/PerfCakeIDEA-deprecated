@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
 /**
  * Created by miron on 15.4.2014.
  */
-public class JRoundedRectangle extends JPanel implements Selectable {
+public class JRoundedRectangle extends JPanel {
     private static final String uiClassID = "RoundedRectangleUI";
     private Boolean selected = Boolean.FALSE;
 
@@ -20,6 +20,8 @@ public class JRoundedRectangle extends JPanel implements Selectable {
         setLayout(new BorderLayout());
         //this component is rounded, so we will set opacity to false to see background in corners
         setOpaque(Boolean.FALSE);
+
+        //add selection support
         setFocusable(true);
         addFocusListener(new FocusAdapter() {
             @Override
@@ -61,23 +63,20 @@ public class JRoundedRectangle extends JPanel implements Selectable {
         }
     }
 
-    @Override
-    public void select() {
+    private void select() {
         if (!selected) {
             selected = Boolean.TRUE;
             repaint();
         }
     }
 
-    @Override
-    public void deselect() {
+    private void deselect() {
         if (selected) {
             selected = Boolean.FALSE;
             repaint();
         }
     }
 
-    //TODO write to oldmodel?
     public Boolean isSelected() {
         return selected;
     }

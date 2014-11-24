@@ -3,8 +3,8 @@
 
 package org.perfcake.idea.model;
 
-import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * urn:perfcake:scenario:3.0:reportingElemType interface.
  * @author Miron
  */
-public interface Reporting extends DomElement {
+public interface Reporting extends DomElement, IProperties {
 
 	/**
 	 * Returns the list of reporter children.

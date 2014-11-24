@@ -1,10 +1,11 @@
-package org.perfcake.idea.editor.dialogs;
+package org.perfcake.idea.editor.dialogs.tables;
 
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.dialogs.PropertyDialog;
 import org.perfcake.idea.model.IProperties;
 import org.perfcake.idea.model.Property;
 
@@ -118,7 +119,7 @@ public class PropertiesEditor {
     }
 
     private class PropertiesTableModel extends AbstractTableModel {
-        private final String[] columnNames = {"Name", "Value"};
+        private final String[] columnNames = {"Property name", "Property value"};
 
         @Override
         public int getRowCount() {

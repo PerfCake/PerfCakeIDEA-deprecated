@@ -3,8 +3,10 @@
 
 package org.perfcake.idea.model;
 
-import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.JavaNameStrategy;
+import com.intellij.util.xml.NameStrategy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
  * urn:perfcake:scenario:3.0:validationElemType interface.
  * @author Miron
  */
+@NameStrategy(value = JavaNameStrategy.class)
 public interface Validation extends DomElement {
 
 	/**

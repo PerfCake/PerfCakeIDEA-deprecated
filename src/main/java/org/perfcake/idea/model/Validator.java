@@ -3,8 +3,9 @@
 
 package org.perfcake.idea.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * urn:perfcake:scenario:3.0:validatorElemType interface.
  * @author Miron
  */
-public interface Validator extends DomElement {
+public interface Validator extends DomElement, IProperties {
 
 	/**
 	 * Returns the value of the id child.
