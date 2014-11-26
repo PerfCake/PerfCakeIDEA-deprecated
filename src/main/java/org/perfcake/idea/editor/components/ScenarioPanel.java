@@ -1,5 +1,6 @@
 package org.perfcake.idea.editor.components;
 
+import com.intellij.openapi.fileEditor.FileEditor;
 import org.perfcake.idea.editor.colors.ColorComponents;
 import org.perfcake.idea.editor.colors.ColorType;
 import org.perfcake.idea.editor.swing.ColorAdjustable;
@@ -13,7 +14,7 @@ import java.awt.event.MouseEvent;
  * Created by miron on 2.11.2014.
  */
 public class ScenarioPanel extends JPanel implements ColorAdjustable {
-    ScenarioComponent scenarioComponent;
+    private ScenarioComponent scenarioComponent;
 
     public ScenarioPanel(ScenarioComponent scenarioComponent) {
         super(new GridBagLayout());
@@ -28,6 +29,7 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
         init();
         updateColors();
     }
+
 
     @Override
     public void updateColors() {

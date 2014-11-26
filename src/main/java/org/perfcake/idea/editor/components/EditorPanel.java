@@ -1,7 +1,14 @@
 package org.perfcake.idea.editor.components;
 
+import com.intellij.ide.ui.customization.CustomActionsSchema;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.editor.event.EditorMouseEvent;
+import com.intellij.openapi.editor.event.EditorMouseEventArea;
+import com.intellij.util.EditorPopupHandler;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by miron on 22.10.2014.
@@ -42,4 +49,5 @@ public class EditorPanel extends JPanel {
     public ScenarioPanel getScenarioPanel() {
         return scenarioPanel;
     }
+
 }

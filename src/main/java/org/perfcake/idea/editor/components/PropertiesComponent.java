@@ -122,6 +122,7 @@ public class PropertiesComponent extends BasicDomElementComponent<Properties> {
                     System.out.println("UNDO");
                     Project project = getDomElement().getModule().getProject();
                     UndoManager instance = UndoManager.getInstance(project);
+                    EditorPanel editorPanel = (EditorPanel) propertiesGui.getParent();
                     if (instance.isUndoAvailable(null)) instance.undo(null);
                     Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
                 }
