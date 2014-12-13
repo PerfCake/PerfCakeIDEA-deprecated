@@ -1,14 +1,19 @@
 package org.perfcake.idea.util;
 
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.openapi.application.Result;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeConst;
+import org.perfcake.idea.editor.components.MessageValidationPair;
+import org.perfcake.idea.editor.components.MessagesValidationPair;
+import org.perfcake.idea.model.Message;
+import org.perfcake.idea.model.Messages;
+import org.perfcake.idea.model.Scenario;
+import org.perfcake.idea.model.Validation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,5 +46,39 @@ public class PerfCakeIdeaUtil {
         dirs.put(PerfCakeConst.SCENARIOS_DIR_PROPERTY, scenariosDir);
         dirs.put(PerfCakeConst.MESSAGES_DIR_PROPERTY, messagesDir);
         return dirs;
+    }
+
+    public static <T extends DomElement> T runCreateMockCopy(final T domElement){
+        if(domElement.isValid()) {
+            return (T) new WriteAction() {
+                @Override
+                protected void run(@NotNull Result result) throws Throwable {
+                    result.setResult(domElement.createMockCopy(false));
+                }
+            }.execute().getResultObject();
+        }
+        throw new RuntimeException("Invalid XML. Cannot create mockCopy.");
+    }
+
+    public static MessageValidationPair getMessageValidationPair(Message message){
+        if (message.isValid() && message.getParentOfType(Scenario.class, true) != null) {
+            Scenario scenario = message.getParentOfType(Scenario.class, true);
+            if (scenario.isValid() && scenario.getValidation().isValid()) {
+                final Validation validation = scenario.getValidation();
+                return new MessageValidationPair(message, validation);
+            }
+        }
+        throw new RuntimeException("Scenario xml is not valid.");
+    }
+
+    public static MessagesValidationPair getMessagesValidationPair(Messages messages){
+        if (messages.isValid() && messages.getParentOfType(Scenario.class, true) != null) {
+            Scenario scenario = messages.getParentOfType(Scenario.class, true);
+            if (scenario.isValid() && scenario.getValidation().isValid()) {
+                final Validation validation = scenario.getValidation();
+                return new MessagesValidationPair(messages, validation);
+            }
+        }
+        throw new RuntimeException("Scenario xml is not valid.");
     }
 }

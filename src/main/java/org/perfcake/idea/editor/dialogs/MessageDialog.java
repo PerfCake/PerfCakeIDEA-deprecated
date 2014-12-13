@@ -1,15 +1,17 @@
 package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.DocumentAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.components.MessageValidationPair;
 import org.perfcake.idea.editor.dialogs.tables.HeaderEditor;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
-import org.perfcake.idea.editor.dialogs.tables.ValidatorSenderEditor;
+import org.perfcake.idea.editor.dialogs.tables.ValidatorMessageEditor;
 import org.perfcake.idea.model.Message;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 import java.awt.*;
 
 /**
@@ -21,8 +23,11 @@ public class MessageDialog extends DialogWrapper {
     private JTextField contentTextField;
     private PropertiesEditor propertiesEditor;
     private JPanel rootPanel;
-    private ValidatorSenderEditor validatorSenderEditor;
+    private ValidatorMessageEditor validatorMessageEditor;
     private HeaderEditor headerEditor;
+    private JRadioButton uriRadioButton;
+    private JRadioButton contentRadioButton;
+    private ButtonGroup group;// = new ButtonGroup();
     private MessageValidationPair mockPair;
 
     public MessageDialog(@NotNull Component parent, MessageValidationPair mockPair) {
@@ -34,6 +39,43 @@ public class MessageDialog extends DialogWrapper {
         uriTextField.setText(mockPair.getMessage().getUri().getStringValue());
         multiplicityTextField.setText(mockPair.getMessage().getMultiplicity().getStringValue());
         contentTextField.setText(mockPair.getMessage().getContent().getStringValue());
+
+        group = new ButtonGroup();
+        group.add(uriRadioButton);
+        group.add(contentRadioButton);
+        if (!contentTextField.getText().isEmpty()) {
+            contentRadioButton.setSelected(true);
+        } else if (!uriTextField.getText().isEmpty()) {
+            uriRadioButton.setSelected(true);
+        }
+
+        uriTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(DocumentEvent e) {
+                if (contentTextField.getText().isEmpty()) {
+                    if (e.getDocument().getLength() > 0) {
+                        uriRadioButton.setSelected(true);
+                    } else {
+                        group.clearSelection();
+                    }
+                }
+            }
+        });
+
+        contentTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(DocumentEvent e) {
+                if (e.getDocument().getLength() > 0) {
+                    contentRadioButton.setSelected(true);
+                } else {
+                    if (!uriTextField.getText().isEmpty()) {
+                        uriRadioButton.setSelected(true);
+                    } else {
+                        group.clearSelection();
+                    }
+                }
+            }
+        });
 
     }
 
@@ -54,6 +96,6 @@ public class MessageDialog extends DialogWrapper {
     private void createUIComponents() {
         headerEditor = new HeaderEditor(mockPair.getMessage());
         propertiesEditor = new PropertiesEditor(mockPair.getMessage());
-        validatorSenderEditor = new ValidatorSenderEditor(mockPair);
+        validatorMessageEditor = new ValidatorMessageEditor(mockPair);
     }
 }

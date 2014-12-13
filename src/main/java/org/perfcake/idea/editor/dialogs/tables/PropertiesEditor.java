@@ -1,26 +1,27 @@
 package org.perfcake.idea.editor.dialogs.tables;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.ui.table.JBTable;
-import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.dialogs.PropertyDialog;
+import org.perfcake.idea.editor.actions.DeleteAction;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.PropertyAddAction;
 import org.perfcake.idea.model.IProperties;
 import org.perfcake.idea.model.Property;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by miron on 15. 11. 2014.
  */
 public class PropertiesEditor {
     private final IProperties mockCopy;
+    List<Property> selectedProperties = new ArrayList<Property>();
     private JPanel rootPanel;
     private JButton deleteButton;
     private JButton editButton;
@@ -31,75 +32,35 @@ public class PropertiesEditor {
     public PropertiesEditor(final IProperties mockCopy) {
         this.mockCopy = mockCopy;
 
-        addButton.addActionListener(new ActionListener() {
+        addButton.setAction(new PropertyAddAction(mockCopy, propertiesTable));
+        addButton.setText("Add");
+
+        final EditAction propertyEditAction = new EditAction("Edit", selectedProperties.isEmpty() ? null : selectedProperties.get(0), propertiesTable);
+        editButton.setAction(propertyEditAction);
+
+        final DeleteAction propertyDeleteAction = new DeleteAction("Delete", selectedProperties, propertiesTable);
+        deleteButton.setAction(propertyDeleteAction);
+        //deleteButton.setText("Delete");
+
+        propertiesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
-                final Property newProperty = mockCopy.addProperty();
-                final PropertyDialog editDialog = new PropertyDialog(rootPanel, newProperty);
-                boolean ok = editDialog.showAndGet();
-                if (ok) {
-                    new WriteCommandAction(newProperty.getModule().getProject(), "Add Property", newProperty.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            newProperty.copyFrom(editDialog.getMockCopy());
-                        }
-                    }.execute();
-                    ((AbstractTableModel) propertiesTable.getModel()).fireTableDataChanged();
-                } else {
-                    newProperty.undefine();
-                }
-
-
-            }
-        });
-
-
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = propertiesTable.getSelectedRow();
-                if (selectedRow > -1) {
-
-                    final Property property = mockCopy.getProperties().get(selectedRow);
-
-                    final Property mockCopy = (Property) new WriteAction() {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            result.setResult(property.createMockCopy(false));
-                        }
-                    }.execute().getResultObject();
-                    final PropertyDialog editDialog = new PropertyDialog(rootPanel, mockCopy);
-                    boolean ok = editDialog.showAndGet();
-                    if (ok) {
-                        new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Property", mockCopy.getXmlElement().getContainingFile()) {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                property.copyFrom(editDialog.getMockCopy());
-                            }
-                        }.execute();
-                        ((AbstractTableModel) propertiesTable.getModel()).fireTableDataChanged();
+            public void valueChanged(ListSelectionEvent e) {
+                selectedProperties.clear();
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                        selectedProperties.add(mockCopy.getProperties().get(i));
                     }
-
                 }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = propertiesTable.getSelectedRow();
-                if (selectedRow > -1) {
-                    final Property property = mockCopy.getProperties().get(selectedRow);
-                    new WriteCommandAction(property.getModule().getProject(), "Delete Property", property.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            property.undefine();
-                        }
-                    }.execute();
-                    ((AbstractTableModel) propertiesTable.getModel()).fireTableDataChanged();
+                if (selectedProperties.isEmpty()) {
+                    propertyEditAction.setDomElement(null);
+                    propertyDeleteAction.setEnabled(false);
+                } else {
+                    propertyEditAction.setDomElement(selectedProperties.get(0));
+                    propertyDeleteAction.setEnabled(true);
                 }
-
             }
         });
 
@@ -137,21 +98,36 @@ public class PropertiesEditor {
         }
 
         @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            try {
-                Property property = mockCopy.getProperties().get(rowIndex);
-                if (property.isValid()) {
-                    if (columnIndex == 0) {
-                        return property.getName();
-                    }
-                    if (columnIndex == 1) {
-                        return property.getValue();
-                    }
-                }
-                return null;
-            } catch (IndexOutOfBoundsException e) {
-                return null;
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return true;
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            Property property = mockCopy.getProperties().get(rowIndex);
+            if (columnIndex == 0) {
+                property.getName().setStringValue((String) aValue);
             }
+            if (columnIndex == 1) {
+                property.getValue().setStringValue((String) aValue);
+            }
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            Property property = mockCopy.getProperties().get(rowIndex);
+            if (property.isValid()) {
+                if (columnIndex == 0) {
+                    return property.getName();
+                }
+                if (columnIndex == 1) {
+                    return property.getValue();
+                }
+            }
+            return null;
+
         }
     }
 }

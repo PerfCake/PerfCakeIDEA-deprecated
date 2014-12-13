@@ -1,20 +1,20 @@
 package org.perfcake.idea.editor.dialogs.tables;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.ui.table.JBTable;
-import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.dialogs.PeriodDialog;
+import org.perfcake.idea.editor.actions.DeleteAction;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.PeriodAddAction;
 import org.perfcake.idea.model.Destination;
 import org.perfcake.idea.model.Period;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by miron on 19. 11. 2014.
@@ -27,86 +27,50 @@ public class PeriodEditor {
     private JButton editButton;
     private JButton addButton;
 
+    private List<Period> selectedPeriods = new ArrayList<>();
+
     public PeriodEditor(final Destination mockCopy) {
         this.mockCopy = mockCopy;
 
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        PeriodAddAction addAction = new PeriodAddAction(mockCopy, periodTable);
+        addButton.setAction(addAction);
+        addButton.setText("Add");
 
-                final Period newPeriod = mockCopy.addPeriod();
-                final PeriodDialog editDialog = new PeriodDialog(rootPanel, newPeriod);
-                boolean ok = editDialog.showAndGet();
-                if (ok) {
-                    new WriteCommandAction(newPeriod.getModule().getProject(), "Add Period", newPeriod.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            newPeriod.copyFrom(editDialog.getMockCopy());
-                        }
-                    }.execute();
-                    ((AbstractTableModel) periodTable.getModel()).fireTableDataChanged();
-                } else {
-                    newPeriod.undefine();
-                }
+        final EditAction editAction = new EditAction("Edit Period", null, periodTable);
+        editButton.setAction(editAction);
+        editButton.setText("Edit");
 
-
-            }
-        });
-
-
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = periodTable.getSelectedRow();
-                if (selectedRow > -1) {
-
-                    final Period Period = mockCopy.getPeriods().get(selectedRow);
-
-                    final Period mockCopy = (Period) new WriteAction() {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            result.setResult(Period.createMockCopy(false));
-                        }
-                    }.execute().getResultObject();
-                    final PeriodDialog editDialog = new PeriodDialog(rootPanel, mockCopy);
-                    boolean ok = editDialog.showAndGet();
-                    if (ok) {
-                        new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Period", mockCopy.getXmlElement().getContainingFile()) {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                Period.copyFrom(editDialog.getMockCopy());
-                            }
-                        }.execute();
-                        ((AbstractTableModel) periodTable.getModel()).fireTableDataChanged();
-                    }
-
-                }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = periodTable.getSelectedRow();
-                if (selectedRow > -1) {
-                    final Period Period = mockCopy.getPeriods().get(selectedRow);
-                    new WriteCommandAction(Period.getModule().getProject(), "Delete Period", Period.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            Period.undefine();
-                        }
-                    }.execute();
-                    ((AbstractTableModel) periodTable.getModel()).fireTableDataChanged();
-                }
-
-            }
-        });
+        final DeleteAction deleteAction = new DeleteAction("Delete Period", selectedPeriods, periodTable);
+        deleteButton.setAction(deleteAction);
+        deleteButton.setText("Delete");
 
         periodTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     editButton.doClick();
+                }
+            }
+        });
+
+        periodTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedPeriods.clear();
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                        selectedPeriods.add(mockCopy.getPeriods().get(i));
+                    }
+                }
+                if (selectedPeriods.isEmpty()) {
+                    editAction.setDomElement(null);
+                    deleteAction.setEnabled(false);
+                } else {
+                    editAction.setDomElement(selectedPeriods.get(0));
+                    deleteAction.setEnabled(true);
                 }
             }
         });
@@ -135,9 +99,26 @@ public class PeriodEditor {
         }
 
         @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return true;
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            Period period = mockCopy.getPeriods().get(rowIndex);
+            if (columnIndex == 0) {
+                period.getType().setStringValue((String) aValue);
+            }
+            if (columnIndex == 1) {
+                period.getValue().setStringValue((String) aValue);
+            }
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+
+        @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            try {
-                Period period = mockCopy.getPeriods().get(rowIndex);
+
+            Period period = mockCopy.getPeriods().get(rowIndex);
                 if (period.isValid()) {
                     if (columnIndex == 0) {
                         return period.getType().getStringValue();
@@ -147,9 +128,7 @@ public class PeriodEditor {
                     }
                 }
                 return null;
-            } catch (IndexOutOfBoundsException e) {
-                return null;
-            }
+
         }
     }
 }

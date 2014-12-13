@@ -2,7 +2,6 @@ package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
 import org.perfcake.idea.model.Sender;
@@ -15,7 +14,7 @@ import java.awt.*;
 /**
  * Created by miron on 15. 11. 2014.
  */
-public class SenderDialog extends DialogWrapper {
+public class SenderDialog extends MyDialogWrapper {
 
     private static final Logger LOG = Logger.getInstance(SenderDialog.class);
 
@@ -31,9 +30,20 @@ public class SenderDialog extends DialogWrapper {
         setTitle("Edit Sender");
     }
 
+    public SenderDialog(Sender mockCopy) {
+        super(true);
+        this.mockCopy = mockCopy;
+        init();
+        setTitle("Edit Sender");
+    }
+
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
+        return getRootPanel();
+    }
+
+    public JComponent getRootPanel() {
         return rootPanel;
     }
 

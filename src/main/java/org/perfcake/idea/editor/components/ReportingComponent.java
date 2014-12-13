@@ -1,19 +1,25 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.PropertyAddAction;
+import org.perfcake.idea.editor.actions.ReporterAddAction;
 import org.perfcake.idea.editor.colors.ColorType;
-import org.perfcake.idea.editor.dialogs.ReportingDialog;
+import org.perfcake.idea.editor.dragndrop.ComponentTransferHandler;
+import org.perfcake.idea.editor.dragndrop.DropAction;
+import org.perfcake.idea.editor.dragndrop.PropertyDropAction;
+import org.perfcake.idea.editor.dragndrop.ReporterDropAction;
+import org.perfcake.idea.editor.menu.ActionType;
+import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Reporter;
 import org.perfcake.idea.model.Reporting;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
 /**
  * Created by miron on 21.10.2014.
@@ -28,36 +34,43 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
         super((Reporting) domElement.createStableCopy());
 
         reportingGui = new JPerfCakeIdeaRectangle(TITLE, ColorType.REPORTING_FOREGROUND, ColorType.REPORTING_BACKGROUND);
+
+        createSetActions();
+
         reportingGui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    if (getDomElement().isValid()) {
-                        final Reporting mockCopy = (Reporting) new WriteAction() {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                result.setResult(getDomElement().createMockCopy(false));
-                            }
-                        }.execute().getResultObject();
-                        final ReportingDialog reportingDialog = new ReportingDialog(reportingGui, mockCopy);
-                        boolean ok = reportingDialog.showAndGet();
-
-                        if (ok) {
-                            new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Reporting", mockCopy.getXmlElement().getContainingFile()) {
-                                @Override
-                                protected void run(@NotNull Result result) throws Throwable {
-                                    getDomElement().copyFrom(reportingDialog.getMockCopy());
-                                }
-                            }.execute();
-                        }
-
-                    }
+                    reportingGui.getActionMap().get(ActionType.EDIT).actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
                 }
             }
         });
+        reportingGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
+
+        //set dropping from toolbar to this component
+        HashMap<String, DropAction> prefixDropActions = new HashMap<>();
+        prefixDropActions.put("Reporters", new ReporterDropAction(domElement));
+        prefixDropActions.put("Properties", new PropertyDropAction(domElement));
+        reportingGui.setTransferHandler(new ComponentTransferHandler(prefixDropActions));
 
 
         addReporters();
+    }
+
+    private void createSetActions() {
+        ActionMap actionMap = new ActionMap();
+
+        ReporterAddAction addAction = new ReporterAddAction(getDomElement(), getComponent());
+        PropertyAddAction addAction2 = new PropertyAddAction(getDomElement(), getComponent());
+
+        EditAction editAction = new EditAction("Edit Reporting", getDomElement(), getComponent());
+
+
+        actionMap.put(ActionType.ADD, addAction);
+        actionMap.put(ActionType.ADD2, addAction2);
+        actionMap.put(ActionType.EDIT, editAction);
+
+        reportingGui.setActionMap(actionMap);
     }
 
 

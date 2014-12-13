@@ -1,15 +1,17 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.dialogs.GeneratorDialog;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.PropertyAddAction;
+import org.perfcake.idea.editor.dragndrop.ComponentTransferHandler;
+import org.perfcake.idea.editor.dragndrop.PropertyDropAction;
 import org.perfcake.idea.editor.gui.GeneratorGui;
+import org.perfcake.idea.editor.menu.ActionType;
+import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.model.Generator;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -24,38 +26,38 @@ public class GeneratorComponent extends BasicDomElementComponent<Generator> {
         super((Generator) domElement.createStableCopy());
 
         generatorGui = new GeneratorGui(getDomElement().getClazz().getStringValue(), getDomElement().getThreads().getStringValue());
+
+        createSetActions();
+
         generatorGui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    if (getDomElement().isValid()) {
-                        final Generator mockCopy = (Generator) new WriteAction() {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                result.setResult(getDomElement().createMockCopy(false));
-                            }
-                        }.execute().getResultObject();
-                        final GeneratorDialog generatorDialog = new GeneratorDialog(generatorGui, mockCopy);
-                        boolean ok = generatorDialog.showAndGet();
-
-                        if (ok) {
-                            new WriteCommandAction(getDomElement().getModule().getProject(), "Edit Generator", getDomElement().getXmlElement().getContainingFile()) {
-                                @Override
-                                protected void run(@NotNull Result result) throws Throwable {
-                                    getDomElement().copyFrom(generatorDialog.getMockCopy());
-                                    //reset();
-                                }
-                            }.execute();
-                        }
-
-                    }
+                    generatorGui.getActionMap().get(ActionType.EDIT).actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
                 }
             }
         });
 
+        generatorGui.addMouseListener(new PopClickListener(domElement, getComponent()));
+
+        //set dropping from toolbar to this component
+        generatorGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(myDomElement)));
+
         RunComponent runComponent = new RunComponent(domElement.getRun());
         generatorGui.addComponent(runComponent.getComponent());
         addComponent(runComponent);
+    }
+
+    private void createSetActions() {
+        ActionMap actionMap = new ActionMap();
+
+        PropertyAddAction addAction = new PropertyAddAction(getDomElement(), generatorGui);
+        EditAction editAction = new EditAction("Edit Generator", getDomElement(), generatorGui);
+
+        actionMap.put(ActionType.ADD, addAction);
+        actionMap.put(ActionType.EDIT, editAction);
+
+        generatorGui.setActionMap(actionMap);
     }
 
     @Override

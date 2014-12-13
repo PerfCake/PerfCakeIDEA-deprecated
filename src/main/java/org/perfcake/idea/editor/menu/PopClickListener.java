@@ -1,9 +1,8 @@
 package org.perfcake.idea.editor.menu;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.project.Project;
+import com.intellij.util.xml.DomElement;
 
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -12,13 +11,12 @@ import java.awt.event.MouseEvent;
  */
 public class PopClickListener extends MouseAdapter{
 
-    private Project project;
-    private FileEditor editor;
+    private DomElement domElement;
+    private JComponent listeningComponent;
 
-    public PopClickListener(PerfCakeIdeaContextMenu menu) {
-
-        this.project = project;
-        this.editor = editor;
+    public PopClickListener(DomElement domElement, JComponent listeningComponent) {
+        this.domElement = domElement;
+        this.listeningComponent = listeningComponent;
     }
 
     public void mousePressed(MouseEvent e){
@@ -32,7 +30,7 @@ public class PopClickListener extends MouseAdapter{
     }
 
     private void doPop(MouseEvent e){
-        PerfCakeIdeaContextMenu menu = new PerfCakeIdeaContextMenu(project, editor);
+        PerfCakeIdeaContextMenu menu = new PerfCakeIdeaContextMenu(domElement, listeningComponent);
         menu.show(e.getComponent(), e.getX(), e.getY());
     }
 }

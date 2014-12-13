@@ -16,7 +16,7 @@ public class ScenarioComponent extends BasicDomElementComponent<Scenario> {
         super((Scenario) domElement.createStableCopy());
 
         scenarioPanel = new ScenarioPanel(this);
-        editorPanel = new EditorPanel(new JPanel(), scenarioPanel);
+        editorPanel = new EditorPanel(new ToolbarPanel(), scenarioPanel);
     }
 
 

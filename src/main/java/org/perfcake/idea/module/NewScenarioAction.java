@@ -7,7 +7,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -15,8 +14,10 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.PerfCakeConst;
+import org.perfcake.idea.model.Scenario;
 import org.perfcake.idea.util.Constants;
 import org.perfcake.idea.util.PerfCakeIDEAException;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
@@ -39,11 +40,14 @@ public class NewScenarioAction extends CreateElementActionBase {
     @NotNull
     @Override
     protected PsiElement[] invokeDialog(Project project, PsiDirectory directory) {
-        if(scenarioDialog == null) {
-            scenarioDialog = new NewScenarioDialog(project);
-        }
-        scenarioDialog.show();
-        if (scenarioDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
+
+        XmlFile scenario = ScenarioUtil.getTemplateModel(directory.getProject(), "");
+        Scenario domElement = (Scenario) DomManager.getDomManager(project).getDomElement(scenario.getRootTag());
+        NewScenarioWizard newScenarioWizard = new NewScenarioWizard(project, domElement);
+        boolean ok = newScenarioWizard.showAndGet();
+
+        if (ok) {
+            scenario.setName(newScenarioWizard.nameStep.getScenarioName() + ".xml");
             //find correct scenarios dir for new scenario
             Map<String, VirtualFile> moduleDirs = null;
             try {
@@ -57,19 +61,17 @@ public class NewScenarioAction extends CreateElementActionBase {
             PsiDirectory scenariosDirPsi = PsiManager.getInstance(project).findDirectory(scenariosDir);
 
             //concat xml extension if not present
-            String scenarioName = scenarioDialog.getName().endsWith(".xml") ||  scenarioDialog.getName().endsWith(".XML") ?
-                    scenarioDialog.getName() : scenarioDialog.getName() + ".xml";
+            //String scenarioName = scenarioDialog.getName().endsWith(".xml") ||  scenarioDialog.getName().endsWith(".XML") ?
+            //        scenarioDialog.getName() : scenarioDialog.getName() + ".xml";
 
             //create new scenario file
-            try {
-                return create(scenarioName, scenariosDirPsi);
-            } catch (Exception e) {
-                log.error("Cannot create new scenario", e);
-                scenarioDialog = null;
-                return PsiElement.EMPTY_ARRAY;
-            }
+
+            PsiElement created = ScenarioUtil.saveScenarioPsiToDir(scenariosDirPsi, scenario);
+            return new PsiElement[]{created};
 
         }
+
+
         //Dialog closed without OK button
         scenarioDialog = null;
         return PsiElement.EMPTY_ARRAY;

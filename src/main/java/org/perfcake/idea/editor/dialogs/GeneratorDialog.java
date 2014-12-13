@@ -2,7 +2,7 @@ package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
 import org.perfcake.idea.model.Generator;
@@ -15,7 +15,7 @@ import java.awt.*;
 /**
  * Created by miron on 14. 11. 2014.
  */
-public class GeneratorDialog extends DialogWrapper {
+public class GeneratorDialog extends MyDialogWrapper {
 
     private static final Logger LOG = Logger.getInstance(GeneratorDialog.class);
     private JPanel rootPanel;
@@ -29,6 +29,16 @@ public class GeneratorDialog extends DialogWrapper {
     public GeneratorDialog(Component parent, Generator mockCopy) {
         super(parent, true);
         this.mockCopy = mockCopy;
+        load();
+    }
+
+    public GeneratorDialog(Generator mockCopy) {
+        super(true);
+        this.mockCopy = mockCopy;
+        load();
+    }
+
+    private void load() {
         init();
         setTitle("Edit Generator");
 
@@ -48,6 +58,10 @@ public class GeneratorDialog extends DialogWrapper {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
+        return getRootPanel();
+    }
+
+    public JComponent getRootPanel() {
         return rootPanel;
     }
 
@@ -82,4 +96,18 @@ public class GeneratorDialog extends DialogWrapper {
         propertiesEditor = new PropertiesEditor(mockCopy);
     }
 
+    @Nullable
+    @Override
+    public ValidationInfo doValidate() {
+        if (runComboBox.getSelectedItem() == null || ((String) runComboBox.getSelectedItem()).isEmpty()) {
+            return new ValidationInfo("Please specify run type", runComboBox);
+        }
+        if (durationField.getText().isEmpty()) {
+            return new ValidationInfo("Please specify duration", durationField);
+        }
+        if (threadsField.getText().isEmpty()) {
+            return new ValidationInfo("Please specify number of threads", threadsField);
+        }
+        return null;
+    }
 }

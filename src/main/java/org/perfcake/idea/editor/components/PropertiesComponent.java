@@ -1,22 +1,18 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.command.undo.UndoManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.dialogs.PropertiesDialog;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.PropertyAddAction;
+import org.perfcake.idea.editor.dragndrop.ComponentTransferHandler;
+import org.perfcake.idea.editor.dragndrop.PropertyDropAction;
 import org.perfcake.idea.editor.gui.PropertiesGui;
+import org.perfcake.idea.editor.menu.ActionType;
+import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.model.Properties;
 import org.perfcake.idea.model.Property;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -25,46 +21,29 @@ import java.awt.event.MouseEvent;
  */
 public class PropertiesComponent extends BasicDomElementComponent<Properties> {
 
-
     private PropertiesGui propertiesGui;
 
     public PropertiesComponent(Properties domElement) {
         super((Properties) domElement.createStableCopy());
 
+        propertiesGui = new PropertiesGui();
+        createSetActions();
 
-        propertiesGui = new PropertiesGui();//domElement.getMockPair());
         propertiesGui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    if (getDomElement().isValid()) {
-                        final Properties mockCopy = (Properties) new WriteAction() {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                result.setResult(getDomElement().createMockCopy(false));
-                            }
-                        }.execute().getResultObject();
-
-                        final PropertiesDialog editDialog = new PropertiesDialog(propertiesGui, (Properties) mockCopy);
-                        boolean ok = editDialog.showAndGet();
-
-                        if (ok) {
-                            new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Properties", mockCopy.getXmlElement().getContainingFile()) {
-                                @Override
-                                protected void run(@NotNull Result result) throws Throwable {
-                                    getDomElement().copyFrom(mockCopy);
-                                    reset();
-                                }
-                            }.execute();
-                        }
-
-                    }
+                    propertiesGui.getActionMap().get(ActionType.EDIT).actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
                 }
 
             }
         });
 
-        propertiesGui.addMouseListener(new PopClickListener());
+        propertiesGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
+
+        //set dropping from toolbar to this component
+        propertiesGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(domElement)));
+
         addProperties();
     }
 
@@ -91,43 +70,18 @@ public class PropertiesComponent extends BasicDomElementComponent<Properties> {
         propertiesGui.removeAllComponents();
 
         addProperties();
-
     }
 
-    class PopClickListener extends MouseAdapter {
-        public void mousePressed(MouseEvent e) {
-            if (e.isPopupTrigger())
-                doPop(e);
-        }
+    private void createSetActions() {
+        ActionMap actionMap = new ActionMap();
 
-        public void mouseReleased(MouseEvent e) {
-            if (e.isPopupTrigger())
-                doPop(e);
-        }
+        PropertyAddAction addAction = new PropertyAddAction(getDomElement(), getComponent());
+        EditAction editAction = new EditAction("Edit Properties", getDomElement(), getComponent());
 
-        private void doPop(MouseEvent e) {
-            PopUpDemo menu = new PopUpDemo();
-            menu.show(e.getComponent(), e.getX(), e.getY());
-        }
+        actionMap.put(ActionType.ADD, addAction);
+        actionMap.put(ActionType.EDIT, editAction);
+
+        propertiesGui.setActionMap(actionMap);
     }
 
-    class PopUpDemo extends JPopupMenu {
-        JMenuItem anItem;
-
-        public PopUpDemo() {
-            anItem = new JMenuItem("Undo");
-            anItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("UNDO");
-                    Project project = getDomElement().getModule().getProject();
-                    UndoManager instance = UndoManager.getInstance(project);
-                    EditorPanel editorPanel = (EditorPanel) propertiesGui.getParent();
-                    if (instance.isUndoAvailable(null)) instance.undo(null);
-                    Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                }
-            });
-            add(anItem);
-        }
-    }
 }

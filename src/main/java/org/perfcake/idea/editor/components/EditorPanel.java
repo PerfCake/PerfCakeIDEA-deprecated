@@ -1,14 +1,9 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.ide.ui.customization.CustomActionsSchema;
-import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.editor.event.EditorMouseEvent;
-import com.intellij.openapi.editor.event.EditorMouseEventArea;
-import com.intellij.util.EditorPopupHandler;
+import com.intellij.ui.components.JBScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 /**
  * Created by miron on 22.10.2014.
@@ -23,7 +18,6 @@ public class EditorPanel extends JPanel {
         this.toolbarPanel = toolbarPanel;
         this.scenarioPanel = scenarioPanel;
 
-        //TODO JBSplitter
         //create resizable split pane for inner panels
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         //splitPane.setBorder(BorderFactory.createLineBorder(Color.BLUE, 10));
@@ -36,7 +30,11 @@ public class EditorPanel extends JPanel {
 
         //add panels to split pane
         splitPane.setLeftComponent(toolbarPanel);
-        splitPane.setRightComponent(scenarioPanel);
+        //put scenario panel in scrollpane to allow scrolling when scenario is big
+        JBScrollPane jbScrollPane = new JBScrollPane(scenarioPanel);
+        jbScrollPane.setHorizontalScrollBarPolicy(JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jbScrollPane.setVerticalScrollBarPolicy(JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        splitPane.setRightComponent(jbScrollPane);
 
         //add split pane to editor
         add(splitPane, BorderLayout.CENTER);

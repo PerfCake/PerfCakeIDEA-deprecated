@@ -1,17 +1,19 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.ValidatorAddAction;
 import org.perfcake.idea.editor.colors.ColorType;
-import org.perfcake.idea.editor.dialogs.ValidationDialog;
+import org.perfcake.idea.editor.dragndrop.ComponentTransferHandler;
+import org.perfcake.idea.editor.dragndrop.ValidatorDropAction;
+import org.perfcake.idea.editor.menu.ActionType;
+import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Validation;
 import org.perfcake.idea.model.Validator;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -28,38 +30,36 @@ public class ValidationComponent extends BasicDomElementComponent<Validation> {
         super((Validation) domElement.createStableCopy());
 
         validationGui = new JPerfCakeIdeaRectangle(TITLE, ColorType.VALIDATION_FOREGROUND, ColorType.VALIDATION_BACKGROUND);
+
+        createSetActions();
+
         validationGui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    if (getDomElement().isValid()) {
-                        final Validation mockCopy = (Validation) new WriteAction() {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                result.setResult(getDomElement().createMockCopy(false));
-                            }
-                        }.execute().getResultObject();
-
-                        final ValidationDialog editDialog = new ValidationDialog(validationGui, mockCopy);
-                        boolean ok = editDialog.showAndGet();
-
-                        if (ok) {
-                            new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Validation", mockCopy.getXmlElement().getContainingFile()) {
-                                @Override
-                                protected void run(@NotNull Result result) throws Throwable {
-                                    getDomElement().copyFrom(mockCopy);
-                                    reset();
-                                }
-                            }.execute();
-                        }
-
-                    }
+                    validationGui.getActionMap().get(ActionType.EDIT).actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
                 }
             }
         });
 
+        validationGui.addMouseListener(new PopClickListener(domElement, getComponent()));
+
+        //set dropping from toolbar to this component
+        validationGui.setTransferHandler(new ComponentTransferHandler("Validators", new ValidatorDropAction(domElement)));
 
         addValidators();
+    }
+
+    private void createSetActions() {
+        ActionMap actionMap = new ActionMap();
+
+        ValidatorAddAction addAction = new ValidatorAddAction(getDomElement(), validationGui);
+        EditAction editAction = new EditAction("Edit Validation", getDomElement(), validationGui);
+
+        actionMap.put(ActionType.ADD, addAction);
+        actionMap.put(ActionType.EDIT, editAction);
+
+        validationGui.setActionMap(actionMap);
     }
 
 

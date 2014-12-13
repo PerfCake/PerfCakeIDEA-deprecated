@@ -1,25 +1,26 @@
 package org.perfcake.idea.editor.dialogs.tables;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.ui.table.JBTable;
-import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.dialogs.HeaderDialog;
+import org.perfcake.idea.editor.actions.DeleteAction;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.HeaderAddAction;
 import org.perfcake.idea.model.Header;
 import org.perfcake.idea.model.Message;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by miron on 18. 11. 2014.
  */
 public class HeaderEditor {
+    List<Header> selectedHeaders = new ArrayList<Header>();
     private JPanel rootPanel;
     private JButton deleteButton;
     private JButton addButton;
@@ -30,75 +31,36 @@ public class HeaderEditor {
     public HeaderEditor(final Message mockCopy) {
         this.mockCopy = mockCopy;
 
-        addButton.addActionListener(new ActionListener() {
+        HeaderAddAction addAction = new HeaderAddAction(mockCopy, headerTable);
+        addButton.setAction(addAction);
+        addButton.setText("Add");
+
+        final EditAction editAction = new EditAction("Edit Header", selectedHeaders.isEmpty() ? null : selectedHeaders.get(0), headerTable);
+        editButton.setAction(editAction);
+        editButton.setText("Edit");
+
+        final DeleteAction deleteAction = new DeleteAction("Delete Header", selectedHeaders, headerTable);
+        deleteButton.setAction(deleteAction);
+        deleteButton.setText("Delete");
+
+        headerTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
-                final Header newHeader = mockCopy.addHeader();
-                final HeaderDialog editDialog = new HeaderDialog(rootPanel, newHeader);
-                boolean ok = editDialog.showAndGet();
-                if (ok) {
-                    new WriteCommandAction(newHeader.getModule().getProject(), "Add Header", newHeader.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            newHeader.copyFrom(editDialog.getMockCopy());
-                        }
-                    }.execute();
-                    ((AbstractTableModel) headerTable.getModel()).fireTableDataChanged();
-                } else {
-                    newHeader.undefine();
-                }
-
-
-            }
-        });
-
-
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = headerTable.getSelectedRow();
-                if (selectedRow > -1) {
-
-                    final Header Header = mockCopy.getHeaders().get(selectedRow);
-
-                    final Header mockCopy = (Header) new WriteAction() {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            result.setResult(Header.createMockCopy(false));
-                        }
-                    }.execute().getResultObject();
-                    final HeaderDialog editDialog = new HeaderDialog(rootPanel, mockCopy);
-                    boolean ok = editDialog.showAndGet();
-                    if (ok) {
-                        new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Header", mockCopy.getXmlElement().getContainingFile()) {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                Header.copyFrom(editDialog.getMockCopy());
-                            }
-                        }.execute();
-                        ((AbstractTableModel) headerTable.getModel()).fireTableDataChanged();
+            public void valueChanged(ListSelectionEvent e) {
+                selectedHeaders.clear();
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for(int i = minIndex; i <= maxIndex; i++){
+                    if(lsm.isSelectedIndex(i)){
+                        selectedHeaders.add(mockCopy.getHeaders().get(i));
                     }
-
                 }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = headerTable.getSelectedRow();
-                if (selectedRow > -1) {
-                    final Header Header = mockCopy.getHeaders().get(selectedRow);
-                    new WriteCommandAction(Header.getModule().getProject(), "Delete Header", Header.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            Header.undefine();
-                        }
-                    }.execute();
-                    ((AbstractTableModel) headerTable.getModel()).fireTableDataChanged();
+                if(selectedHeaders.isEmpty()){
+                    deleteAction.setEnabled(false);
+                }else{
+                    deleteAction.setEnabled(true);
+                    editAction.setDomElement(selectedHeaders.get(0));
                 }
-
             }
         });
 
@@ -135,8 +97,25 @@ public class HeaderEditor {
         }
 
         @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return true;
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            Header header = mockCopy.getHeaders().get(rowIndex);
+            if(columnIndex == 0){
+                header.getName().setStringValue((String) aValue);
+            }
+            if(columnIndex == 1){
+                header.getValue().setStringValue((String) aValue);
+            }
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+
+        @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            try {
+
                 Header header = mockCopy.getHeaders().get(rowIndex);
                 if (header.isValid()) {
                     if (columnIndex == 0) {
@@ -147,9 +126,6 @@ public class HeaderEditor {
                     }
                 }
                 return null;
-            } catch (IndexOutOfBoundsException e) {
-                return null;
-            }
         }
     }
 }

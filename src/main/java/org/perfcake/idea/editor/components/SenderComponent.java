@@ -1,17 +1,19 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.PropertyAddAction;
 import org.perfcake.idea.editor.colors.ColorType;
-import org.perfcake.idea.editor.dialogs.SenderDialog;
+import org.perfcake.idea.editor.dragndrop.ComponentTransferHandler;
+import org.perfcake.idea.editor.dragndrop.PropertyDropAction;
+import org.perfcake.idea.editor.menu.ActionType;
+import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Property;
 import org.perfcake.idea.model.Sender;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -26,32 +28,35 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
         super((Sender) domElement.createStableCopy());
 
         senderGui = new JPerfCakeIdeaRectangle(domElement.getClazz().getStringValue(), ColorType.SENDER_FOREGROUND, ColorType.SENDER_BACKGROUND);
+
+        createSetActions();
+
         senderGui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    if (getDomElement().isValid()) {
-                        final Sender mockCopy = (Sender) new WriteAction() {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                result.setResult(getDomElement().createMockCopy(false));
-                            }
-                        }.execute().getResultObject();
-                        final SenderDialog senderDialog = new SenderDialog(senderGui, mockCopy);
-                        boolean ok = senderDialog.showAndGet();
-                        if (ok) {
-                            new WriteCommandAction(getDomElement().getModule().getProject(), "Edit Sender", getDomElement().getXmlElement().getContainingFile()) {
-                                @Override
-                                protected void run(@NotNull Result result) throws Throwable {
-                                    getDomElement().copyFrom(senderDialog.getMockCopy());
-                                    //reset();
-                                }
-                            }.execute();
-                        }
-                    }
+                    senderGui.getActionMap().get(ActionType.EDIT).actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
                 }
             }
         });
+
+        senderGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
+
+        //set dropping from toolbar to this component
+        senderGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(myDomElement)));
+    }
+
+    private void createSetActions() {
+        ActionMap actionMap = new ActionMap();
+
+        PropertyAddAction addAction = new PropertyAddAction(getDomElement(), getComponent());
+
+        EditAction editAction = new EditAction("Edit Sender", getDomElement(), getComponent());
+
+        actionMap.put(ActionType.ADD, addAction);
+        actionMap.put(ActionType.EDIT, editAction);
+
+        senderGui.setActionMap(actionMap);
     }
 
     @Override

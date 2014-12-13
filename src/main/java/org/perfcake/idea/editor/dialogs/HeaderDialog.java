@@ -1,6 +1,5 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +11,7 @@ import java.awt.*;
 /**
  * Created by miron on 18. 11. 2014.
  */
-public class HeaderDialog extends DialogWrapper {
+public class HeaderDialog extends MyDialogWrapper {
     private Header mockCopy;
     private JTextField nameTextField;
     private JTextField valueTextField;

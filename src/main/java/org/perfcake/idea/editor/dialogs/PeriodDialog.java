@@ -1,6 +1,5 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.model.Period;
 
@@ -10,7 +9,7 @@ import java.awt.*;
 /**
  * Created by miron on 19. 11. 2014.
  */
-public class PeriodDialog extends DialogWrapper {
+public class PeriodDialog extends MyDialogWrapper {
     private JTextField periodTextField;
     private JTextField valueTextField;
     private JPanel rootPanel;

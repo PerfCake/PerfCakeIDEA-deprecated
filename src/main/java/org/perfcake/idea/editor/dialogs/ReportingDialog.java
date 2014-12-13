@@ -1,6 +1,5 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
 import org.perfcake.idea.editor.dialogs.tables.ReporterEditor;
@@ -12,7 +11,7 @@ import java.awt.*;
 /**
  * Created by miron on 21. 11. 2014.
  */
-public class ReportingDialog extends DialogWrapper {
+public class ReportingDialog extends MyDialogWrapper {
     private Reporting mockCopy;
     private ReporterEditor reporterEditor;
     private JPanel rootPanel;
@@ -23,7 +22,13 @@ public class ReportingDialog extends DialogWrapper {
         this.mockCopy = mockCopy;
         init();
         setTitle("Edit Reporting");
-        setSize(500, 500);
+    }
+
+    public ReportingDialog(Reporting mockCopy) {
+        super(true);
+        this.mockCopy = mockCopy;
+        init();
+        setTitle("Edit Reporting");
     }
 
     private void createUIComponents() {
@@ -33,7 +38,7 @@ public class ReportingDialog extends DialogWrapper {
 
     @Nullable
     @Override
-    protected JComponent createCenterPanel() {
+    public JComponent createCenterPanel() {
         return rootPanel;
     }
 

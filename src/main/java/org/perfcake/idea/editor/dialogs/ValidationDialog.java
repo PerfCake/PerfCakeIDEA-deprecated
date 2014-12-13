@@ -1,12 +1,11 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.editor.actions.DeleteAction;
+import org.perfcake.idea.editor.actions.EditAction;
+import org.perfcake.idea.editor.actions.ValidatorAddAction;
 import org.perfcake.idea.model.Validation;
 import org.perfcake.idea.model.Validator;
 
@@ -15,15 +14,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
  * Created by miron on 16. 11. 2014.
  */
-public class ValidationDialog extends DialogWrapper {
+public class ValidationDialog extends MyDialogWrapper {
+    java.util.List<Validator> selectedValidators = new ArrayList<Validator>();
     private JPanel rootPanel;
     private JCheckBox enabledCheckBox;
     private JCheckBox fastForwardCheckBox;
@@ -36,91 +35,47 @@ public class ValidationDialog extends DialogWrapper {
     @Nullable
     private String selectedValidatorId = null;
 
+    public ValidationDialog(Validation mockCopy, final boolean selectMode) {
+        super(true);
+        this.mockCopy = mockCopy;
+        this.selectMode = selectMode;
+        load();
+    }
+
     public ValidationDialog(@NotNull Component parent, Validation mockCopy) {
         this(parent, mockCopy, false);
     }
 
-    public ValidationDialog(Component parent, final Validation mockCopy, boolean selectMode) {
+    public ValidationDialog(Component parent, final Validation mockCopy, final boolean selectMode) {
         super(parent, true);
         this.mockCopy = mockCopy;
         this.selectMode = selectMode;
+        load();
+
+    }
+
+    private void load() {
+
         init();
-        setTitle("Edit Validation");
+        setTitle(selectMode ? "Attach Validator" : "Edit Validation");
 
-        enabledCheckBox.setSelected(mockCopy.getEnabled().getValue());
-        fastForwardCheckBox.setSelected(mockCopy.getFastForward().getValue());
-
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                final Validator newValidator = mockCopy.addValidator();
-                final ValidatorDialog editDialog = new ValidatorDialog(rootPanel, newValidator);
-                boolean ok = editDialog.showAndGet();
-                if (ok) {
-                    new WriteCommandAction(newValidator.getModule().getProject(), "Add Validator", newValidator.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            newValidator.copyFrom(editDialog.getMockCopy());
-                        }
-                    }.execute();
-                    ((AbstractTableModel) validatorTable.getModel()).fireTableDataChanged();
-                } else {
-                    newValidator.undefine();
-                }
+        if (mockCopy.getEnabled().getValue() != null) {
+            enabledCheckBox.setSelected(mockCopy.getEnabled().getValue());
+        }
+        if (mockCopy.getFastForward().getValue() != null) {
+            fastForwardCheckBox.setSelected(mockCopy.getFastForward().getValue());
+        }
 
 
-            }
-        });
+        ValidatorAddAction addAction = new ValidatorAddAction(mockCopy, validatorTable);
+        addButton.setAction(addAction);
+        addButton.setText("Add");
 
+        final EditAction editAction = new EditAction("Edit", selectedValidators.isEmpty() ? null : selectedValidators.get(0), validatorTable);
+        editButton.setAction(editAction);
 
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = validatorTable.getSelectedRow();
-                if (selectedRow > -1) {
-
-                    final Validator validator = mockCopy.getValidators().get(selectedRow);
-
-                    final Validator mockCopy = (Validator) new WriteAction() {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            result.setResult(validator.createMockCopy(false));
-                        }
-                    }.execute().getResultObject();
-                    final ValidatorDialog editDialog = new ValidatorDialog(rootPanel, mockCopy);
-                    boolean ok = editDialog.showAndGet();
-                    if (ok) {
-                        new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Validator", mockCopy.getXmlElement().getContainingFile()) {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                validator.copyFrom(editDialog.getMockCopy());
-                            }
-                        }.execute();
-                        ((AbstractTableModel) validatorTable.getModel()).fireTableDataChanged();
-                    }
-
-                }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = validatorTable.getSelectedRow();
-                if (selectedRow > -1) {
-                    final Validator validator = mockCopy.getValidators().get(selectedRow);
-                    new WriteCommandAction(validator.getModule().getProject(), "Delete Validator", validator.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            validator.undefine();
-                        }
-                    }.execute();
-                    ((AbstractTableModel) validatorTable.getModel()).fireTableDataChanged();
-                }
-
-            }
-        });
+        final DeleteAction deleteAction = new DeleteAction("Delete", selectedValidators, validatorTable);
+        deleteButton.setAction(deleteAction);
 
         validatorTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -130,30 +85,40 @@ public class ValidationDialog extends DialogWrapper {
                 }
             }
         });
+
+        if (selectMode) setOKActionEnabled(false);
+        validatorTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedValidators.clear();
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                        selectedValidators.add(mockCopy.getValidators().get(i));
+                    }
+                }
+                if (selectedValidators.isEmpty()) {
+                    deleteAction.setEnabled(false);
+                    if (selectMode) setOKActionEnabled(false);
+                } else {
+                    deleteAction.setEnabled(true);
+                    editAction.setDomElement(selectedValidators.get(0));
+                    if (selectMode) setOKActionEnabled(true);
+                }
+            }
+        });
+
     }
 
     private void createUIComponents() {
         validatorTable = new JBTable(new ValidationTableModel());
-        if (selectMode) {
-            setOKActionEnabled(false);
-            validatorTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    int minSelectionIndex = validatorTable.getSelectionModel().getMinSelectionIndex();
-                    int maxSelectionIndex = validatorTable.getSelectionModel().getMaxSelectionIndex();
-                    if (minSelectionIndex == maxSelectionIndex && minSelectionIndex != -1) {
-                        setOKActionEnabled(true);
-                        setSelectedValidator(maxSelectionIndex);
-                    } else {
-                        setOKActionEnabled(false);
-                    }
-                }
-            });
-        }
+
     }
 
     public String getSelectedValidator() {
-        return selectedValidatorId;
+        return selectedValidators.get(0).getId().getStringValue();
     }
 
     private void setSelectedValidator(int selectedRow) {
@@ -163,8 +128,15 @@ public class ValidationDialog extends DialogWrapper {
 
     @Nullable
     @Override
-    protected JComponent createCenterPanel() {
+    public JComponent createCenterPanel() {
         return rootPanel;
+    }
+
+    @Override
+    public Validation getMockCopy() {
+        mockCopy.getEnabled().setValue(enabledCheckBox.isSelected());
+        mockCopy.getFastForward().setValue(fastForwardCheckBox.isSelected());
+        return mockCopy;
     }
 
     private class ValidationTableModel extends AbstractTableModel {

@@ -1,8 +1,8 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.fileEditor.FileEditor;
 import org.perfcake.idea.editor.colors.ColorComponents;
 import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.editor.swing.ColorAdjustable;
 
 import javax.swing.*;
@@ -26,6 +26,7 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
                 requestFocusInWindow();
             }
         });
+        addMouseListener(new PopClickListener(scenarioComponent.getDomElement(), ScenarioPanel.this));
         init();
         updateColors();
     }
@@ -75,6 +76,7 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
         constraints.gridx = 1;
         constraints.gridy = 2;
         constraints.gridheight = 2;
+        //constraints.weighty = 0.5;
         add(reportingComponent.getComponent(), constraints);
         scenarioComponent.addComponent(reportingComponent);
 
@@ -83,6 +85,7 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
         constraints.gridy = 4;
         constraints.gridwidth = 2;
         constraints.gridheight = 1;
+        //constraints.weighty = 1.0;
         add(propertiesComponent.getComponent(), constraints);
         scenarioComponent.addComponent(propertiesComponent);
     }

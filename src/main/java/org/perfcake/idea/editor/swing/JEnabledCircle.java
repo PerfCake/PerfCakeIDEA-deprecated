@@ -2,21 +2,35 @@ package org.perfcake.idea.editor.swing;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * Created by miron on 21. 11. 2014.
  */
 public class JEnabledCircle extends JPanel {
     private static final String uiClassID = "EnabledCircleUI";
-    private Boolean on = Boolean.FALSE;
+    private boolean on;
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-    public JEnabledCircle() {
+    public JEnabledCircle(boolean on, Color foreground) {
         //set default layout
         setLayout(new BorderLayout());
         //this component is rounded, so we will set opacity to false to see background in corners
         setOpaque(Boolean.FALSE);
-        setBackground(Color.green);
-        setForeground(Color.blue);
+
+        setOn(on);
+        setForeground(foreground);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    svitch();
+                }
+            }
+        });
     }
 
     protected void paintComponent(Graphics g) {
@@ -50,21 +64,30 @@ public class JEnabledCircle extends JPanel {
         return new Dimension(10, 10);
     }
 
-    private void turnOn() {
-        if (!on) {
-            on = Boolean.TRUE;
-            repaint();
-        }
+    private void svitch() {
+        setOn(!on);
     }
 
-    private void turnOff() {
-        if (on) {
-            on = Boolean.FALSE;
-            repaint();
-        }
-    }
-
-    public Boolean isOn() {
+    public boolean isOn() {
         return on;
+    }
+
+    public void setOn(boolean on) {
+        boolean oldValue = this.on;
+        this.on = on;
+        if (on) {
+            setBackground(Color.GREEN);
+        } else {
+            setBackground(Color.RED);
+        }
+        this.propertyChangeSupport.firePropertyChange("on", oldValue, on);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.propertyChangeSupport.removePropertyChangeListener(listener);
     }
 }

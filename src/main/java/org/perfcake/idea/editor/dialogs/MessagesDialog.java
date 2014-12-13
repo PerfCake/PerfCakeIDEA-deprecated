@@ -1,25 +1,24 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.table.JBTable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.perfcake.idea.editor.actions.DeleteAction;
+import org.perfcake.idea.editor.actions.MessageAddAction;
+import org.perfcake.idea.editor.actions.MessageEditAction;
 import org.perfcake.idea.editor.components.MessageValidationPair;
 import org.perfcake.idea.editor.components.MessagesValidationPair;
 import org.perfcake.idea.model.Message;
-import org.perfcake.idea.model.Validation;
 import org.perfcake.idea.model.ValidatorRef;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
  * Created by miron on 19. 11. 2014.
@@ -32,85 +31,56 @@ public class MessagesDialog extends DialogWrapper {
     private JButton editButton;
     private JButton addButton;
 
+    private java.util.List<Message> selectedMessages = new ArrayList<>();
+
+    public MessagesDialog(MessagesValidationPair mockPair) {
+        super(true);
+        this.mockPair = mockPair;
+        init();
+        load();
+    }
 
     public MessagesDialog(Component parent, final MessagesValidationPair mockPair) {
         super(parent, true);
         this.mockPair = mockPair;
         init();
+        load();
+    }
+
+    private void load() {
         setTitle("Edit Messages");
 
-        addButton.addActionListener(new ActionListener() {
+        MessageAddAction addAction = new MessageAddAction(mockPair, messagesTable);
+        addButton.setAction(addAction);
+        addButton.setText("Add");
+
+        final MessageEditAction editAction = new MessageEditAction(selectedMessages.isEmpty() ? null : new MessageValidationPair(selectedMessages.get(0), mockPair.getValidation()), messagesTable);
+        editButton.setAction(editAction);
+        editButton.setText("Edit");
+
+        final DeleteAction deleteAction = new DeleteAction("Delete Messages", selectedMessages, messagesTable);
+        deleteButton.setAction(deleteAction);
+        deleteButton.setText("Delete");
+
+        messagesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
-                final Message newMessage = mockPair.getMessages().addMessage();
-                MessageValidationPair newMockPair = new MessageValidationPair(newMessage, mockPair.getValidation());
-                final MessageDialog editDialog = new MessageDialog(rootPanel, newMockPair);
-                boolean ok = editDialog.showAndGet();
-                if (ok) {
-                    new WriteCommandAction(newMessage.getModule().getProject(), "Add Message", newMessage.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            newMessage.copyFrom(editDialog.getMockPair().getMessage());
-                        }
-                    }.execute();
-                    ((AbstractTableModel) messagesTable.getModel()).fireTableDataChanged();
-                } else {
-                    newMessage.undefine();
-                }
-
-
-            }
-        });
-
-
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final int selectedRow = messagesTable.getSelectedRow();
-                if (selectedRow > -1) {
-
-                    final MessageValidationPair editMockPair = (MessageValidationPair) new WriteAction() {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            MessageValidationPair mock = new MessageValidationPair(
-                                    (Message) mockPair.getMessages().getMessages().get(selectedRow).createMockCopy(false),
-                                    (Validation) mockPair.getValidation().createMockCopy(false));
-                            result.setResult(mock);
-                        }
-                    }.execute().getResultObject();
-                    final MessageDialog editDialog = new MessageDialog(rootPanel, editMockPair);
-                    boolean ok = editDialog.showAndGet();
-                    if (ok) {
-                        new WriteCommandAction(editMockPair.getMessage().getModule().getProject(), "Edit Message", editMockPair.getMessage().getXmlElement().getContainingFile()) {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                mockPair.getMessages().getMessages().get(selectedRow).copyFrom(editDialog.getMockPair().getMessage());
-                                mockPair.getValidation().copyFrom(editDialog.getMockPair().getValidation());
-                            }
-                        }.execute();
-                        ((AbstractTableModel) messagesTable.getModel()).fireTableDataChanged();
+            public void valueChanged(ListSelectionEvent e) {
+                selectedMessages.clear();
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                        selectedMessages.add(mockPair.getMessages().getMessages().get(i));
                     }
-
                 }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = messagesTable.getSelectedRow();
-                if (selectedRow > -1) {
-                    final Message message = mockPair.getMessages().getMessages().get(selectedRow);
-                    new WriteCommandAction(message.getModule().getProject(), "Delete Messsage", message.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            message.undefine();
-                        }
-                    }.execute();
-                    ((AbstractTableModel) messagesTable.getModel()).fireTableDataChanged();
+                if (selectedMessages.isEmpty()) {
+                    deleteAction.setEnabled(false);
+                    editAction.setMessageValidationPair(null);
+                } else {
+                    deleteAction.setEnabled(true);
+                    editAction.setMessageValidationPair(new MessageValidationPair(selectedMessages.get(0), mockPair.getValidation()));
                 }
-
             }
         });
 
@@ -131,6 +101,10 @@ public class MessagesDialog extends DialogWrapper {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
+        return getRootPanel();
+    }
+
+    public JPanel getRootPanel() {
         return rootPanel;
     }
 
@@ -154,6 +128,23 @@ public class MessagesDialog extends DialogWrapper {
         @Override
         public String getColumnName(int column) {
             return columnNames[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 2 ? false : true;
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            Message message = mockPair.getMessages().getMessages().get(rowIndex);
+            if (columnIndex == 0) {
+                message.getUri().setStringValue((String) aValue);
+            }
+            if (columnIndex == 1) {
+                message.getMultiplicity().setStringValue((String) aValue);
+            }
+            fireTableCellUpdated(rowIndex, columnIndex);
         }
 
         @Override

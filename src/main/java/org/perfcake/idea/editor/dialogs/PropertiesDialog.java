@@ -1,10 +1,9 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
-import org.perfcake.idea.model.Properties;
+import org.perfcake.idea.model.IProperties;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,14 +11,22 @@ import java.awt.*;
 /**
  * Created by miron on 21.5.2014.
  */
-public class PropertiesDialog extends DialogWrapper {
-    private Properties mockCopy;
+public class PropertiesDialog extends MyDialogWrapper {
+    private IProperties mockCopy;
     private JPanel rootPanel;
     private PropertiesEditor propertiesEditor;
 
 
-    public PropertiesDialog(@NotNull Component parent, final Properties mockCopy) {
+    public PropertiesDialog(@NotNull Component parent, final IProperties mockCopy) {
         super(parent, true);
+        this.mockCopy = mockCopy;
+
+        init();
+        setTitle("Edit properties");
+    }
+
+    public PropertiesDialog(final IProperties mockCopy) {
+        super(true);
         this.mockCopy = mockCopy;
 
         init();
@@ -28,7 +35,7 @@ public class PropertiesDialog extends DialogWrapper {
 
     @Nullable
     @Override
-    protected JComponent createCenterPanel() {
+    public JComponent createCenterPanel() {
         return rootPanel;
     }
 
@@ -36,7 +43,7 @@ public class PropertiesDialog extends DialogWrapper {
         propertiesEditor = new PropertiesEditor(mockCopy);
     }
 
-    public Properties getMockCopy() {
+    public IProperties getMockCopy() {
         return mockCopy;
     }
 

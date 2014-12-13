@@ -1,19 +1,20 @@
 package org.perfcake.idea.editor.components;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.actions.MessageAddAction;
+import org.perfcake.idea.editor.actions.MessagesEditAction;
 import org.perfcake.idea.editor.colors.ColorType;
-import org.perfcake.idea.editor.dialogs.MessagesDialog;
+import org.perfcake.idea.editor.dragndrop.ComponentTransferHandler;
+import org.perfcake.idea.editor.dragndrop.MessageDropAction;
+import org.perfcake.idea.editor.menu.ActionType;
+import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
 import org.perfcake.idea.model.Message;
 import org.perfcake.idea.model.Messages;
-import org.perfcake.idea.model.Scenario;
-import org.perfcake.idea.model.Validation;
+import org.perfcake.idea.util.PerfCakeIdeaUtil;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -29,43 +30,36 @@ public class MessagesComponent extends BasicDomElementComponent<Messages> {
         super((Messages) domElement.createStableCopy());
 
         messagesGui = new JPerfCakeIdeaRectangle(TITLE, ColorType.MESSAGES_FOREGROUND, ColorType.MESSAGES_BACKGROUND);
+
+        createSetActions();
+
         messagesGui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    if (getDomElement().isValid() && getDomElement().getParentOfType(Scenario.class, true) != null) {
-                        Scenario scenario = getDomElement().getParentOfType(Scenario.class, true);
-                        if (scenario.isValid() && scenario.getValidation().isValid()) {
-                            final Validation validation = scenario.getValidation();
-
-                            final MessagesValidationPair mockPair = (MessagesValidationPair) new WriteAction() {
-                                @Override
-                                protected void run(@NotNull Result result) throws Throwable {
-                                    MessagesValidationPair pair = new MessagesValidationPair((Messages) getDomElement().createMockCopy(false),
-                                            (Validation) validation.createMockCopy(false));
-                                    result.setResult(pair);
-                                }
-                            }.execute().getResultObject();
-                            final MessagesDialog messagesDialog = new MessagesDialog(messagesGui, mockPair);
-                            boolean ok = messagesDialog.showAndGet();
-
-                            if (ok) {
-                                new WriteCommandAction(getDomElement().getModule().getProject(), "Edit Messages", getDomElement().getXmlElement().getContainingFile()) {
-                                    @Override
-                                    protected void run(@NotNull Result result) throws Throwable {
-                                        getDomElement().copyFrom(messagesDialog.getMockPair().getMessages());
-                                        validation.copyFrom(messagesDialog.getMockPair().getValidation()); //check again validity?
-                                        reset();
-                                    }
-                                }.execute();
-                            }
-                        }
-                    }
+                    messagesGui.getActionMap().get(ActionType.EDIT).actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
                 }
             }
         });
 
+        messagesGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
+
+        //set dropping from toolbar to this component
+        messagesGui.setTransferHandler(new ComponentTransferHandler("Messages", new MessageDropAction(myDomElement)));
+
         addMessages();
+    }
+
+    private void createSetActions() {
+        ActionMap actionMap = new ActionMap();
+
+        MessagesEditAction editAction = new MessagesEditAction(getDomElement(), getComponent());
+        MessageAddAction addAction = new MessageAddAction(PerfCakeIdeaUtil.getMessagesValidationPair(getDomElement()), getComponent());
+
+        actionMap.put(ActionType.ADD, addAction);
+        actionMap.put(ActionType.EDIT, editAction);
+
+        messagesGui.setActionMap(actionMap);
     }
 
 

@@ -2,7 +2,6 @@ package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.PeriodEditor;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
@@ -16,7 +15,7 @@ import java.awt.*;
 /**
  * Created by miron on 19. 11. 2014.
  */
-public class DestinationDialog extends DialogWrapper {
+public class DestinationDialog extends MyDialogWrapper {
     private static final Logger LOG = Logger.getInstance(DestinationDialog.class);
     private Destination mockCopy;
     private JComboBox destinationComboBox;

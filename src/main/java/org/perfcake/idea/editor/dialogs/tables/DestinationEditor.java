@@ -1,27 +1,26 @@
 package org.perfcake.idea.editor.dialogs.tables;
 
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.ui.table.JBTable;
-import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.dialogs.DestinationDialog;
-import org.perfcake.idea.editor.dialogs.Mode;
+import org.perfcake.idea.editor.actions.DeleteAction;
+import org.perfcake.idea.editor.actions.DestinationAddAction;
+import org.perfcake.idea.editor.actions.EditAction;
 import org.perfcake.idea.model.Destination;
-import org.perfcake.idea.model.Message;
 import org.perfcake.idea.model.Reporter;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by miron on 20. 11. 2014.
  */
 public class DestinationEditor {
+    List<Destination> selectedDestinations = new ArrayList<Destination>();
     private Reporter mockCopy;
     private JPanel rootPanel;
     private JTable destinationTable;
@@ -32,74 +31,37 @@ public class DestinationEditor {
     public DestinationEditor(final Reporter mockCopy) {
         this.mockCopy = mockCopy;
 
-        addButton.addActionListener(new ActionListener() {
+        DestinationAddAction addAction = new DestinationAddAction(mockCopy, destinationTable);
+        addButton.setAction(addAction);
+        addButton.setText("Add");
+
+        final EditAction editAction = new EditAction("Edit Destination", null, destinationTable);
+        editButton.setAction(editAction);
+        editButton.setText("Edit");
+
+        final DeleteAction deleteAction = new DeleteAction("Delete Destination", selectedDestinations, destinationTable);
+        deleteButton.setAction(deleteAction);
+        deleteButton.setText("Delete");
+
+        destinationTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
-                final Destination newDestination = mockCopy.addDestination();
-                final DestinationDialog editDialog = new DestinationDialog(rootPanel, newDestination, Mode.ADD);
-                boolean ok = editDialog.showAndGet();
-                if (ok) {
-                    new WriteCommandAction(newDestination.getModule().getProject(), "Add Destination", newDestination.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            newDestination.copyFrom(editDialog.getMockCopy());
-                        }
-                    }.execute();
-                } else {
-                    newDestination.undefine();
-                }
-                ((AbstractTableModel) destinationTable.getModel()).fireTableDataChanged();
-
-            }
-        });
-
-
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = destinationTable.getSelectedRow();
-                if (selectedRow > -1) {
-
-                    final Destination Destination = mockCopy.getDestinations().get(selectedRow);
-
-                    final Destination mockCopy = (Destination) new WriteAction() {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            result.setResult(Destination.createMockCopy(false));
-                        }
-                    }.execute().getResultObject();
-                    final DestinationDialog editDialog = new DestinationDialog(rootPanel, mockCopy, Mode.EDIT);
-                    boolean ok = editDialog.showAndGet();
-                    if (ok) {
-                        new WriteCommandAction(mockCopy.getModule().getProject(), "Edit Destination", mockCopy.getXmlElement().getContainingFile()) {
-                            @Override
-                            protected void run(@NotNull Result result) throws Throwable {
-                                Destination.copyFrom(editDialog.getMockCopy());
-                            }
-                        }.execute();
-                        ((AbstractTableModel) destinationTable.getModel()).fireTableDataChanged();
+            public void valueChanged(ListSelectionEvent e) {
+                selectedDestinations.clear();
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                        selectedDestinations.add(mockCopy.getDestinations().get(i));
                     }
-
                 }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = destinationTable.getSelectedRow();
-                if (selectedRow > -1) {
-                    final Destination Destination = mockCopy.getDestinations().get(selectedRow);
-                    new WriteCommandAction(Destination.getModule().getProject(), "Delete Destination", Destination.getXmlElement().getContainingFile()) {
-                        @Override
-                        protected void run(@NotNull Result result) throws Throwable {
-                            Destination.undefine();
-                        }
-                    }.execute();
-                    ((AbstractTableModel) destinationTable.getModel()).fireTableDataChanged();
+                if (selectedDestinations.isEmpty()) {
+                    editAction.setDomElement(null);
+                    deleteAction.setEnabled(false);
+                } else {
+                    editAction.setDomElement(selectedDestinations.get(0));
+                    deleteAction.setEnabled(true);
                 }
-
             }
         });
 
@@ -135,10 +97,11 @@ public class DestinationEditor {
             return columnNames[column];
         }
 
+
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            try {
-                Destination destination = mockCopy.getDestinations().get(rowIndex);
+
+            Destination destination = mockCopy.getDestinations().get(rowIndex);
                 if (destination.isValid()) {
                     if (columnIndex == 0) {
                         if(destination.getEnabled().getStringValue() != null && destination.getEnabled().getStringValue().equals("true")){
@@ -151,9 +114,7 @@ public class DestinationEditor {
                     }
                 }
                 return null;
-            } catch (IndexOutOfBoundsException e) {
-                return null;
-            }
+
         }
     }
 }

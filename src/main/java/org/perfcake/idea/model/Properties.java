@@ -26,5 +26,4 @@ public interface Properties extends DomElement, IProperties {
 	 */
 	Property addProperty();
 
-
 }
