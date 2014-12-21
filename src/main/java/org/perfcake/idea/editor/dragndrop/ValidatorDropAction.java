@@ -29,7 +29,7 @@ public class ValidatorDropAction implements DropAction {
             boolean ok = dialog.showAndGet();
 
             if (ok) {
-                new WriteCommandAction(validation.getModule().getProject(), "add " + elementToAdd, validation.getXmlElement().getContainingFile()) {
+                new WriteCommandAction(validation.getModule().getProject(), "add " + elementToAdd, validation.getXmlElement() == null ? null : validation.getXmlElement().getContainingFile()) {
                     @Override
                     protected void run(@NotNull Result result) throws Throwable {
                         mockValidator.copyFrom(dialog.getMockCopy());

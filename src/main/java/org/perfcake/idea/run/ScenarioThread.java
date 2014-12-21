@@ -2,8 +2,11 @@ package org.perfcake.idea.run;
 
 import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.perfcake.ScenarioExecution;
+import org.perfcake.PerfCakeConst;
+import org.perfcake.PerfCakeException;
 import org.perfcake.idea.util.Constants;
+import org.perfcake.scenario.Scenario;
+import org.perfcake.scenario.ScenarioLoader;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -14,6 +17,7 @@ import java.io.PrintStream;
  */
 public class ScenarioThread implements Runnable {
     private static final Logger log = Logger.getInstance(ScenarioThread.class);
+    Scenario scenario = null;
     private PerfCakeRunConfiguration runConfiguration;
     private PrintStream scenarioOutput;
     private PrintStream scenarioErrOutput;
@@ -34,11 +38,29 @@ public class ScenarioThread implements Runnable {
         PrintStream errOut = System.err;
         System.setErr(scenarioErrOutput);
 
+        setPerfCakeProperties();
 
-        String[] perfCakeArgs = createArgs();
-
-        //runs the scenario
-        ScenarioExecution.main(perfCakeArgs);
+        //run scenario
+        try {
+            //fix UnknownHostException for Windows
+            String path = runConfiguration.getScenarioPath().startsWith("C:") ?
+                    runConfiguration.getScenarioPath().substring(2) : runConfiguration.getScenarioPath();
+            scenario = ScenarioLoader.load(path);
+            scenario.init();
+            scenario.run();
+        } catch (PerfCakeException e) {
+            System.err.println("Run Error: " + e.getMessage() + ". Cause: " + (e.getCause() == null ? "" : e.getCause().getMessage()) + "\nStackTrace:");
+            e.printStackTrace();
+        } finally {
+            if (scenario != null) try {
+                scenario.close();
+            } catch (PerfCakeException e) {
+                System.err.println("Scenario close error: " + e.getMessage() + ". Cause: " + (e.getCause() == null ? "" : e.getCause().getMessage()) + "\nStackTrace:");
+                e.printStackTrace();
+            } finally {
+                scenario = null;
+            }
+        }
 
 
         //send message to console thread, that it can stop
@@ -55,18 +77,21 @@ public class ScenarioThread implements Runnable {
      * Creates arguments for PerfCake to run the scenario
      * @return
      */
-    private String[] createArgs() {
-        String scenarioPath = runConfiguration.getScenarioPath();
-        String scenarioName = scenarioPath.substring(scenarioPath.lastIndexOf("/") + 1, scenarioPath.length() - 4);
+    private void setPerfCakeProperties() {
+        //fix UnknownHostException for Windows
+        String messagesPath = runConfiguration.getMessagesDirPath().startsWith("C:") ?
+                runConfiguration.getMessagesDirPath().substring(2) : runConfiguration.getMessagesDirPath();
+        System.setProperty(PerfCakeConst.MESSAGES_DIR_PROPERTY, messagesPath);
 
-        String[] args = new String[6];
-        args[0] = "-s";
-        args[1] = scenarioName;
-        args[2] = "-sd";
-        args[3] = runConfiguration.getScenariosDirPath();
-        args[4] = "-md";
-        args[5] = runConfiguration.getMessagesDirPath();
+        String scenariosPath = runConfiguration.getScenariosDirPath().startsWith("C:") ?
+                runConfiguration.getScenariosDirPath().substring(2) : runConfiguration.getScenariosDirPath();
+        System.setProperty(PerfCakeConst.SCENARIOS_DIR_PROPERTY, scenariosPath);
+    }
 
-        return args;
+    public void stop() {
+        if (scenario != null) {
+            System.out.println("Stopping scenario...");
+            scenario.stop();
+        }
     }
 }

@@ -53,7 +53,7 @@ public class MessagesEditAction extends AbstractAction {
                 if (ok) {
 
                     final Project project = messages.getModule() == null ? null : messages.getModule().getProject();
-                    final PsiFile containingFile = messages.getXmlElement().getContainingFile();
+                    final PsiFile containingFile = messages.getXmlElement() == null ? null : messages.getXmlElement().getContainingFile();
 
                     new WriteCommandAction(project, "Edit Messages", containingFile) {
                         @Override

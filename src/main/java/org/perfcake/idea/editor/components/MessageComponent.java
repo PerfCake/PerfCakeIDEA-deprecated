@@ -4,7 +4,9 @@ import com.intellij.util.xml.ui.BasicDomElementComponent;
 import org.perfcake.idea.editor.actions.*;
 import org.perfcake.idea.editor.colors.ColorType;
 import org.perfcake.idea.editor.dragndrop.ComponentTransferHandler;
+import org.perfcake.idea.editor.dragndrop.DropAction;
 import org.perfcake.idea.editor.dragndrop.PropertyDropAction;
+import org.perfcake.idea.editor.gui.MessageGui;
 import org.perfcake.idea.editor.menu.ActionType;
 import org.perfcake.idea.editor.menu.PopClickListener;
 import org.perfcake.idea.editor.swing.JPerfCakeIdeaRectangle;
@@ -16,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,7 +31,7 @@ public class MessageComponent extends BasicDomElementComponent<Message> {
     public MessageComponent(Message domElement) {
         super((Message) domElement.createStableCopy());
 
-        messageGui = new JPerfCakeIdeaRectangle(getMessageTitle(), ColorType.MESSAGE_FOREGROUND, ColorType.MESSAGE_BACKGROUND);
+        messageGui = new MessageGui(getMessageTitle(), ColorType.MESSAGE_FOREGROUND, ColorType.MESSAGE_BACKGROUND);
 
         createSetActions();
         messageGui.addMouseListener(new MouseAdapter() {
@@ -41,8 +44,12 @@ public class MessageComponent extends BasicDomElementComponent<Message> {
         });
 
         messageGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
+
         //set dropping from toolbar to this component
-        messageGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(myDomElement)));
+        HashMap<String, DropAction> prefixDropActions = new HashMap<>();
+        //prefixDropActions.put("Connections", new PropertyDropAction(domElement));
+        prefixDropActions.put("Properties", new PropertyDropAction(domElement));
+        messageGui.setTransferHandler(new ComponentTransferHandler(prefixDropActions));
     }
 
     private void createSetActions() {

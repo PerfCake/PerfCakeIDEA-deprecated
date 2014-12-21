@@ -43,12 +43,7 @@ public class ValidatorDialog extends MyDialogWrapper {
         validatorComboBox = new ComboBox(validators);
         //set selected sender from model
         String modelValue = mockCopy.getClazz().getStringValue();
-        for (int i = 0; i < validators.getSize(); i++) {
-            if (validators.getElementAt(i).equals(modelValue)) {
-                validators.setSelectedItem(validators.getElementAt(i));
-                break;
-            }
-        }
+        validators.setSelectedItem(modelValue);
 
         propertiesEditor = new PropertiesEditor(mockCopy);
     }

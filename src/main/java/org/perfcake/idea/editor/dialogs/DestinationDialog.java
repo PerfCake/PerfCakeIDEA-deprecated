@@ -2,6 +2,7 @@ package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.PeriodEditor;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
@@ -34,23 +35,14 @@ public class DestinationDialog extends MyDialogWrapper {
                 break;
             case EDIT:
                 setTitle("Edit Destination");
-                loadValues();
                 break;
         }
-
-    }
-
-    private void loadValues() {
-        enabledCheckBox.setSelected(mockCopy.getEnabled().getValue());
+        enabledCheckBox.setSelected(mockCopy.getEnabled().getValue() == null ? true : mockCopy.getEnabled().getValue());
         //set selected generator from model
         String modelValue = mockCopy.getClazz().getStringValue();
         ComboBoxModel destinations = destinationComboBox.getModel();
-        for (int i = 0; i < destinations.getSize(); i++) {
-            if (destinations.getElementAt(i).equals(modelValue)) {
-                destinations.setSelectedItem(destinations.getElementAt(i));
-                break;
-            }
-        }
+        destinations.setSelectedItem(modelValue);
+
     }
 
     private void createUIComponents() {
@@ -78,5 +70,14 @@ public class DestinationDialog extends MyDialogWrapper {
         mockCopy.getClazz().setStringValue((String) destinationComboBox.getSelectedItem());
         mockCopy.getEnabled().setStringValue(Boolean.toString(enabledCheckBox.isSelected()));
         return mockCopy;
+    }
+
+    @Nullable
+    @Override
+    protected ValidationInfo doValidate() {
+        if (destinationComboBox.getSelectedItem() == null) {
+            return new ValidationInfo("Please specify destination", destinationComboBox);
+        }
+        return null;
     }
 }

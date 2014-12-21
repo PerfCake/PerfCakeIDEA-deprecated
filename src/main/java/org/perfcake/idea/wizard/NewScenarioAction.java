@@ -1,4 +1,4 @@
-package org.perfcake.idea.module;
+package org.perfcake.idea.wizard;
 
 import com.intellij.ide.actions.CreateElementActionBase;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -11,13 +11,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.PerfCakeConst;
 import org.perfcake.idea.model.Scenario;
+import org.perfcake.idea.module.PerfCakeModuleType;
 import org.perfcake.idea.util.Constants;
 import org.perfcake.idea.util.PerfCakeIDEAException;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
@@ -31,69 +30,54 @@ import java.util.Map;
  */
 public class NewScenarioAction extends CreateElementActionBase {
     private static final Logger log = Logger.getInstance(NewScenarioAction.class);
-    NewScenarioDialog scenarioDialog;
 
     public NewScenarioAction() {
         super("Scenario", "Create new PerfCake scenario", Constants.ICON_16P);
+    }
+
+    private String getNameWithExtension(String name) {
+        if (name.length() > 4 && name.substring(name.length() - 4, name.length()).equalsIgnoreCase(".xml")) {
+            //xml extension already present
+            return name;
+        }
+        return name + ".xml";
     }
 
     @NotNull
     @Override
     protected PsiElement[] invokeDialog(Project project, PsiDirectory directory) {
 
-        XmlFile scenario = ScenarioUtil.getTemplateModel(directory.getProject(), "");
-        Scenario domElement = (Scenario) DomManager.getDomManager(project).getDomElement(scenario.getRootTag());
-        NewScenarioWizard newScenarioWizard = new NewScenarioWizard(project, domElement);
+        XmlFile scenario = ScenarioUtil.getTemplateModel(directory.getProject());
+        Scenario scenarioDom = (Scenario) DomManager.getDomManager(project).getDomElement(scenario.getRootTag());
+        NewScenarioWizard newScenarioWizard = new NewScenarioWizard(project, scenarioDom);
         boolean ok = newScenarioWizard.showAndGet();
 
         if (ok) {
-            scenario.setName(newScenarioWizard.nameStep.getScenarioName() + ".xml");
+            scenario.setName(getNameWithExtension(newScenarioWizard.nameStep.getScenarioName()));
             //find correct scenarios dir for new scenario
             Map<String, VirtualFile> moduleDirs = null;
             try {
                 moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(project, directory.getVirtualFile());
             } catch (PerfCakeIDEAException e) {
                 log.error("Error creating template scenario", e);
-                scenarioDialog = null;
                 return PsiElement.EMPTY_ARRAY;
             }
             final VirtualFile scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY);
             PsiDirectory scenariosDirPsi = PsiManager.getInstance(project).findDirectory(scenariosDir);
 
-            //concat xml extension if not present
-            //String scenarioName = scenarioDialog.getName().endsWith(".xml") ||  scenarioDialog.getName().endsWith(".XML") ?
-            //        scenarioDialog.getName() : scenarioDialog.getName() + ".xml";
-
-            //create new scenario file
-
             PsiElement created = ScenarioUtil.saveScenarioPsiToDir(scenariosDirPsi, scenario);
             return new PsiElement[]{created};
-
         }
 
 
         //Dialog closed without OK button
-        scenarioDialog = null;
         return PsiElement.EMPTY_ARRAY;
     }
 
     @NotNull
     @Override
     protected PsiElement[] create(String newName, PsiDirectory directory) throws Exception {
-        XmlFile scenario = ScenarioUtil.getTemplateModel(directory.getProject(), newName);
-
-        XmlTag root = scenario.getRootTag();
-        XmlTag generator = root.findFirstSubTag("generator");
-        XmlAttribute generatorClass = generator.getAttribute("class");
-        generatorClass.setValue(scenarioDialog.getGeneratorName());
-        XmlTag sender = root.findFirstSubTag("sender");
-        XmlAttribute senderClass = sender.getAttribute("class");
-        senderClass.setValue(scenarioDialog.getSenderName());
-
-        PsiElement created = ScenarioUtil.saveScenarioPsiToDir(directory, scenario);
-
-        scenarioDialog = null;
-        return new PsiElement[]{created};
+        return new PsiElement[0];
     }
 
     @Override

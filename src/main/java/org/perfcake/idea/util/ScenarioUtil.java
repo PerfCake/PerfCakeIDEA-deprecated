@@ -11,12 +11,7 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.xml.XmlFile;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
 
 /**
  * Created by miron on 10.6.2014.
@@ -29,20 +24,20 @@ public class ScenarioUtil {
     /**
      * Gets template scenario XMLFile
      * @param project Intellij project
-     * @param name name of the new XMLFile
-     * @return new XML File
+     * @return new template scenario
      */
-    public static XmlFile getTemplateModel(Project project, String name){
-        URL templateUrl = ScenarioUtil.class.getResource("/ScenarioTemplate.xml");
-        String templateString = "";
-        try {
-            byte[] encoded = Files.readAllBytes(Paths.get(templateUrl.toURI()));
-            templateString = (new String(encoded, StandardCharsets.UTF_8)).replaceAll("\r", "");
-        } catch (IOException|URISyntaxException e) {
-            LOG.error("Error loading template scenario", e);
-            throw new RuntimeException("Error loading template scenario", e);
+    public static XmlFile getTemplateModel(Project project) {
+        InputStream scenarioIs = ScenarioUtil.class.getResourceAsStream("/TemplateScenario.xml");
+        java.util.Scanner s = new java.util.Scanner(scenarioIs).useDelimiter("\\A");
+        String scenarioString;
+        if (s.hasNext()) {
+            scenarioString = s.next();
+            scenarioString = scenarioString.replaceAll("\r", "");
+        } else {
+            LOG.error("Error loading template scenario");
+            throw new RuntimeException("Error loading template scenario");
         }
-        return (XmlFile) PsiFileFactory.getInstance(project).createFileFromText(name, XmlFileType.INSTANCE, templateString);
+        return (XmlFile) PsiFileFactory.getInstance(project).createFileFromText("template.xml", XmlFileType.INSTANCE, scenarioString);
     }
 
     /**

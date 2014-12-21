@@ -37,6 +37,7 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
 
         createSetActions();
 
+
         reportingGui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

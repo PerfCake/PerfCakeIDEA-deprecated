@@ -1,21 +1,21 @@
-package org.perfcake.idea.module;
+package org.perfcake.idea.wizard;
 
 import com.intellij.ide.wizard.CommitStepException;
 import com.intellij.ide.wizard.Step;
-import org.perfcake.idea.editor.dialogs.ReportingDialog;
-import org.perfcake.idea.model.Reporting;
+import org.perfcake.idea.editor.dialogs.ValidationDialog;
+import org.perfcake.idea.model.Validation;
 
 import javax.swing.*;
 
 /**
  * Created by miron on 12. 12. 2014.
  */
-public class ReportingStep implements Step {
+public class ValidationStep implements Step {
 
-    ReportingDialog reportingDialog;
+    ValidationDialog validationDialog;
 
-    public ReportingStep(Reporting reporting) {
-        reportingDialog = new ReportingDialog(reporting);
+    public ValidationStep(Validation validation) {
+        validationDialog = new ValidationDialog(validation, false);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ReportingStep implements Step {
 
     @Override
     public void _commit(boolean finishChosen) throws CommitStepException {
-        reportingDialog.getMockCopy();
+        validationDialog.getMockCopy();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ReportingStep implements Step {
 
     @Override
     public JComponent getComponent() {
-        return reportingDialog.createCenterPanel();
+        return validationDialog.createCenterPanel();
     }
 
     @Override

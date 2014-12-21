@@ -20,7 +20,7 @@ public class ReporterDropAction implements DropAction {
     @Override
     public boolean invoke(final String elementToAdd) {
         if (reporting.isValid()) {
-            new WriteCommandAction(reporting.getModule().getProject(), "add " + elementToAdd, reporting.getXmlElement().getContainingFile()) {
+            new WriteCommandAction(reporting.getModule().getProject(), "add " + elementToAdd, reporting.getXmlElement() == null ? null : reporting.getXmlElement().getContainingFile()) {
                 @Override
                 protected void run(@NotNull Result result) throws Throwable {
                     Reporter reporter = reporting.addReporter();

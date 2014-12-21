@@ -11,8 +11,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +26,7 @@ public class PropertiesEditor {
     private JButton addButton;
     private JTable propertiesTable;
     private JScrollPane scrollPane;
+
 
     public PropertiesEditor(final IProperties mockCopy) {
         this.mockCopy = mockCopy;
@@ -50,7 +49,7 @@ public class PropertiesEditor {
                 int minIndex = lsm.getMinSelectionIndex();
                 int maxIndex = lsm.getMaxSelectionIndex();
                 for (int i = minIndex; i <= maxIndex; i++) {
-                    if (lsm.isSelectedIndex(i)) {
+                    if (lsm.isSelectedIndex(i) && i != mockCopy.getProperties().size()) {
                         selectedProperties.add(mockCopy.getProperties().get(i));
                     }
                 }
@@ -64,14 +63,14 @@ public class PropertiesEditor {
             }
         });
 
-        propertiesTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    editButton.doClick();
-                }
-            }
-        });
+//        propertiesTable.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (e.getClickCount() == 2) {
+//                    editButton.doClick();
+//                }
+//            }
+//        });
 
     }
 
@@ -82,9 +81,10 @@ public class PropertiesEditor {
     private class PropertiesTableModel extends AbstractTableModel {
         private final String[] columnNames = {"Property name", "Property value"};
 
+
         @Override
         public int getRowCount() {
-            return mockCopy.getProperties().size();
+            return mockCopy.getProperties().size() + 1;
         }
 
         @Override
@@ -104,6 +104,13 @@ public class PropertiesEditor {
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+
+            //adding row handling
+            if (rowIndex == mockCopy.getProperties().size()) {
+                mockCopy.addProperty();
+                //show new empty row for adding
+                fireTableRowsUpdated(rowIndex + 1, rowIndex + 1);
+            }
             Property property = mockCopy.getProperties().get(rowIndex);
             if (columnIndex == 0) {
                 property.getName().setStringValue((String) aValue);
@@ -116,6 +123,11 @@ public class PropertiesEditor {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
+
+            //adding row handling
+            if (rowIndex == mockCopy.getProperties().size()) {
+                return null;
+            }
 
             Property property = mockCopy.getProperties().get(rowIndex);
             if (property.isValid()) {

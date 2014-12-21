@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.util.xml.DomElement;
+import org.perfcake.idea.model.Scenario;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -28,7 +29,8 @@ public class RedoAction extends AbstractAction {
         if (domElement.isValid()) {
             Project project = domElement.getModule().getProject();
             undoManager = UndoManager.getInstance(project);
-            XmlElement xmlElement = domElement.getXmlElement();
+            //get parent to be sure that underlying xml element exists, e.g. for empty properties there is no underlying xml tag
+            XmlElement xmlElement = domElement instanceof Scenario ? domElement.getXmlElement() : domElement.getParent().getXmlElement();
 
             fileToRedo = xmlElement.getContainingFile().getVirtualFile();
             editorManager = FileEditorManager.getInstance(project);

@@ -42,7 +42,7 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="NewScenarioAction" class="org.perfcake.idea.module.NewScenarioAction" text="Scenario"
+        <action id="NewScenarioAction" class="org.perfcake.idea.wizard.NewScenarioAction" text="Scenario"
                 description="Opens new scenario wizard.">
             <add-to-group group-id="NewGroup" anchor="first"/>
         </action>

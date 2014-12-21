@@ -61,9 +61,13 @@ public class ValidationDialog extends MyDialogWrapper {
 
         if (mockCopy.getEnabled().getValue() != null) {
             enabledCheckBox.setSelected(mockCopy.getEnabled().getValue());
+        } else {
+            enabledCheckBox.setSelected(false);
         }
         if (mockCopy.getFastForward().getValue() != null) {
             fastForwardCheckBox.setSelected(mockCopy.getFastForward().getValue());
+        } else {
+            enabledCheckBox.setSelected(false);
         }
 
 

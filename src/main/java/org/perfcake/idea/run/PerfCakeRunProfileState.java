@@ -16,6 +16,8 @@ import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -41,8 +43,11 @@ public class PerfCakeRunProfileState implements RunProfileState {
         final ConsoleView console = TextConsoleBuilderFactory.getInstance().createBuilder(runConfiguration.getProject()).getConsole();
         ToolWindow toolWindow = ToolWindowManager.getInstance(runConfiguration.getProject()).getToolWindow(ToolWindowId.RUN);
 
+        //wrap console content in order to use toolbar (for stop button)
+        final ConsoleContentWrapper consoleContent = new ConsoleContentWrapper(console.getComponent());
+
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(console.getComponent(), "PerfCake Run", false);
+        Content content = contentFactory.createContent(consoleContent, "PerfCake Run", false);
         toolWindow.getContentManager().addContent(content);
         toolWindow.getContentManager().setSelectedContent(content);
 
@@ -67,8 +72,19 @@ public class PerfCakeRunProfileState implements RunProfileState {
                     log.error("Error connecting pipes", e);
                     return;
                 }
-                Thread scenarioThread = new Thread(new ScenarioThread(runConfiguration, pipeOut, pipeErrOut));
+
+
+                final ScenarioThread run = new ScenarioThread(runConfiguration, pipeOut, pipeErrOut);
+                final Thread scenarioThread = new Thread(run);
                 scenarioThread.setContextClassLoader(getClass().getClassLoader());
+
+                //set run stop action
+                consoleContent.getToolbar().getStopButton().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        run.stop();
+                    }
+                });
                 scenarioThread.start();
 
                 Thread consoleWriterThread = new Thread(new ConsoleWriterThread(console, pipeIn, pipeErrIn));

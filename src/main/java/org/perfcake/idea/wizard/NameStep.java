@@ -1,22 +1,18 @@
-package org.perfcake.idea.module;
+package org.perfcake.idea.wizard;
 
 import com.intellij.ide.wizard.CommitStepException;
 import com.intellij.ide.wizard.Step;
-import org.perfcake.idea.editor.dialogs.ValidationDialog;
-import org.perfcake.idea.model.Validation;
 
 import javax.swing.*;
 
 /**
  * Created by miron on 12. 12. 2014.
  */
-public class ValidationStep implements Step {
+public class NameStep implements Step {
 
-    ValidationDialog validationDialog;
 
-    public ValidationStep(Validation validation) {
-        validationDialog = new ValidationDialog(validation, false);
-    }
+    private JTextField scenarioTextField;
+    private JPanel rootPanel;
 
     @Override
     public void _init() {
@@ -25,7 +21,7 @@ public class ValidationStep implements Step {
 
     @Override
     public void _commit(boolean finishChosen) throws CommitStepException {
-        validationDialog.getMockCopy();
+        if (getScenarioName().isEmpty()) throw new CommitStepException("Please specify scenario file name");
     }
 
     @Override
@@ -35,11 +31,15 @@ public class ValidationStep implements Step {
 
     @Override
     public JComponent getComponent() {
-        return validationDialog.createCenterPanel();
+        return rootPanel;
     }
 
     @Override
     public JComponent getPreferredFocusedComponent() {
-        return null;
+        return scenarioTextField;
+    }
+
+    public String getScenarioName() {
+        return scenarioTextField.getText();
     }
 }

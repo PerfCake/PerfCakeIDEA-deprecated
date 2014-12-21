@@ -77,21 +77,18 @@ public class GeneratorDialog extends MyDialogWrapper {
         generatorComboBox = new ComboBox(generators);
         //set selected generator from model
         String modelValue = mockCopy.getClazz().getStringValue();
-        for (int i = 0; i < generators.getSize(); i++) {
-            if (generators.getElementAt(i).equals(modelValue)) {
-                generators.setSelectedItem(generators.getElementAt(i));
-                break;
-            }
-        }
+        generators.setSelectedItem(modelValue);
 
         String[] predefinedRunTypes = {
                 "iteration",
                 "time",
                 "percentage"
         };
+
         runComboBox = new ComboBox(predefinedRunTypes);
-        runComboBox.setSelectedItem(mockCopy.getRun().getType().getStringValue());
         runComboBox.setEditable(true);
+        runComboBox.setSelectedItem(mockCopy.getRun().getType().getStringValue());
+
 
         propertiesEditor = new PropertiesEditor(mockCopy);
     }
@@ -99,6 +96,10 @@ public class GeneratorDialog extends MyDialogWrapper {
     @Nullable
     @Override
     public ValidationInfo doValidate() {
+
+        if (generatorComboBox.getSelectedItem() == null) {
+            return new ValidationInfo("Please specify generator", generatorComboBox);
+        }
         if (runComboBox.getSelectedItem() == null || ((String) runComboBox.getSelectedItem()).isEmpty()) {
             return new ValidationInfo("Please specify run type", runComboBox);
         }

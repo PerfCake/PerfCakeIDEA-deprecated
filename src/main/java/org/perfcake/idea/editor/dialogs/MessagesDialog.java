@@ -113,7 +113,7 @@ public class MessagesDialog extends DialogWrapper {
     }
 
     private class MessagesTableModel extends AbstractTableModel {
-        private final String[] columnNames = {"Message Uri", "Multiplicity", "Attached validators"};
+        private final String[] columnNames = {"Message", "Multiplicity", "Attached validators"};
 
         @Override
         public int getRowCount() {
@@ -132,15 +132,12 @@ public class MessagesDialog extends DialogWrapper {
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return columnIndex == 2 ? false : true;
+            return columnIndex == 1 ? true : false;
         }
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             Message message = mockPair.getMessages().getMessages().get(rowIndex);
-            if (columnIndex == 0) {
-                message.getUri().setStringValue((String) aValue);
-            }
             if (columnIndex == 1) {
                 message.getMultiplicity().setStringValue((String) aValue);
             }
@@ -153,7 +150,9 @@ public class MessagesDialog extends DialogWrapper {
                 Message message = mockPair.getMessages().getMessages().get(rowIndex);
                 if (message.isValid()) {
                     if (columnIndex == 0) {
-                        return message.getUri().getStringValue();
+                        String content = message.getContent().getStringValue() == null ?
+                                message.getUri().getStringValue() : message.getContent().getStringValue();
+                        return content == null ? "" : (content.length() > 20 ? content.substring(0, 17) + "..." : content);
                     }
                     if (columnIndex == 1) {
                         return message.getMultiplicity().getStringValue();

@@ -3,6 +3,7 @@ package org.perfcake.idea.editor.components;
 import com.intellij.ui.components.JBScrollPane;
 
 import javax.swing.*;
+import javax.swing.plaf.LayerUI;
 import java.awt.*;
 
 /**
@@ -30,8 +31,30 @@ public class EditorPanel extends JPanel {
 
         //add panels to split pane
         splitPane.setLeftComponent(toolbarPanel);
+
+        LayerUI<ScenarioPanel> layerUI = new MessageValidatorConnectorLayerUI();
+        final JLayer<ScenarioPanel> jlayer = new JLayer<>(scenarioPanel, layerUI);
+//        jlayer.setTransferHandler(new TransferHandler() {
+//            @Override
+//            public boolean canImport(TransferSupport support) {
+//                //JLayer jLayer = (JLayer) support.getComponent();
+//                Component componentAt = jlayer.getView().findComponentAt(support.getDropLocation().getDropPoint());
+//                System.out.println(support.getDropLocation().getDropPoint());
+//                if(componentAt != null){
+//                    System.out.println(componentAt);
+//                }
+//                return super.canImport(support);
+//
+//            }
+//
+//            @Override
+//            public boolean importData(TransferSupport support) {
+//                return super.importData(support);
+//            }
+//        });
+
         //put scenario panel in scrollpane to allow scrolling when scenario is big
-        JBScrollPane jbScrollPane = new JBScrollPane(scenarioPanel);
+        JBScrollPane jbScrollPane = new JBScrollPane(jlayer);
         jbScrollPane.setHorizontalScrollBarPolicy(JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jbScrollPane.setVerticalScrollBarPolicy(JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         splitPane.setRightComponent(jbScrollPane);
@@ -39,6 +62,22 @@ public class EditorPanel extends JPanel {
         //add split pane to editor
         add(splitPane, BorderLayout.CENTER);
     }
+
+
+//        private JRoundedRectangle findDeepest(Component root, Point p, Container component) {
+//            JRoundedRectangle result = null;
+//            for (Component c : component.getComponents()) {
+//                Point convertPoint = SwingUtilities.convertPoint(root, p, c);
+//                if (c.contains(convertPoint)) {
+//                    if (c instanceof JRoundedRectangle) {
+//                        result = (JRoundedRectangle) c;
+//                    }
+//                    findDeepest(root, p, (Container) c);
+//                }
+//            }
+//            return result;
+//        }
+
 
     public JPanel getToolbarPanel() {
         return toolbarPanel;

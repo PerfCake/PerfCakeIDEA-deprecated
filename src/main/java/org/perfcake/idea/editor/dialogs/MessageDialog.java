@@ -1,6 +1,7 @@
 package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.DocumentAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,6 +44,10 @@ public class MessageDialog extends DialogWrapper {
         group = new ButtonGroup();
         group.add(uriRadioButton);
         group.add(contentRadioButton);
+
+        uriRadioButton.setEnabled(false);
+        contentRadioButton.setEnabled(false);
+
         if (!contentTextField.getText().isEmpty()) {
             contentRadioButton.setSelected(true);
         } else if (!uriTextField.getText().isEmpty()) {
@@ -87,9 +92,9 @@ public class MessageDialog extends DialogWrapper {
 
     public MessageValidationPair getMockPair() {
         Message m = mockPair.getMessage();
-        m.getUri().setStringValue(uriTextField.getText());
-        m.getMultiplicity().setStringValue(multiplicityTextField.getText());
-        m.getContent().setStringValue(contentTextField.getText());
+        if(!uriTextField.getText().isEmpty()) m.getUri().setStringValue(uriTextField.getText());
+        if(!multiplicityTextField.getText().isEmpty()) m.getMultiplicity().setStringValue(multiplicityTextField.getText());
+        if(!contentTextField.getText().isEmpty()) m.getContent().setStringValue(contentTextField.getText());
         return mockPair;
     }
 
@@ -97,5 +102,13 @@ public class MessageDialog extends DialogWrapper {
         headerEditor = new HeaderEditor(mockPair.getMessage());
         propertiesEditor = new PropertiesEditor(mockPair.getMessage());
         validatorMessageEditor = new ValidatorMessageEditor(mockPair);
+    }
+
+    @Override
+    public ValidationInfo doValidate() {
+        if(uriTextField.getText().isEmpty() && contentTextField.getText().isEmpty()){
+            return new ValidationInfo("Please specify Message URI or content");
+        }
+        return null;
     }
 }

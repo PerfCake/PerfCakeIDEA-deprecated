@@ -1,4 +1,4 @@
-package org.perfcake.idea.module;
+package org.perfcake.idea.wizard;
 
 import com.intellij.ide.wizard.AbstractWizard;
 import com.intellij.openapi.project.Project;

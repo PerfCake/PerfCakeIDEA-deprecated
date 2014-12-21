@@ -37,6 +37,10 @@ public class PerfCakeIdeaContextMenu extends JPopupMenu{
         undoItem.setAction(new UndoAction(domElement));
         add(undoItem);
 
+//        JMenuItem undoItem2 = new JMenuItem();
+//        undoItem2.setAction(new UndoAction2());
+//        add(undoItem2);
+
         JMenuItem redoItem = new JMenuItem();
         redoItem.setAction(new RedoAction(domElement));
         add(redoItem);

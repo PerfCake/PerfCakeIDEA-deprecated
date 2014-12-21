@@ -2,6 +2,7 @@ package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.DestinationEditor;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
@@ -34,17 +35,18 @@ public class ReporterDialog extends MyDialogWrapper {
                 break;
             case EDIT:
                 setTitle("Edit Reporter");
-                enabledCheckBox.setSelected(mockCopy.getEnabled().getValue());
-                //set selected reporter from model
-                String modelValue = mockCopy.getClazz().getStringValue();
-                ComboBoxModel reporters = reporterComboBox.getModel();
-                for (int i = 0; i < reporters.getSize(); i++) {
-                    if (reporters.getElementAt(i).equals(modelValue)) {
-                        reporters.setSelectedItem(reporters.getElementAt(i));
-                        break;
-                    }
-                }
                 break;
+        }
+        enabledCheckBox.setSelected(mockCopy.getEnabled().getValue() == null ? true : mockCopy.getEnabled().getValue());
+        //set selected reporter from model
+        String modelValue = mockCopy.getClazz().getStringValue();
+        ComboBoxModel reporters = reporterComboBox.getModel();
+        reporters.setSelectedItem(modelValue);
+        for (int i = 0; i < reporters.getSize(); i++) {
+            if (reporters.getElementAt(i).equals(modelValue)) {
+                reporters.setSelectedItem(reporters.getElementAt(i));
+                break;
+            }
         }
     }
 
@@ -73,5 +75,14 @@ public class ReporterDialog extends MyDialogWrapper {
         mockCopy.getClazz().setStringValue((String) reporterComboBox.getSelectedItem());
         mockCopy.getEnabled().setStringValue(Boolean.toString(enabledCheckBox.isSelected()));
         return mockCopy;
+    }
+
+    @Nullable
+    @Override
+    protected ValidationInfo doValidate() {
+        if (reporterComboBox.getSelectedItem() == null) {
+            return new ValidationInfo("Please specify reporter", reporterComboBox);
+        }
+        return null;
     }
 }

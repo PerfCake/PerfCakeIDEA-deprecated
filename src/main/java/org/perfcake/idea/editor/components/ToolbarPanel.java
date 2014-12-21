@@ -26,11 +26,6 @@ public class ToolbarPanel extends JPanel {
         setLayout(new VerticalLayout());
         setBackground(Color.WHITE);
 
-        /*JLabel skuska = new JLabel("Skuska, tak funguj");
-        skuska.setTransferHandler(new TransferHandler("text"));
-        skuska.addMouseListener(new DragListener());
-        add(skuska);*/
-
 
         PerfCakeClassProvider classProvider = new PerfCakeClassProvider();
         try {
@@ -48,7 +43,7 @@ public class ToolbarPanel extends JPanel {
 
             addDragGroup("Properties", new String[]{"Property"});
 
-            addDragGroup("Connections", new String[]{"Attach Validator"});
+            //addDragGroup("Connections", new String[]{"Attach Validator"});
 
         } catch (PerfCakeClassProviderException e) {
             throw new RuntimeException("Error initializing toolbar", e);
@@ -63,11 +58,10 @@ public class ToolbarPanel extends JPanel {
         //add items to pane
         JBList list = new JBList(items);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.getSelectionModel().addListSelectionListener(new JListSelectionListener());
+        list.getSelectionModel().addListSelectionListener(new MyListSelectionListener());
         list.setDragEnabled(true);
 
         list.setTransferHandler(new ToolbarTransferHandler(groupName));
-        list.addMouseListener(new DragListener());
         pane.add(list);
         jlistModels.add(list.getSelectionModel());
 
@@ -93,7 +87,7 @@ public class ToolbarPanel extends JPanel {
         }
     }
 
-    class JListSelectionListener implements ListSelectionListener {
+    class MyListSelectionListener implements ListSelectionListener {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
@@ -110,6 +104,7 @@ public class ToolbarPanel extends JPanel {
         public void mouseReleased(MouseEvent e) {
             JComponent jlist = (JComponent) e.getSource();
             TransferHandler transferHandler = jlist.getTransferHandler();
+            System.out.println("Export as drag on jList called from listener.");
             transferHandler.exportAsDrag(jlist, new MouseEvent(jlist, MouseEvent.MOUSE_DRAGGED, e.getWhen(), e.getModifiers(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger()), TransferHandler.COPY);
         }
     }

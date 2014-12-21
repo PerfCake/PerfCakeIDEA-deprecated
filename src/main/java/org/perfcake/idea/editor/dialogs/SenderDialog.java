@@ -2,6 +2,7 @@ package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.editor.dialogs.tables.PropertiesEditor;
 import org.perfcake.idea.model.Sender;
@@ -63,13 +64,17 @@ public class SenderDialog extends MyDialogWrapper {
         senderComboBox = new ComboBox(senders);
         //set selected sender from model
         String modelValue = mockCopy.getClazz().getStringValue();
-        for (int i = 0; i < senders.getSize(); i++) {
-            if (senders.getElementAt(i).equals(modelValue)) {
-                senders.setSelectedItem(senders.getElementAt(i));
-                break;
-            }
-        }
+        senders.setSelectedItem(modelValue);
 
         propertiesEditor = new PropertiesEditor(mockCopy);
+    }
+
+    @Nullable
+    @Override
+    protected ValidationInfo doValidate() {
+        if (senderComboBox.getSelectedItem() == null) {
+            return new ValidationInfo("Please specify sender", senderComboBox);
+        }
+        return null;
     }
 }

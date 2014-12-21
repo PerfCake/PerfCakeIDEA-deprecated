@@ -1,21 +1,22 @@
-package org.perfcake.idea.module;
+package org.perfcake.idea.wizard;
 
 import com.intellij.ide.wizard.CommitStepException;
 import com.intellij.ide.wizard.Step;
-import org.perfcake.idea.editor.components.MessagesValidationPair;
-import org.perfcake.idea.editor.dialogs.MessagesDialog;
+import org.perfcake.idea.editor.dialogs.SenderDialog;
+import org.perfcake.idea.model.Sender;
 
 import javax.swing.*;
 
 /**
  * Created by miron on 11. 12. 2014.
  */
-public class MessagesStep implements Step {
+public class SenderStep implements Step {
 
-    MessagesDialog messagesDialog;
+    private SenderDialog senderDialog;
 
-    public MessagesStep(MessagesValidationPair pair) {
-        messagesDialog = new MessagesDialog(pair);
+    public SenderStep(Sender sender) {
+
+        this.senderDialog = new SenderDialog(sender);
     }
 
     @Override
@@ -25,7 +26,7 @@ public class MessagesStep implements Step {
 
     @Override
     public void _commit(boolean finishChosen) throws CommitStepException {
-        messagesDialog.getMockPair();
+        senderDialog.getMockCopy();
     }
 
     @Override
@@ -35,7 +36,7 @@ public class MessagesStep implements Step {
 
     @Override
     public JComponent getComponent() {
-        return messagesDialog.getRootPanel();
+        return senderDialog.getRootPanel();
     }
 
     @Override
