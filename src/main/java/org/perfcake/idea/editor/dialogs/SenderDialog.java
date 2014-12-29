@@ -71,10 +71,16 @@ public class SenderDialog extends MyDialogWrapper {
 
     @Nullable
     @Override
-    protected ValidationInfo doValidate() {
+    public ValidationInfo doValidate() {
         if (senderComboBox.getSelectedItem() == null) {
             return new ValidationInfo("Please specify sender", senderComboBox);
         }
         return null;
+    }
+
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return senderComboBox;
     }
 }

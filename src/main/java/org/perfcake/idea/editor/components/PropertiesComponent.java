@@ -42,7 +42,7 @@ public class PropertiesComponent extends BasicDomElementComponent<Properties> {
         propertiesGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
 
         //set dropping from toolbar to this component
-        propertiesGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(domElement)));
+        propertiesGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(getDomElement())));
 
         addProperties();
     }
@@ -54,7 +54,7 @@ public class PropertiesComponent extends BasicDomElementComponent<Properties> {
 
     private void addProperties() {
         if (getDomElement().isValid()) {
-            for (Property p : myDomElement.getProperties()) {
+            for (Property p : getDomElement().getProperties()) {
                 PropertyComponent propertyComponent = new PropertyComponent(p);
                 addComponent(propertyComponent);
                 propertiesGui.addComponent(propertyComponent.getComponent());

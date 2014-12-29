@@ -18,20 +18,20 @@ public class PropertyDialog extends MyDialogWrapper {
 
     private Property mockCopy;
 
-    public PropertyDialog(@NotNull Component parent, Property mockCopy) {
+    public PropertyDialog(@NotNull Component parent, Property mockCopy, Mode mode) {
         super(parent, true);
-        init(mockCopy);
+        init(mockCopy, mode);
     }
 
-    public PropertyDialog(Property mockCopy) {
+    public PropertyDialog(Property mockCopy, Mode mode) {
         super(false);
-        init(mockCopy);
+        init(mockCopy, mode);
     }
 
 
-    private void init(Property mockCopy) {
+    private void init(Property mockCopy, Mode mode) {
         super.init();
-        setTitle("Edit Property");
+        setTitle(mode == Mode.ADD ? "Add Property" : "Edit Property");
 
         this.mockCopy = mockCopy;
 

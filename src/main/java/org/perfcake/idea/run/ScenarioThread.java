@@ -8,6 +8,7 @@ import org.perfcake.idea.util.Constants;
 import org.perfcake.scenario.Scenario;
 import org.perfcake.scenario.ScenarioLoader;
 
+import javax.xml.bind.JAXBException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -16,7 +17,7 @@ import java.io.PrintStream;
  * Created by miron on 9.3.2014.
  */
 public class ScenarioThread implements Runnable {
-    private static final Logger log = Logger.getInstance(ScenarioThread.class);
+    private static final Logger LOG = Logger.getInstance(ScenarioThread.class);
     Scenario scenario = null;
     private PerfCakeRunConfiguration runConfiguration;
     private PrintStream scenarioOutput;
@@ -48,9 +49,17 @@ public class ScenarioThread implements Runnable {
             scenario = ScenarioLoader.load(path);
             scenario.init();
             scenario.run();
-        } catch (PerfCakeException e) {
-            System.err.println("Run Error: " + e.getMessage() + ". Cause: " + (e.getCause() == null ? "" : e.getCause().getMessage()) + "\nStackTrace:");
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOG.info("Run error", e);
+            System.err.println("Run Error: " + e);
+            Throwable cause = e.getCause();
+            if (cause != null && cause instanceof JAXBException) {
+                System.err.println("JAXB problem detected: " + cause);
+            } else {
+                System.err.println("Unknown cause. Showing stacktrace for cause detection:\n");
+                e.printStackTrace();
+            }
+
         } finally {
             if (scenario != null) try {
                 scenario.close();
@@ -75,7 +84,6 @@ public class ScenarioThread implements Runnable {
 
     /**
      * Creates arguments for PerfCake to run the scenario
-     * @return
      */
     private void setPerfCakeProperties() {
         //fix UnknownHostException for Windows

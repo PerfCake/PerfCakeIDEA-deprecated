@@ -24,11 +24,11 @@ public class ValidatorDialog extends MyDialogWrapper {
     private JPanel rootPanel;
     private Validator mockCopy;
 
-    public ValidatorDialog(Component parent, Validator mockCopy) {
+    public ValidatorDialog(Component parent, Validator mockCopy, Mode mode) {
         super(parent, true);
         this.mockCopy = mockCopy;
         init();
-        setTitle("Edit Validator");
+        setTitle(mode == Mode.ADD ? "Add Validator" : "Edit Validator");
         idTextField.setText(mockCopy.getId().getStringValue());
     }
 
@@ -63,6 +63,9 @@ public class ValidatorDialog extends MyDialogWrapper {
 
     @Override
     public ValidationInfo doValidate() {
+        if (validatorComboBox.getSelectedIndex() == -1) {
+            return new ValidationInfo("Please specify validator.", validatorComboBox);
+        }
         if (idTextField.getText().trim().isEmpty()) {
             return new ValidationInfo("Id can't be empty.", idTextField);
         }

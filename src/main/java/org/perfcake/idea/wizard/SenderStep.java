@@ -2,6 +2,7 @@ package org.perfcake.idea.wizard;
 
 import com.intellij.ide.wizard.CommitStepException;
 import com.intellij.ide.wizard.Step;
+import com.intellij.openapi.ui.ValidationInfo;
 import org.perfcake.idea.editor.dialogs.SenderDialog;
 import org.perfcake.idea.model.Sender;
 
@@ -13,20 +14,28 @@ import javax.swing.*;
 public class SenderStep implements Step {
 
     private SenderDialog senderDialog;
+    private NewScenarioWizard newScenarioWizard;
 
-    public SenderStep(Sender sender) {
+    public SenderStep(Sender sender, NewScenarioWizard newScenarioWizard) {
+        this.newScenarioWizard = newScenarioWizard;
 
         this.senderDialog = new SenderDialog(sender);
     }
 
     @Override
     public void _init() {
-
+        newScenarioWizard.setTitle(senderDialog.getTitle());
     }
 
     @Override
     public void _commit(boolean finishChosen) throws CommitStepException {
-        senderDialog.getMockCopy();
+        ValidationInfo validationInfo = senderDialog.doValidate();
+        if (validationInfo != null) {
+            throw new CommitStepException(validationInfo.message);
+        } else {
+            senderDialog.getMockCopy();
+        }
+
     }
 
     @Override
@@ -41,6 +50,6 @@ public class SenderStep implements Step {
 
     @Override
     public JComponent getPreferredFocusedComponent() {
-        return null;
+        return senderDialog.getPreferredFocusedComponent();
     }
 }

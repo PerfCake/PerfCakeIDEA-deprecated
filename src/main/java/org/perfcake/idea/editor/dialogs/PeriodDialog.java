@@ -15,11 +15,11 @@ public class PeriodDialog extends MyDialogWrapper {
     private JPanel rootPanel;
     private Period mockCopy;
 
-    public PeriodDialog(Component parent, Period mockCopy) {
+    public PeriodDialog(Component parent, Period mockCopy, Mode mode) {
         super(parent, true);
         this.mockCopy = mockCopy;
         init();
-        setTitle("Edit Period");
+        setTitle(mode == Mode.ADD ? "Add Period" : "Edit Period");
 
         this.mockCopy = mockCopy;
 

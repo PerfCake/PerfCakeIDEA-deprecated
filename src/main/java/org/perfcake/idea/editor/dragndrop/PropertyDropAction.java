@@ -3,6 +3,7 @@ package org.perfcake.idea.editor.dragndrop;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.dialogs.Mode;
 import org.perfcake.idea.editor.dialogs.PropertyDialog;
 import org.perfcake.idea.model.IProperties;
 import org.perfcake.idea.model.Property;
@@ -21,10 +22,10 @@ public class PropertyDropAction implements DropAction {
 
     @Override
     public boolean invoke(String elementToAdd) {
-        final IProperties mockCopy = (IProperties) PerfCakeIdeaUtil.runCreateMockCopy(properties);
+        final IProperties mockCopy = PerfCakeIdeaUtil.runCreateMockCopy(properties);
 
         final Property newProperty = mockCopy.addProperty();
-        final PropertyDialog editDialog = new PropertyDialog(newProperty);
+        final PropertyDialog editDialog = new PropertyDialog(newProperty, Mode.ADD);
         boolean ok = editDialog.showAndGet();
         if (ok) {
             new WriteCommandAction(newProperty.getModule().getProject(), "Add Property", newProperty.getXmlElement().getContainingFile()) {

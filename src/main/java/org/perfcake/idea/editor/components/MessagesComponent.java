@@ -45,7 +45,7 @@ public class MessagesComponent extends BasicDomElementComponent<Messages> {
         messagesGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
 
         //set dropping from toolbar to this component
-        messagesGui.setTransferHandler(new ComponentTransferHandler("Messages", new MessageDropAction(myDomElement)));
+        messagesGui.setTransferHandler(new ComponentTransferHandler("Messages", new MessageDropAction(getDomElement())));
 
         addMessages();
     }

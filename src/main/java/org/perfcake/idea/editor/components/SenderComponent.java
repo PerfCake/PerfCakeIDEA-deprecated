@@ -27,7 +27,7 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
     public SenderComponent(Sender domElement) {
         super((Sender) domElement.createStableCopy());
 
-        senderGui = new JPerfCakeIdeaRectangle(domElement.getClazz().getStringValue(), ColorType.SENDER_FOREGROUND, ColorType.SENDER_BACKGROUND);
+        senderGui = new JPerfCakeIdeaRectangle(getDomElement().getClazz().getStringValue(), ColorType.SENDER_FOREGROUND, ColorType.SENDER_BACKGROUND);
 
         createSetActions();
 
@@ -43,7 +43,7 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
         senderGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
 
         //set dropping from toolbar to this component
-        senderGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(myDomElement)));
+        senderGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(getDomElement())));
     }
 
     private void createSetActions() {
@@ -81,7 +81,7 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
 
     private void addProperties() {
         if(getDomElement().isValid()){
-            for (Property p : myDomElement.getProperties()) {
+            for (Property p : getDomElement().getProperties()) {
                 PropertyComponent propertyComponent = new PropertyComponent(p);
                 addComponent(propertyComponent);
                 senderGui.addComponent(propertyComponent.getComponent());

@@ -63,8 +63,8 @@ public class ReporterComponent extends BasicDomElementComponent<Reporter> {
 
         //set dropping from toolbar to this component
         HashMap<String, DropAction> prefixDropActions = new HashMap<>();
-        prefixDropActions.put("Destinations", new DestinationDropAction(domElement));
-        prefixDropActions.put("Properties", new PropertyDropAction(domElement));
+        prefixDropActions.put("Destinations", new DestinationDropAction(getDomElement()));
+        prefixDropActions.put("Properties", new PropertyDropAction(getDomElement()));
         reporterGui.setTransferHandler(new ComponentTransferHandler(prefixDropActions));
 
 

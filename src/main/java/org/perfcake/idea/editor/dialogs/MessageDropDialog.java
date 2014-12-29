@@ -1,6 +1,6 @@
 package org.perfcake.idea.editor.dialogs;
 
-import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.DocumentAdapter;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.model.Message;
@@ -13,6 +13,7 @@ import javax.swing.event.DocumentEvent;
  */
 public class MessageDropDialog extends MyDialogWrapper {
     ButtonGroup group = new ButtonGroup();
+    boolean forceEmptyContent = false;
     private JTextField uriText;
     private JTextArea contentText;
     private JPanel rootPanel;
@@ -64,14 +65,6 @@ public class MessageDropDialog extends MyDialogWrapper {
 
     }
 
-    @Nullable
-    @Override
-    protected ValidationInfo doValidate() {
-        if (uriText.getText().isEmpty() && contentText.getText().isEmpty()) {
-            return new ValidationInfo("Uri or content of a message must be specified.");
-        }
-        return null;
-    }
 
     @Nullable
     @Override
@@ -82,8 +75,25 @@ public class MessageDropDialog extends MyDialogWrapper {
 
     @Override
     public Message getMockCopy() {
-        mockMessage.getUri().setStringValue(uriText.getText());
-        mockMessage.getContent().setStringValue(contentText.getText());
+        if (!uriText.getText().isEmpty()) mockMessage.getUri().setStringValue(uriText.getText());
+        if (!contentText.getText().isEmpty() || forceEmptyContent)
+            mockMessage.getContent().setStringValue(contentText.getText());
         return mockMessage;
+    }
+
+    @Override
+    protected void doOKAction() {
+        if (uriText.getText().isEmpty() && contentText.getText().isEmpty()) {
+            if (Messages.showYesNoDialog(rootPanel,
+                    "Do you want to create message with empty content?",
+                    "None of Message URI Or Content Specified",
+                    null) == Messages.YES) {
+                forceEmptyContent = true;
+                super.doOKAction();
+            } else {
+                return;
+            }
+        }
+        super.doOKAction();
     }
 }

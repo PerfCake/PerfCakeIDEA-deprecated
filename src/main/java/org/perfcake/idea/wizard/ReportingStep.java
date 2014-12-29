@@ -13,14 +13,16 @@ import javax.swing.*;
 public class ReportingStep implements Step {
 
     ReportingDialog reportingDialog;
+    private NewScenarioWizard newScenarioWizard;
 
-    public ReportingStep(Reporting reporting) {
+    public ReportingStep(Reporting reporting, NewScenarioWizard newScenarioWizard) {
+        this.newScenarioWizard = newScenarioWizard;
         reportingDialog = new ReportingDialog(reporting);
     }
 
     @Override
     public void _init() {
-
+        newScenarioWizard.setTitle(reportingDialog.getTitle());
     }
 
     @Override

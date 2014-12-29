@@ -1,7 +1,7 @@
 package org.perfcake.idea.editor.dialogs;
 
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.DocumentAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,12 +30,13 @@ public class MessageDialog extends DialogWrapper {
     private JRadioButton contentRadioButton;
     private ButtonGroup group;// = new ButtonGroup();
     private MessageValidationPair mockPair;
+    private boolean forceEmptyContent = false;
 
-    public MessageDialog(@NotNull Component parent, MessageValidationPair mockPair) {
+    public MessageDialog(@NotNull Component parent, final MessageValidationPair mockPair, Mode mode) {
         super(parent, true);
         this.mockPair = mockPair;
         init();
-        setTitle("Edit Message");
+        setTitle(mode == Mode.ADD ? "Add Message" : "Edit Message");
 
         uriTextField.setText(mockPair.getMessage().getUri().getStringValue());
         multiplicityTextField.setText(mockPair.getMessage().getMultiplicity().getStringValue());
@@ -48,7 +49,7 @@ public class MessageDialog extends DialogWrapper {
         uriRadioButton.setEnabled(false);
         contentRadioButton.setEnabled(false);
 
-        if (!contentTextField.getText().isEmpty()) {
+        if (mockPair.getMessage().getContent().exists()) {
             contentRadioButton.setSelected(true);
         } else if (!uriTextField.getText().isEmpty()) {
             uriRadioButton.setSelected(true);
@@ -57,7 +58,7 @@ public class MessageDialog extends DialogWrapper {
         uriTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(DocumentEvent e) {
-                if (contentTextField.getText().isEmpty()) {
+                if (contentTextField.getText().isEmpty() && !mockPair.getMessage().getContent().exists()) {
                     if (e.getDocument().getLength() > 0) {
                         uriRadioButton.setSelected(true);
                     } else {
@@ -70,7 +71,7 @@ public class MessageDialog extends DialogWrapper {
         contentTextField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(DocumentEvent e) {
-                if (e.getDocument().getLength() > 0) {
+                if (e.getDocument().getLength() > 0 || mockPair.getMessage().getContent().exists()) {
                     contentRadioButton.setSelected(true);
                 } else {
                     if (!uriTextField.getText().isEmpty()) {
@@ -94,7 +95,8 @@ public class MessageDialog extends DialogWrapper {
         Message m = mockPair.getMessage();
         if(!uriTextField.getText().isEmpty()) m.getUri().setStringValue(uriTextField.getText());
         if(!multiplicityTextField.getText().isEmpty()) m.getMultiplicity().setStringValue(multiplicityTextField.getText());
-        if(!contentTextField.getText().isEmpty()) m.getContent().setStringValue(contentTextField.getText());
+        if (!contentTextField.getText().isEmpty() || forceEmptyContent)
+            m.getContent().setStringValue(contentTextField.getText());
         return mockPair;
     }
 
@@ -104,11 +106,20 @@ public class MessageDialog extends DialogWrapper {
         validatorMessageEditor = new ValidatorMessageEditor(mockPair);
     }
 
+
     @Override
-    public ValidationInfo doValidate() {
+    protected void doOKAction() {
         if(uriTextField.getText().isEmpty() && contentTextField.getText().isEmpty()){
-            return new ValidationInfo("Please specify Message URI or content");
+            if (Messages.showYesNoDialog(rootPanel,
+                    "Do you want to create message with empty content?",
+                    "None Of Message URI Or Content Specified",
+                    null) == Messages.YES) {
+                forceEmptyContent = true;
+                super.doOKAction();
+            } else {
+                return;
+            }
         }
-        return null;
+        super.doOKAction();
     }
 }

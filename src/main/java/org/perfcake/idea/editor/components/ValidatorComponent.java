@@ -42,10 +42,10 @@ public class ValidatorComponent extends BasicDomElementComponent<Validator> {
             }
 
         });
-        validatorGui.addMouseListener(new PopClickListener(domElement, getComponent()));
+        validatorGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
 
         //set dropping from toolbar to this component
-        validatorGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(domElement)));
+        validatorGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(getDomElement())));
     }
 
     private void createSetActions() {

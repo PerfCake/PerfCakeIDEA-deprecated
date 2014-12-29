@@ -32,7 +32,7 @@ public class DestinationComponent extends BasicDomElementComponent<Destination> 
     public DestinationComponent(Destination domElement) {
         super((Destination) domElement.createStableCopy());
 
-        destinationGui = new JPerfCakeIdeaEnablingRectangle(domElement.getClazz().getStringValue(), domElement.getEnabled().getValue(), ColorType.DESTINATION_FOREGROUND, ColorType.DESTINATION_BACKGROUND);
+        destinationGui = new JPerfCakeIdeaEnablingRectangle(getDomElement().getClazz().getStringValue(), getDomElement().getEnabled().getValue(), ColorType.DESTINATION_FOREGROUND, ColorType.DESTINATION_BACKGROUND);
         createSetActions();
         destinationGui.addMouseListener(new MouseAdapter() {
             @Override
@@ -59,7 +59,7 @@ public class DestinationComponent extends BasicDomElementComponent<Destination> 
         destinationGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
 
         //set dropping from toolbar to this component
-        destinationGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(myDomElement)));
+        destinationGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(getDomElement())));
     }
 
     private void createSetActions() {
@@ -92,7 +92,7 @@ public class DestinationComponent extends BasicDomElementComponent<Destination> 
     public void reset() {
         super.reset();
         if (getDomElement().isValid()) {
-            destinationGui.setTitle(myDomElement.getClazz().getStringValue());
+            destinationGui.setTitle(getDomElement().getClazz().getStringValue());
         }
     }
 }

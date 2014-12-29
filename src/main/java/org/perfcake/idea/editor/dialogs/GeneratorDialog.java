@@ -111,4 +111,10 @@ public class GeneratorDialog extends MyDialogWrapper {
         }
         return null;
     }
+
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return generatorComboBox;
+    }
 }

@@ -13,10 +13,15 @@ public class NameStep implements Step {
 
     private JTextField scenarioTextField;
     private JPanel rootPanel;
+    private NewScenarioWizard newScenarioWizard;
+
+    public NameStep(NewScenarioWizard newScenarioWizard) {
+        this.newScenarioWizard = newScenarioWizard;
+    }
 
     @Override
     public void _init() {
-
+        newScenarioWizard.setTitle("Specify Scenario Name");
     }
 
     @Override

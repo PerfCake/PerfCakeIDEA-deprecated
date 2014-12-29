@@ -7,8 +7,8 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomFileDescription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.perfcake.idea.util.Constants;
 import org.perfcake.idea.model.Scenario;
+import org.perfcake.idea.util.Constants;
 
 import javax.swing.*;
 
@@ -17,7 +17,7 @@ import javax.swing.*;
  */
 public class ScenarioDomFileDescription extends DomFileDescription<Scenario> {
 
-    private static final String[] PERFCAKE_NAMESPACES = {"", "urn:perfcake:scenario:3.0", "urn:perfcake:scenario:2.0"};
+    private static final String[] PERFCAKE_NAMESPACES = {"", "urn:perfcake:scenario:3.0"};
 
     public ScenarioDomFileDescription() {
         super(Scenario.class, Scenario.TAG_NAME);

@@ -13,15 +13,17 @@ import javax.swing.*;
  */
 public class GeneratorStep implements Step {
 
-    GeneratorDialog generatorDialog;
+    private final NewScenarioWizard newScenarioWizard;
+    private GeneratorDialog generatorDialog;
 
-    public GeneratorStep(Generator generator) {
+    public GeneratorStep(Generator generator, NewScenarioWizard newScenarioWizard) {
+        this.newScenarioWizard = newScenarioWizard;
         generatorDialog = new GeneratorDialog(generator);
     }
 
     @Override
     public void _init() {
-
+        newScenarioWizard.setTitle(generatorDialog.getTitle());
     }
 
     @Override
@@ -47,7 +49,7 @@ public class GeneratorStep implements Step {
 
     @Override
     public JComponent getPreferredFocusedComponent() {
-        return null;
+        return generatorDialog.getPreferredFocusedComponent();
     }
 
     public boolean isComplete() {

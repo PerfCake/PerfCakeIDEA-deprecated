@@ -17,10 +17,10 @@ public class HeaderDialog extends MyDialogWrapper {
     private JTextField valueTextField;
     private JPanel rootPanel;
 
-    public HeaderDialog(@NotNull Component parent, Header mockCopy) {
+    public HeaderDialog(@NotNull Component parent, Header mockCopy, Mode mode) {
         super(parent, true);
         init();
-        setTitle("Edit Header");
+        setTitle(mode == Mode.ADD ? "Add Header" : "Edit Header");
 
         this.mockCopy = mockCopy;
 

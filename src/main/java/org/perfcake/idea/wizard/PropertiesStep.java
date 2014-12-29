@@ -13,14 +13,16 @@ import javax.swing.*;
 public class PropertiesStep implements Step {
 
     PropertiesDialog propertiesDialog;
+    private NewScenarioWizard newScenarioWizard;
 
-    public PropertiesStep(IProperties properties) {
+    public PropertiesStep(IProperties properties, NewScenarioWizard newScenarioWizard) {
+        this.newScenarioWizard = newScenarioWizard;
         propertiesDialog = new PropertiesDialog(properties);
     }
 
     @Override
     public void _init() {
-
+        newScenarioWizard.setTitle(propertiesDialog.getTitle());
     }
 
     @Override

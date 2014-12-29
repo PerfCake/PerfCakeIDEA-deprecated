@@ -47,8 +47,8 @@ public class MessageComponent extends BasicDomElementComponent<Message> {
 
         //set dropping from toolbar to this component
         HashMap<String, DropAction> prefixDropActions = new HashMap<>();
-        //prefixDropActions.put("Connections", new PropertyDropAction(domElement));
-        prefixDropActions.put("Properties", new PropertyDropAction(domElement));
+        //prefixDropActions.put("Connections", new PropertyDropAction(getDomElement()));
+        prefixDropActions.put("Properties", new PropertyDropAction(getDomElement()));
         messageGui.setTransferHandler(new ComponentTransferHandler(prefixDropActions));
     }
 

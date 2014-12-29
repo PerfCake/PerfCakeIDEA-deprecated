@@ -5,6 +5,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.dialogs.Mode;
 import org.perfcake.idea.editor.dialogs.ValidatorDialog;
 import org.perfcake.idea.model.Validation;
 import org.perfcake.idea.model.Validator;
@@ -35,7 +36,7 @@ public class ValidatorAddAction extends AbstractAddAction {
         final Validation mockCopy = PerfCakeIdeaUtil.runCreateMockCopy(validation);
 
         final Validator newValidator = mockCopy.addValidator();
-        final ValidatorDialog editDialog = new ValidatorDialog(parent, newValidator);
+        final ValidatorDialog editDialog = new ValidatorDialog(parent, newValidator, Mode.ADD);
         boolean ok = editDialog.showAndGet();
         if (ok) {
 

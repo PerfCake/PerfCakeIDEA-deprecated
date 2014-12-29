@@ -26,7 +26,7 @@ public class PropertyComponent extends BasicDomElementComponent<Property> {
 
     public PropertyComponent(final Property domElement) {
         super((Property) domElement.createStableCopy());
-        propertyGui = new PropertyGui(domElement.getName().getStringValue(), domElement.getValue().getStringValue());
+        propertyGui = new PropertyGui(getDomElement().getName().getStringValue(), getDomElement().getValue().getStringValue());
 
         createSetActions();
 

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.editor.dialogs.HeaderDialog;
+import org.perfcake.idea.editor.dialogs.Mode;
 import org.perfcake.idea.model.Header;
 import org.perfcake.idea.model.Message;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
@@ -34,12 +35,12 @@ public class HeaderAddAction extends AbstractAddAction {
         final Message mockCopy = PerfCakeIdeaUtil.runCreateMockCopy(message);
 
         final Header newHeader = mockCopy.addHeader();
-        final HeaderDialog addDialog = new HeaderDialog(parent, newHeader);
+        final HeaderDialog addDialog = new HeaderDialog(parent, newHeader, Mode.ADD);
         boolean ok = addDialog.showAndGet();
         if (ok) {
 
             final Project project = mockCopy.getModule() == null ? null : mockCopy.getModule().getProject();
-            final PsiFile containingFile = mockCopy.getXmlElement().getContainingFile();
+            final PsiFile containingFile = mockCopy.getXmlElement() == null ? null : mockCopy.getXmlElement().getContainingFile();
 
             new WriteCommandAction(project, "Add Header", containingFile) {
                 @Override

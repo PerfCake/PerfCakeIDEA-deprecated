@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.editor.components.MessageValidationPair;
 import org.perfcake.idea.editor.components.MessagesValidationPair;
 import org.perfcake.idea.editor.dialogs.MessageDialog;
+import org.perfcake.idea.editor.dialogs.Mode;
 import org.perfcake.idea.model.Message;
 import org.perfcake.idea.model.Messages;
 import org.perfcake.idea.model.Validation;
@@ -41,7 +42,7 @@ public class MessageAddAction extends AbstractAddAction {
         Validation validationMockCopy = PerfCakeIdeaUtil.runCreateMockCopy(pair.getValidation());
 
         MessageValidationPair newMockPair = new MessageValidationPair(newMessage, validationMockCopy);
-        final MessageDialog editDialog = new MessageDialog(parent, newMockPair);
+        final MessageDialog editDialog = new MessageDialog(parent, newMockPair, Mode.ADD);
         boolean ok = editDialog.showAndGet();
         if (ok) {
 

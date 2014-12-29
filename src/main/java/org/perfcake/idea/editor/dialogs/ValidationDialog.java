@@ -32,8 +32,7 @@ public class ValidationDialog extends MyDialogWrapper {
     private JButton editButton;
     private Validation mockCopy;
     private boolean selectMode;
-    @Nullable
-    private String selectedValidatorId = null;
+
 
     public ValidationDialog(Validation mockCopy, final boolean selectMode) {
         super(true);
@@ -67,7 +66,7 @@ public class ValidationDialog extends MyDialogWrapper {
         if (mockCopy.getFastForward().getValue() != null) {
             fastForwardCheckBox.setSelected(mockCopy.getFastForward().getValue());
         } else {
-            enabledCheckBox.setSelected(false);
+            fastForwardCheckBox.setSelected(false);
         }
 
 
@@ -125,10 +124,6 @@ public class ValidationDialog extends MyDialogWrapper {
         return selectedValidators.get(0).getId().getStringValue();
     }
 
-    private void setSelectedValidator(int selectedRow) {
-        Validator validator = mockCopy.getValidators().get(selectedRow);
-        selectedValidatorId = validator.getId().getStringValue();
-    }
 
     @Nullable
     @Override
@@ -138,8 +133,10 @@ public class ValidationDialog extends MyDialogWrapper {
 
     @Override
     public Validation getMockCopy() {
-        mockCopy.getEnabled().setValue(enabledCheckBox.isSelected());
-        mockCopy.getFastForward().setValue(fastForwardCheckBox.isSelected());
+        if (mockCopy.getEnabled().exists() || enabledCheckBox.isSelected())
+            mockCopy.getEnabled().setValue(enabledCheckBox.isSelected());
+        if (mockCopy.getFastForward().exists() || fastForwardCheckBox.isSelected())
+            mockCopy.getFastForward().setValue(fastForwardCheckBox.isSelected());
         return mockCopy;
     }
 

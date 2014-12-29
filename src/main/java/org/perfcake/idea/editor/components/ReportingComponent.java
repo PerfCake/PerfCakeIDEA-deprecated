@@ -50,8 +50,8 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
 
         //set dropping from toolbar to this component
         HashMap<String, DropAction> prefixDropActions = new HashMap<>();
-        prefixDropActions.put("Reporters", new ReporterDropAction(domElement));
-        prefixDropActions.put("Properties", new PropertyDropAction(domElement));
+        prefixDropActions.put("Reporters", new ReporterDropAction(getDomElement()));
+        prefixDropActions.put("Properties", new PropertyDropAction(getDomElement()));
         reportingGui.setTransferHandler(new ComponentTransferHandler(prefixDropActions));
 
 
@@ -82,7 +82,7 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
 
     private void addReporters() {
         if (getDomElement().isValid()) {
-            for (Reporter r : myDomElement.getReporters()) {
+            for (Reporter r : getDomElement().getReporters()) {
                 ReporterComponent reporterComponent = new ReporterComponent(r);
                 addComponent(reporterComponent);
                 reportingGui.addComponent(reporterComponent.getComponent());

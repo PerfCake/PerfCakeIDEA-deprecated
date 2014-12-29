@@ -23,16 +23,16 @@ public class NewScenarioWizard extends AbstractWizard {
     PropertiesStep propertiesStep;
 
     public NewScenarioWizard(@Nullable Project project, Scenario scenario) {
-        super("New Scenario", project);
+        super("Specify scenario name", project);
         this.scenario = scenario;
 
-        nameStep = new NameStep();
-        generatorStep = new GeneratorStep(scenario.getGenerator());
-        senderStep = new SenderStep(scenario.getSender());
-        messagesStep = new MessagesStep(PerfCakeIdeaUtil.getMessagesValidationPair(scenario.getMessages()));
-        validationStep = new ValidationStep(scenario.getValidation());
-        reportingStep = new ReportingStep(scenario.getReporting());
-        propertiesStep = new PropertiesStep(scenario.getProperties());
+        nameStep = new NameStep(this);
+        generatorStep = new GeneratorStep(scenario.getGenerator(), this);
+        senderStep = new SenderStep(scenario.getSender(), this);
+        messagesStep = new MessagesStep(PerfCakeIdeaUtil.getMessagesValidationPair(scenario.getMessages()), this);
+        validationStep = new ValidationStep(scenario.getValidation(), this);
+        reportingStep = new ReportingStep(scenario.getReporting(), this);
+        propertiesStep = new PropertiesStep(scenario.getProperties(), this);
 
         addStep(nameStep);
         addStep(generatorStep);

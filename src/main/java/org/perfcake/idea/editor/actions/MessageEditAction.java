@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.idea.editor.components.MessageValidationPair;
 import org.perfcake.idea.editor.dialogs.MessageDialog;
+import org.perfcake.idea.editor.dialogs.Mode;
 import org.perfcake.idea.model.Message;
 import org.perfcake.idea.model.Validation;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
@@ -38,13 +39,13 @@ public class MessageEditAction extends AbstractAction {
         Validation validationMockCopy = PerfCakeIdeaUtil.runCreateMockCopy(pair.getValidation());
         final MessageValidationPair mockPair = new MessageValidationPair(messageMockCopy, validationMockCopy);
 
-        final MessageDialog messageDialog = new MessageDialog(parent, mockPair);
+        final MessageDialog messageDialog = new MessageDialog(parent, mockPair, Mode.EDIT);
         boolean ok = messageDialog.showAndGet();
 
         if (ok) {
 
             final Project project = messageMockCopy.getModule() == null ? null : messageMockCopy.getModule().getProject();
-            final PsiFile containingFile = messageMockCopy.getXmlElement().getContainingFile();
+            final PsiFile containingFile = messageMockCopy.getXmlElement() == null ? null : messageMockCopy.getXmlElement().getContainingFile();
 
             new WriteCommandAction(project, "Edit Message", containingFile) {
                 @Override

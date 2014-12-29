@@ -5,6 +5,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.dialogs.Mode;
 import org.perfcake.idea.editor.dialogs.PeriodDialog;
 import org.perfcake.idea.model.Destination;
 import org.perfcake.idea.model.Period;
@@ -34,12 +35,12 @@ public class PeriodAddAction extends AbstractAddAction {
         final Destination mockCopy = PerfCakeIdeaUtil.runCreateMockCopy(destination);
 
         final Period newPeriod = mockCopy.addPeriod();
-        final PeriodDialog addDialog = new PeriodDialog(parent, newPeriod);
+        final PeriodDialog addDialog = new PeriodDialog(parent, newPeriod, Mode.ADD);
         boolean ok = addDialog.showAndGet();
         if (ok) {
 
             final Project project = mockCopy.getModule() == null ? null : mockCopy.getModule().getProject();
-            final PsiFile containingFile = mockCopy.getXmlElement().getContainingFile();
+            final PsiFile containingFile = mockCopy.getXmlElement() == null ? null : mockCopy.getXmlElement().getContainingFile();
 
             new WriteCommandAction(project, "Add Period", containingFile) {
                 @Override

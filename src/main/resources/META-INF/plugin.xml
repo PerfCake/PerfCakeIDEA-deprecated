@@ -1,25 +1,17 @@
 <idea-plugin version="2" url="https://www.perfcake.org">
     <id>org.perfcake.idea</id>
     <name>PerfCakeIDEA</name>
-    <version>0.0.1</version>
-    <vendor email="m.michalko@aol.com">Miron Michalko</vendor>
+    <version>3.3</version>
+    <vendor email="michalko.miron@gmail.com">Miron Michalko</vendor>
 
     <description><![CDATA[
-	PerfCake plugin for IntellijIdea.<br/>
+	PerfCake plugin for Intellij Idea.<br/>
         PerfCake is a lightweight performance testing tool and a load generator.
       ]]></description>
 
-    <!--<id>${project.groupId}</id>
-  <name>${project.artifactId}</name>
-  <version>${project.version}</version>
-  <vendor email="${vendor.email}">${vendor.name}</vendor>
-
-  <description><![CDATA[
-	${project.description}
-      ]]></description>-->
 
     <change-notes><![CDATA[
-      <small>Version 0.1</small>
+      <small>Initial release.</small>
       ]]>
     </change-notes>
 
@@ -34,6 +26,7 @@
 
     <application-components>
         <!-- Add your application components here -->
+
     </application-components>
 
     <project-components>
@@ -51,13 +44,14 @@
     <extensions defaultExtensionNs="com.intellij">
         <moduleType id="PERFCAKE_MODULE"
                     implementationClass="org.perfcake.idea.module.PerfCakeModuleType"/>
-        <projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>
+        <!--<projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>-->
         <configurationType implementation="org.perfcake.idea.run.PerfCakeConfigurationType"/>
         <runConfigurationProducer implementation="org.perfcake.idea.run.PerfCakeRunConfigurationProducer"/>
         <programRunner implementation="org.perfcake.idea.run.PerfCakeRunner"/>
         <dom.fileDescription implementation="org.perfcake.idea.module.ScenarioDomFileDescription"/>
         <fileEditorProvider implementation="org.perfcake.idea.editor.editor.ScenarioEditorProvider"/>
         <applicationConfigurable instance="org.perfcake.idea.module.PerfCakeIdeSettings"/>
+        <standardResourceProvider implementation="org.perfcake.idea.module.PerfCakeIdeaStandardResourceProvider"/>
     </extensions>
     <module-components>
 

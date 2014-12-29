@@ -38,12 +38,12 @@ public class GeneratorComponent extends BasicDomElementComponent<Generator> {
             }
         });
 
-        generatorGui.addMouseListener(new PopClickListener(domElement, getComponent()));
+        generatorGui.addMouseListener(new PopClickListener(getDomElement(), getComponent()));
 
         //set dropping from toolbar to this component
-        generatorGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(myDomElement)));
+        generatorGui.setTransferHandler(new ComponentTransferHandler("Properties", new PropertyDropAction(getDomElement())));
 
-        RunComponent runComponent = new RunComponent(domElement.getRun());
+        RunComponent runComponent = new RunComponent(getDomElement().getRun());
         generatorGui.addComponent(runComponent.getComponent());
         addComponent(runComponent);
     }
@@ -52,7 +52,7 @@ public class GeneratorComponent extends BasicDomElementComponent<Generator> {
         ActionMap actionMap = new ActionMap();
 
         PropertyAddAction addAction = new PropertyAddAction(getDomElement(), generatorGui);
-        EditAction editAction = new EditAction("Edit Generator", getDomElement(), generatorGui);
+        EditAction editAction = new EditAction<Generator>("Edit Generator", getDomElement(), generatorGui);
 
         actionMap.put(ActionType.ADD, addAction);
         actionMap.put(ActionType.EDIT, editAction);

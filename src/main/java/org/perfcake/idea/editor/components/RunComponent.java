@@ -32,6 +32,6 @@ public class RunComponent extends BasicDomElementComponent<Run> {
     }
 
     private String getGuiText() {
-        return myDomElement.getType().getStringValue() + " : " + myDomElement.getValue().getStringValue();
+        return getDomElement().getType().getStringValue() + " : " + getDomElement().getValue().getStringValue();
     }
 }

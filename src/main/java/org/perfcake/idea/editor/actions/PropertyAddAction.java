@@ -6,6 +6,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.idea.editor.dialogs.Mode;
 import org.perfcake.idea.editor.dialogs.PropertyDialog;
 import org.perfcake.idea.model.IProperties;
 import org.perfcake.idea.model.Property;
@@ -34,14 +35,14 @@ public class PropertyAddAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        final IProperties mockCopy = (IProperties) PerfCakeIdeaUtil.runCreateMockCopy(properties);
+        final IProperties mockCopy = PerfCakeIdeaUtil.runCreateMockCopy(properties);
 
         final Property newProperty = mockCopy.addProperty();
-        final PropertyDialog editDialog = new PropertyDialog(parent, newProperty);
+        final PropertyDialog editDialog = new PropertyDialog(parent, newProperty, Mode.ADD);
         boolean ok = editDialog.showAndGet();
         if (ok) {
             final Project project = newProperty.getModule() == null ? null : newProperty.getModule().getProject();
-            final PsiFile containingFile = newProperty.getXmlElement().getContainingFile();
+            final PsiFile containingFile = newProperty.getXmlElement() == null ? null : newProperty.getXmlElement().getContainingFile();
 
             new WriteCommandAction(project, "Add Property", containingFile) {
                 @Override

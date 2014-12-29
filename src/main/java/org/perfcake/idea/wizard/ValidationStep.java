@@ -13,14 +13,16 @@ import javax.swing.*;
 public class ValidationStep implements Step {
 
     ValidationDialog validationDialog;
+    private NewScenarioWizard newScenarioWizard;
 
-    public ValidationStep(Validation validation) {
+    public ValidationStep(Validation validation, NewScenarioWizard newScenarioWizard) {
+        this.newScenarioWizard = newScenarioWizard;
         validationDialog = new ValidationDialog(validation, false);
     }
 
     @Override
     public void _init() {
-
+        newScenarioWizard.setTitle(validationDialog.getTitle());
     }
 
     @Override

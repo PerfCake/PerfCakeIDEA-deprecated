@@ -13,14 +13,16 @@ import javax.swing.*;
 public class MessagesStep implements Step {
 
     MessagesDialog messagesDialog;
+    private NewScenarioWizard newScenarioWizard;
 
-    public MessagesStep(MessagesValidationPair pair) {
+    public MessagesStep(MessagesValidationPair pair, NewScenarioWizard newScenarioWizard) {
+        this.newScenarioWizard = newScenarioWizard;
         messagesDialog = new MessagesDialog(pair);
     }
 
     @Override
     public void _init() {
-
+        newScenarioWizard.setTitle(messagesDialog.getTitle());
     }
 
     @Override
