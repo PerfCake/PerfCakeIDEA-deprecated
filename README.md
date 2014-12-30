@@ -9,6 +9,9 @@ Building the project
 First download http://download.jetbrains.com/idea/ideaIU-14.0.2.zip to your local Maven repository under folder
 `MAVEN_REPOSITORY/org/jetbrains/ideaIU/14.0.2/`
 
+Build from command line with command
+`mvn package`
+
 Built plugin can be installed to Intellij Idea by:
 `File | Settings | IDE Settings | Plugins | Install plugin from disk...`
 
