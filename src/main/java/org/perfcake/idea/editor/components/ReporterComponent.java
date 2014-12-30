@@ -80,7 +80,7 @@ public class ReporterComponent extends BasicDomElementComponent<Reporter> {
 
         SwitchEnabledAction enabledAction = new SwitchEnabledAction(reporterGui, "Reporter");
 
-        EditAction editAction = new EditAction("Edit Reporter", getDomElement(), getComponent());
+        EditAction editAction = new EditAction<Reporter>("Edit Reporter", getDomElement(), getComponent());
 
         List<Reporter> reporterList = new ArrayList<>();
         reporterList.add(getDomElement());

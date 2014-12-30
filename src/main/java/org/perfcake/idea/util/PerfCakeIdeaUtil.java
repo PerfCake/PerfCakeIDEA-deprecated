@@ -49,6 +49,7 @@ public class PerfCakeIdeaUtil {
     }
 
     public static <T extends DomElement> T runCreateMockCopy(final T domElement){
+        //if(!domElement.isValid() && domElement instanceof StableElement) ((StableElement)domElement).revalidate();
         if(domElement.isValid()) {
             return (T) new WriteAction() {
                 @Override
@@ -57,6 +58,10 @@ public class PerfCakeIdeaUtil {
                 }
             }.execute().getResultObject();
         }
+        com.intellij.openapi.ui.Messages.showOkCancelDialog(
+                "Scenario XML is not valid. Please correct XML and try again.",
+                "Invalid XML",
+                null);
         throw new RuntimeException("Invalid XML. Cannot create mockCopy.");
     }
 

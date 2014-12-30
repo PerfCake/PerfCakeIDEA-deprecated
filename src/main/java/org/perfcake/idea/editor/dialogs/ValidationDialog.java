@@ -74,10 +74,10 @@ public class ValidationDialog extends MyDialogWrapper {
         addButton.setAction(addAction);
         addButton.setText("Add");
 
-        final EditAction editAction = new EditAction("Edit", selectedValidators.isEmpty() ? null : selectedValidators.get(0), validatorTable);
+        final EditAction editAction = new EditAction<Validator>("Edit", selectedValidators.isEmpty() ? null : selectedValidators.get(0), validatorTable);
         editButton.setAction(editAction);
 
-        final DeleteAction deleteAction = new DeleteAction("Delete", selectedValidators, validatorTable);
+        final DeleteAction deleteAction = new DeleteAction<Validator>("Delete", selectedValidators, validatorTable);
         deleteButton.setAction(deleteAction);
 
         validatorTable.addMouseListener(new MouseAdapter() {

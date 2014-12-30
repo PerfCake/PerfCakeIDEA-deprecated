@@ -76,7 +76,7 @@ public class PropertiesComponent extends BasicDomElementComponent<Properties> {
         ActionMap actionMap = new ActionMap();
 
         PropertyAddAction addAction = new PropertyAddAction(getDomElement(), getComponent());
-        EditAction editAction = new EditAction("Edit Properties", getDomElement(), getComponent());
+        EditAction editAction = new EditAction<Properties>("Edit Properties", getDomElement(), getComponent());
 
         actionMap.put(ActionType.ADD, addAction);
         actionMap.put(ActionType.EDIT, editAction);

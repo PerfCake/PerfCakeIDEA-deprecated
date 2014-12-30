@@ -96,4 +96,10 @@ public class MessageDropDialog extends MyDialogWrapper {
         }
         super.doOKAction();
     }
+
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return uriText;
+    }
 }

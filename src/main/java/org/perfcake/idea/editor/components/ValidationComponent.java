@@ -54,7 +54,7 @@ public class ValidationComponent extends BasicDomElementComponent<Validation> {
         ActionMap actionMap = new ActionMap();
 
         ValidatorAddAction addAction = new ValidatorAddAction(getDomElement(), validationGui);
-        EditAction editAction = new EditAction("Edit Validation", getDomElement(), validationGui);
+        EditAction editAction = new EditAction<Validation>("Edit Validation", getDomElement(), validationGui);
 
         actionMap.put(ActionType.ADD, addAction);
         actionMap.put(ActionType.EDIT, editAction);

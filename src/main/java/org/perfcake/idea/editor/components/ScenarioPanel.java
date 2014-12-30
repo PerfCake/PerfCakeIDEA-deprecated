@@ -82,7 +82,6 @@ public class ScenarioPanel extends JPanel implements ColorAdjustable {
 
     @Override
     public void updateColors() {
-        setForeground(ColorComponents.getColor(ColorType.SCENARIO_FOREGROUND));
         setBackground(ColorComponents.getColor(ColorType.SCENARIO_BACKGROUND));
     }
 

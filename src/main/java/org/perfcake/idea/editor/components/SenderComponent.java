@@ -51,7 +51,7 @@ public class SenderComponent extends BasicDomElementComponent<Sender> {
 
         PropertyAddAction addAction = new PropertyAddAction(getDomElement(), getComponent());
 
-        EditAction editAction = new EditAction("Edit Sender", getDomElement(), getComponent());
+        EditAction editAction = new EditAction<Sender>("Edit Sender", getDomElement(), getComponent());
 
         actionMap.put(ActionType.ADD, addAction);
         actionMap.put(ActionType.EDIT, editAction);

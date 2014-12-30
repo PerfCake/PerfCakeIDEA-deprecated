@@ -61,4 +61,10 @@ public class PropertyDialog extends MyDialogWrapper {
         }*/
         return null;
     }
+
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return nameTextField;
+    }
 }

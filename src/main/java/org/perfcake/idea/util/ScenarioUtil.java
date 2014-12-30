@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.xml.XmlFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +51,7 @@ public class ScenarioUtil {
         return new WriteAction<PsiElement>() {
             @Override
             protected void run(@NotNull Result<PsiElement> result) throws Throwable {
+                CodeStyleManager.getInstance(dir.getManager()).reformat(scenario);
                 result.setResult(dir.add(scenario));
             }
         }.execute().getResultObject();

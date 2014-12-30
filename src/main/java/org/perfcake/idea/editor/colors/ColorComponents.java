@@ -132,8 +132,6 @@ public class ColorComponents {
      */
     private static Color getDefaultColor(ColorType colorType) {
         switch (colorType) {
-            case SCENARIO_FOREGROUND:
-                return parseColor("0,0,0");
             case SCENARIO_BACKGROUND:
                 return parseColor("255,255,255");
             case GENERATOR_FOREGROUND:

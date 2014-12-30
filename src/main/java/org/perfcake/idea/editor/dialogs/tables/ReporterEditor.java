@@ -35,11 +35,11 @@ public class ReporterEditor {
         addButton.setAction(addAction);
         addButton.setText("Add");
 
-        final EditAction editAction = new EditAction("Edit Reporter", selectedReporters.isEmpty() ? null : selectedReporters.get(0), reporterTable);
+        final EditAction editAction = new EditAction<Reporter>("Edit Reporter", selectedReporters.isEmpty() ? null : selectedReporters.get(0), reporterTable);
         editButton.setAction(editAction);
         editButton.setText("Edit");
 
-        final DeleteAction deleteAction = new DeleteAction("Delete Reporter", selectedReporters, reporterTable);
+        final DeleteAction deleteAction = new DeleteAction<Reporter>("Delete Reporter", selectedReporters, reporterTable);
         deleteButton.setAction(deleteAction);
         deleteButton.setText("Delete");
 

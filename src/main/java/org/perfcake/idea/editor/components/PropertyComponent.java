@@ -62,7 +62,7 @@ public class PropertyComponent extends BasicDomElementComponent<Property> {
     private void createSetActions() {
         ActionMap actionMap = new ActionMap();
 
-        EditAction editAction = new EditAction("Edit Property", getDomElement(), getComponent());
+        EditAction editAction = new EditAction<Property>("Edit Property", getDomElement(), getComponent());
 
         List<Property> propertyList = new ArrayList<>();
         propertyList.add(getDomElement());

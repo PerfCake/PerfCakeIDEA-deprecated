@@ -52,7 +52,7 @@ public class ValidatorComponent extends BasicDomElementComponent<Validator> {
         ActionMap actionMap = new ActionMap();
 
         PropertyAddAction addAction = new PropertyAddAction(getDomElement(), validatorGui);
-        EditAction editAction = new EditAction("Edit Validator", getDomElement(), validatorGui);
+        EditAction editAction = new EditAction<Validator>("Edit Validator", getDomElement(), validatorGui);
 
         List<Validator> validatorList = new ArrayList<>();
         validatorList.add(getDomElement());

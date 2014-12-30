@@ -36,11 +36,11 @@ public class PeriodEditor {
         addButton.setAction(addAction);
         addButton.setText("Add");
 
-        final EditAction editAction = new EditAction("Edit Period", null, periodTable);
+        final EditAction editAction = new EditAction<Period>("Edit Period", null, periodTable);
         editButton.setAction(editAction);
         editButton.setText("Edit");
 
-        final DeleteAction deleteAction = new DeleteAction("Delete Period", selectedPeriods, periodTable);
+        final DeleteAction deleteAction = new DeleteAction<Period>("Delete Period", selectedPeriods, periodTable);
         deleteButton.setAction(deleteAction);
         deleteButton.setText("Delete");
 

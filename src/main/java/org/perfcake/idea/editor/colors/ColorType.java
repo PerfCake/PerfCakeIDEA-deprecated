@@ -4,7 +4,6 @@ package org.perfcake.idea.editor.colors;
  * Created by miron on 2.11.2014.
  */
 public enum ColorType {
-    SCENARIO_FOREGROUND,
     SCENARIO_BACKGROUND,
     PROPERTIES_FOREGROUND,
     PROPERTIES_BACKGROUND,
@@ -27,5 +26,5 @@ public enum ColorType {
     VALIDATION_FOREGROUND,
     VALIDATION_BACKGROUND,
     VALIDATOR_FOREGROUND,
-    VALIDATOR_BACKGROUND;
+    VALIDATOR_BACKGROUND
 }

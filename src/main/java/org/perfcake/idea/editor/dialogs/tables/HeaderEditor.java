@@ -35,11 +35,11 @@ public class HeaderEditor {
         addButton.setAction(addAction);
         addButton.setText("Add");
 
-        final EditAction editAction = new EditAction("Edit Header", selectedHeaders.isEmpty() ? null : selectedHeaders.get(0), headerTable);
+        final EditAction editAction = new EditAction<Header>("Edit Header", selectedHeaders.isEmpty() ? null : selectedHeaders.get(0), headerTable);
         editButton.setAction(editAction);
         editButton.setText("Edit");
 
-        final DeleteAction deleteAction = new DeleteAction("Delete Header", selectedHeaders, headerTable);
+        final DeleteAction deleteAction = new DeleteAction<Header>("Delete Header", selectedHeaders, headerTable);
         deleteButton.setAction(deleteAction);
         deleteButton.setText("Delete");
 

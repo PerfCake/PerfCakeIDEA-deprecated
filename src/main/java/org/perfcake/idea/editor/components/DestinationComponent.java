@@ -68,7 +68,7 @@ public class DestinationComponent extends BasicDomElementComponent<Destination> 
         PeriodAddAction addAction = new PeriodAddAction(getDomElement(), getComponent());
         PropertyAddAction addAction2 = new PropertyAddAction(getDomElement(), getComponent());
         SwitchEnabledAction enabledAction = new SwitchEnabledAction(destinationGui, "Destination");
-        EditAction editAction = new EditAction("Edit Destination", getDomElement(), getComponent());
+        EditAction editAction = new EditAction<Destination>("Edit Destination", getDomElement(), getComponent());
 
         List<Destination> destinationList = new ArrayList<>();
         destinationList.add(getDomElement());

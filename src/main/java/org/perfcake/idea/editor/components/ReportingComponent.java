@@ -64,7 +64,7 @@ public class ReportingComponent extends BasicDomElementComponent<Reporting> {
         ReporterAddAction addAction = new ReporterAddAction(getDomElement(), getComponent());
         PropertyAddAction addAction2 = new PropertyAddAction(getDomElement(), getComponent());
 
-        EditAction editAction = new EditAction("Edit Reporting", getDomElement(), getComponent());
+        EditAction editAction = new EditAction<Reporting>("Edit Reporting", getDomElement(), getComponent());
 
 
         actionMap.put(ActionType.ADD, addAction);

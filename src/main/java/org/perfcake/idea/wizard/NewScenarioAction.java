@@ -35,7 +35,7 @@ public class NewScenarioAction extends CreateElementActionBase {
         super("Scenario", "Create new PerfCake scenario", Constants.ICON_16P);
     }
 
-    private String getNameWithExtension(String name) {
+    static String getNameWithExtension(String name) {
         if (name.length() > 4 && name.substring(name.length() - 4, name.length()).equalsIgnoreCase(".xml")) {
             //xml extension already present
             return name;
@@ -47,28 +47,29 @@ public class NewScenarioAction extends CreateElementActionBase {
     @Override
     protected PsiElement[] invokeDialog(Project project, PsiDirectory directory) {
 
+        //find correct scenarios dir for new scenario
+        Map<String, VirtualFile> moduleDirs = null;
+        try {
+            moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(project, directory.getVirtualFile());
+        } catch (PerfCakeIDEAException e) {
+            log.error("Error creating template scenario", e);
+            return PsiElement.EMPTY_ARRAY;
+        }
+        final VirtualFile scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY);
+        PsiDirectory scenariosDirPsi = PsiManager.getInstance(project).findDirectory(scenariosDir);
+
+        //create dom model and show wizard
         XmlFile scenario = ScenarioUtil.getTemplateModel(directory.getProject());
         Scenario scenarioDom = (Scenario) DomManager.getDomManager(project).getDomElement(scenario.getRootTag());
-        NewScenarioWizard newScenarioWizard = new NewScenarioWizard(project, scenarioDom);
+        NewScenarioWizard newScenarioWizard = new NewScenarioWizard(project, scenarioDom, scenariosDirPsi);
         boolean ok = newScenarioWizard.showAndGet();
 
         if (ok) {
             scenario.setName(getNameWithExtension(newScenarioWizard.nameStep.getScenarioName()));
-            //find correct scenarios dir for new scenario
-            Map<String, VirtualFile> moduleDirs = null;
-            try {
-                moduleDirs = PerfCakeIdeaUtil.resolveModuleDirsForFile(project, directory.getVirtualFile());
-            } catch (PerfCakeIDEAException e) {
-                log.error("Error creating template scenario", e);
-                return PsiElement.EMPTY_ARRAY;
-            }
-            final VirtualFile scenariosDir = moduleDirs.get(PerfCakeConst.SCENARIOS_DIR_PROPERTY);
-            PsiDirectory scenariosDirPsi = PsiManager.getInstance(project).findDirectory(scenariosDir);
 
             PsiElement created = ScenarioUtil.saveScenarioPsiToDir(scenariosDirPsi, scenario);
             return new PsiElement[]{created};
         }
-
 
         //Dialog closed without OK button
         return PsiElement.EMPTY_ARRAY;

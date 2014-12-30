@@ -43,4 +43,10 @@ public class ValidatorDropDialog extends MyDialogWrapper {
         }
         return null;
     }
+
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return idTextField;
+    }
 }

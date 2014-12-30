@@ -34,10 +34,10 @@ public class PropertiesEditor {
         addButton.setAction(new PropertyAddAction(mockCopy, propertiesTable));
         addButton.setText("Add");
 
-        final EditAction propertyEditAction = new EditAction("Edit", selectedProperties.isEmpty() ? null : selectedProperties.get(0), propertiesTable);
+        final EditAction propertyEditAction = new EditAction<Property>("Edit", selectedProperties.isEmpty() ? null : selectedProperties.get(0), propertiesTable);
         editButton.setAction(propertyEditAction);
 
-        final DeleteAction propertyDeleteAction = new DeleteAction("Delete", selectedProperties, propertiesTable);
+        final DeleteAction propertyDeleteAction = new DeleteAction<Property>("Delete", selectedProperties, propertiesTable);
         deleteButton.setAction(propertyDeleteAction);
         //deleteButton.setText("Delete");
 

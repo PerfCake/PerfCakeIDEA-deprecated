@@ -18,7 +18,6 @@ public class ColorSettingForm implements ChangeListener {
     private static final Logger LOG = Logger.getInstance(ColorSettingForm.class);
 
     private JPanel colorPanel;
-    private JButton scenarioForeground;
     private JButton scenarioBackground;
     private JButton propertiesForeground;
     private JButton propertiesBackground;
@@ -65,7 +64,6 @@ public class ColorSettingForm implements ChangeListener {
     }
 
     private void createUIComponents() {
-        scenarioForeground = new JColorButton("Foreground", this);
         scenarioBackground = new JColorButton("Background", this);
         propertiesForeground = new JColorButton("Foreground", this);
         propertiesBackground = new JColorButton("Background", this);
@@ -111,7 +109,6 @@ public class ColorSettingForm implements ChangeListener {
     }
 
     private void fillColorButtonMap() {
-        colorButtons.put(ColorType.SCENARIO_FOREGROUND, scenarioForeground);
         colorButtons.put(ColorType.SCENARIO_BACKGROUND, scenarioBackground);
         colorButtons.put(ColorType.PROPERTIES_FOREGROUND, propertiesForeground);
         colorButtons.put(ColorType.PROPERTIES_BACKGROUND, propertiesBackground);

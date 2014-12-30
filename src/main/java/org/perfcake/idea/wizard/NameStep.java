@@ -2,6 +2,7 @@ package org.perfcake.idea.wizard;
 
 import com.intellij.ide.wizard.CommitStepException;
 import com.intellij.ide.wizard.Step;
+import com.intellij.psi.PsiDirectory;
 
 import javax.swing.*;
 
@@ -14,10 +15,13 @@ public class NameStep implements Step {
     private JTextField scenarioTextField;
     private JPanel rootPanel;
     private NewScenarioWizard newScenarioWizard;
+    private PsiDirectory scenariosDirPsi;
 
-    public NameStep(NewScenarioWizard newScenarioWizard) {
+    public NameStep(NewScenarioWizard newScenarioWizard, PsiDirectory scenariosDirPsi) {
         this.newScenarioWizard = newScenarioWizard;
+        this.scenariosDirPsi = scenariosDirPsi;
     }
+
 
     @Override
     public void _init() {
@@ -27,6 +31,9 @@ public class NameStep implements Step {
     @Override
     public void _commit(boolean finishChosen) throws CommitStepException {
         if (getScenarioName().isEmpty()) throw new CommitStepException("Please specify scenario file name");
+        if (scenariosDirPsi.findFile(NewScenarioAction.getNameWithExtension(scenarioTextField.getText())) != null)
+            throw new CommitStepException("File with this name already exists. Please specify another name.");
+
     }
 
     @Override

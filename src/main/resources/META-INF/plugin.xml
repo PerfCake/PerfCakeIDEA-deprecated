@@ -1,12 +1,13 @@
 <idea-plugin version="2" url="https://www.perfcake.org">
     <id>org.perfcake.idea</id>
     <name>PerfCakeIDEA</name>
-    <version>3.3</version>
+    <version>3.3.0</version>
     <vendor email="michalko.miron@gmail.com">Miron Michalko</vendor>
 
     <description><![CDATA[
 	PerfCake plugin for Intellij Idea.<br/>
-        PerfCake is a lightweight performance testing tool and a load generator.
+        PerfCake is a lightweight performance testing tool and a load generator.<br/>
+        <b>Requires Java 7.</b>
       ]]></description>
 
 
@@ -42,6 +43,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <standardResource url="urn:perfcake:scenario:3.0" path="perfcake-scenario-3.0.xsd"/>
         <moduleType id="PERFCAKE_MODULE"
                     implementationClass="org.perfcake.idea.module.PerfCakeModuleType"/>
         <!--<projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>-->
@@ -51,7 +53,6 @@
         <dom.fileDescription implementation="org.perfcake.idea.module.ScenarioDomFileDescription"/>
         <fileEditorProvider implementation="org.perfcake.idea.editor.editor.ScenarioEditorProvider"/>
         <applicationConfigurable instance="org.perfcake.idea.module.PerfCakeIdeSettings"/>
-        <standardResourceProvider implementation="org.perfcake.idea.module.PerfCakeIdeaStandardResourceProvider"/>
     </extensions>
     <module-components>
 

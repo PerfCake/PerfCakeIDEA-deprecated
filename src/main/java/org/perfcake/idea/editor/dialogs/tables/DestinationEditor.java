@@ -35,11 +35,11 @@ public class DestinationEditor {
         addButton.setAction(addAction);
         addButton.setText("Add");
 
-        final EditAction editAction = new EditAction("Edit Destination", null, destinationTable);
+        final EditAction editAction = new EditAction<Destination>("Edit Destination", null, destinationTable);
         editButton.setAction(editAction);
         editButton.setText("Edit");
 
-        final DeleteAction deleteAction = new DeleteAction("Delete Destination", selectedDestinations, destinationTable);
+        final DeleteAction deleteAction = new DeleteAction<Destination>("Delete Destination", selectedDestinations, destinationTable);
         deleteButton.setAction(deleteAction);
         deleteButton.setText("Delete");
 

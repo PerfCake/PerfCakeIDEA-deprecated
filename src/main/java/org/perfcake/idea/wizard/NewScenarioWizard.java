@@ -2,6 +2,7 @@ package org.perfcake.idea.wizard;
 
 import com.intellij.ide.wizard.AbstractWizard;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDirectory;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.idea.model.Scenario;
 import org.perfcake.idea.util.PerfCakeIdeaUtil;
@@ -22,11 +23,11 @@ public class NewScenarioWizard extends AbstractWizard {
     ReportingStep reportingStep;
     PropertiesStep propertiesStep;
 
-    public NewScenarioWizard(@Nullable Project project, Scenario scenario) {
+    public NewScenarioWizard(@Nullable Project project, Scenario scenario, PsiDirectory scenariosDirPsi) {
         super("Specify scenario name", project);
         this.scenario = scenario;
 
-        nameStep = new NameStep(this);
+        nameStep = new NameStep(this, scenariosDirPsi);
         generatorStep = new GeneratorStep(scenario.getGenerator(), this);
         senderStep = new SenderStep(scenario.getSender(), this);
         messagesStep = new MessagesStep(PerfCakeIdeaUtil.getMessagesValidationPair(scenario.getMessages()), this);
@@ -57,28 +58,4 @@ public class NewScenarioWizard extends AbstractWizard {
         return !nameStep.getScenarioName().isEmpty() && generatorStep.isComplete();
     }
 
-//    @Override
-//    protected void updateButtons() {
-//        if (isLastStep()) {
-//            if (mySteps.size() > 1) {
-//                getNextButton().setText(UIUtil.removeMnemonic(IdeBundle.message("button.finish")));
-//                getNextButton().setMnemonic('F');
-//            }
-//            else {
-//                getNextButton().setText(IdeBundle.message("button.ok"));
-//            }
-//            getNextButton().setEnabled(canFinish());
-//        }
-//        else {
-//            getNextButton().setText(UIUtil.removeMnemonic(IdeBundle.message("button.wizard.next")));
-//            getNextButton().setMnemonic('N');
-//            getNextButton().setEnabled(canGoNext());
-//        }
-//
-//        if (getNextButton().isEnabled() && !ApplicationManager.getApplication().isUnitTestMode()) {
-//            getRootPane().setDefaultButton(getNextButton());
-//        }
-//
-//        getNextButton().setEnabled(myCurrentStep > 0);
-//    }
 }
