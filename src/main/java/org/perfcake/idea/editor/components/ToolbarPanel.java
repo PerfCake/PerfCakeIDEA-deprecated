@@ -24,7 +24,7 @@ public class ToolbarPanel extends JPanel {
 
     public ToolbarPanel() {
         setLayout(new VerticalLayout());
-        setBackground(Color.WHITE);
+        //setBackground(Color.WHITE);
 
 
         PerfCakeClassProvider classProvider = new PerfCakeClassProvider();
@@ -72,6 +72,7 @@ public class ToolbarPanel extends JPanel {
         toggleAction.putValue(JXCollapsiblePane.EXPAND_ICON,
                 UIManager.getIcon("Tree.collapsedIcon"));
         JMenuItem group = new JMenuItem(toggleAction);
+        group.setBorder(BorderFactory.createEtchedBorder());
         group.setText(groupName);
 
         //adds group and pane with items to this toolbar

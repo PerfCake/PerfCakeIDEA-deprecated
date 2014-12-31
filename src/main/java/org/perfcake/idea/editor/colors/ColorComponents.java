@@ -55,9 +55,9 @@ public class ColorComponents {
      */
     private static void updateColorAdjustableTree(Component[] components) {
         for (Component c : components) {
-            if (c instanceof ColorAdjustable && c instanceof JComponent) {
+            if (c instanceof JComponent) {
                 JComponent toUpdate = (JComponent) c;
-                ((ColorAdjustable) toUpdate).updateColors();
+                if (c instanceof ColorAdjustable) ((ColorAdjustable) toUpdate).updateColors();
                 synchronized (c.getTreeLock()) {
                     updateColorAdjustableTree(toUpdate.getComponents());
                 }
@@ -81,8 +81,9 @@ public class ColorComponents {
      * @param colorType for which to get a color
      * @return color for specified colorType
      */
-    @NotNull
+    //@NotNull
     public static Color getColor(@NotNull ColorType colorType) {
+        if (!isColoringOn()) return null;
         if (propertiesComponent.isValueSet(colorType.name())) {
             String color = propertiesComponent.getValue(colorType.name());
             return parseColor(color);
@@ -90,6 +91,14 @@ public class ColorComponents {
             return getDefaultColor(colorType);
         }
 
+    }
+
+    public static boolean isColoringOn() {
+        return propertiesComponent.getBoolean("coloring", false);
+    }
+
+    public static void setColoringOn(boolean on) {
+        propertiesComponent.setValue("coloring", Boolean.toString(on));
     }
 
     /**
@@ -188,7 +197,7 @@ public class ColorComponents {
      *
      * @return all default colors
      */
-    private static Map<ColorType, Color> getDefaultColors() {
+    public static Map<ColorType, Color> getDefaultColors() {
         Map<ColorType, Color> colors = new HashMap<>();
 
         for (ColorType colorType : ColorType.values()) {
@@ -197,13 +206,6 @@ public class ColorComponents {
         return colors;
     }
 
-    /**
-     * Resets all user changed colors back to default state.
-     */
-    public static void resetColorsToDefault() {
-        Map<ColorType, Color> defaultColors = getDefaultColors();
-        setColors(defaultColors);
-    }
 
 
     /**

@@ -42,6 +42,7 @@ public class ColorSettingForm implements ChangeListener {
     private JButton destinationForeground;
     private JButton destinationBackground;
     private JButton resetToDefaultButton;
+    private JButton turnColoringOffButton;
 
     private Map<ColorType, JButton> colorButtons;
     private Boolean changed = Boolean.FALSE;
@@ -52,15 +53,33 @@ public class ColorSettingForm implements ChangeListener {
         Map<ColorType, Color> colors = ColorComponents.getColors();
         setButtonColors(colors);
 
+        //set text of coloring button
+        turnColoringOffButton.setText(getColoringButtonText());
+
 
         resetToDefaultButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ColorComponents.resetColorsToDefault();
-                Map<ColorType, Color> colors = ColorComponents.getColors();
+                //ColorComponents.resetColorsToDefault();
+                Map<ColorType, Color> colors = ColorComponents.getDefaultColors();
                 setButtonColors(colors);
+                changed = Boolean.TRUE;
             }
         });
+
+        turnColoringOffButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ColorComponents.setColoringOn(!ColorComponents.isColoringOn());
+                ColorComponents.setColors(ColorComponents.getColors());
+
+                turnColoringOffButton.setText(getColoringButtonText());
+            }
+        });
+    }
+
+    private String getColoringButtonText() {
+        return ColorComponents.isColoringOn() ? "Disable coloring" : "Enable coloring";
     }
 
     private void createUIComponents() {

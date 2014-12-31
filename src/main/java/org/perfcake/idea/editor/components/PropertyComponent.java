@@ -3,7 +3,6 @@ package org.perfcake.idea.editor.components;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
 import org.perfcake.idea.editor.actions.DeleteAction;
 import org.perfcake.idea.editor.actions.EditAction;
-import org.perfcake.idea.editor.dialogs.PropertyDialog;
 import org.perfcake.idea.editor.gui.PropertyGui;
 import org.perfcake.idea.editor.menu.ActionType;
 import org.perfcake.idea.editor.menu.PopClickListener;
@@ -22,7 +21,6 @@ import java.util.List;
 public class PropertyComponent extends BasicDomElementComponent<Property> {
 
     private PropertyGui propertyGui;
-    private PropertyDialog editDialog;
 
     public PropertyComponent(final Property domElement) {
         super((Property) domElement.createStableCopy());
