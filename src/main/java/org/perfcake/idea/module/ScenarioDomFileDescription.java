@@ -17,7 +17,7 @@ import javax.swing.*;
  */
 public class ScenarioDomFileDescription extends DomFileDescription<Scenario> {
 
-    private static final String[] PERFCAKE_NAMESPACES = {"", "urn:perfcake:scenario:3.0"};
+    private static final String[] PERFCAKE_NAMESPACES = {"urn:perfcake:scenario:3.0"};
 
     public ScenarioDomFileDescription() {
         super(Scenario.class, Scenario.TAG_NAME);

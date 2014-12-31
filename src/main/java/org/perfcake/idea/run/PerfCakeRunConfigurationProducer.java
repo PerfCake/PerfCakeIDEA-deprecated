@@ -6,7 +6,6 @@ import com.intellij.execution.actions.RunConfigurationProducer;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.StdFileTypes;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -14,12 +13,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
-import org.perfcake.PerfCakeConst;
 import org.perfcake.idea.model.Scenario;
-import org.perfcake.idea.util.PerfCakeIDEAException;
-import org.perfcake.idea.util.PerfCakeIdeaUtil;
-
-import java.util.Map;
 
 /**
  * Created by miron on 19.2.2014.
@@ -53,6 +47,7 @@ public class PerfCakeRunConfigurationProducer extends RunConfigurationProducer<P
         }
 
         configuration.setScenarioPath(file.getPath());
+        configuration.setGeneratedName();
         try {
             configuration.checkConfiguration();
         } catch (RuntimeConfigurationException e) {

@@ -14,6 +14,7 @@
       <!-->property for "Intellij plugin development with Maven" Intellij plugin<-->
       <ij.plugin>true</ij.plugin>
       <perfcake.version>3.3</perfcake.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    </properties>
    <dependencies>
       <dependency>

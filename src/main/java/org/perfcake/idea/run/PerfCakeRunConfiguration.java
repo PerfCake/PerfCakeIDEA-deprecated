@@ -45,6 +45,14 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
     private String scenariosDirPath;
     private String messagesDirPath;
 
+    protected PerfCakeRunConfiguration(Project project, ConfigurationFactory factory, String name) {
+        super(project, factory, name);
+    }
+
+    public static void copyParams(PerfCakeRunConfigurationParams source, PerfCakeRunConfigurationParams target) {
+        target.setScenarioPath(source.getScenarioPath());
+    }
+
     public String getScenariosDirPath() {
         return scenariosDirPath;
     }
@@ -102,12 +110,6 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
         setMessagesDirPath(messagesDir);
     }
 
-
-
-    protected PerfCakeRunConfiguration(Project project, ConfigurationFactory factory, String name) {
-        super(project, factory, name);
-    }
-
     /**
      * Gets GUI Editor for PerfCake configuration
      * @return
@@ -131,11 +133,6 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
         return new PerfCakeRunProfileState(this);
     }
 
-
-    public static void copyParams(PerfCakeRunConfigurationParams source, PerfCakeRunConfigurationParams target) {
-        target.setScenarioPath(source.getScenarioPath());
-    }
-
     /**
      * Checks validity of this configuration
      * @throws RuntimeConfigurationException on invalid configuration
@@ -153,7 +150,7 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
     @Override
     public String suggestedName() {
         if (scenarioPath != null) {
-            String name = (new File(scenarioPath)).getName();
+            return (new File(scenarioPath)).getName();
         }
         return null;
     }
@@ -209,4 +206,5 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase impleme
         }
         return null;
     }
+
 }

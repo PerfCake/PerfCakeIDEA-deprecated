@@ -43,7 +43,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <standardResource url="urn:perfcake:scenario:3.0" path="perfcake-scenario-3.0.xsd"/>
+        <standardResource url="urn:perfcake:scenario:3.0" path="schema/perfcake-scenario-3.0.xsd"/>
         <moduleType id="PERFCAKE_MODULE"
                     implementationClass="org.perfcake.idea.module.PerfCakeModuleType"/>
         <!--<projectTemplatesFactory implementation="org.perfcake.idea.module.PerfCakeProjectTemplatesFactory"/>-->

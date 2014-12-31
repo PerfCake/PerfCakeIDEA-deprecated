@@ -29,7 +29,7 @@ public class MessageDropAction implements DropAction {
             boolean ok = dialog.showAndGet();
 
             if (ok) {
-                new WriteCommandAction(messages.getModule().getProject(), "add Message", messages.getXmlElement().getContainingFile()) {
+                new WriteCommandAction(messages.getModule().getProject(), "add Message", messages.getXmlElement() == null ? null : messages.getXmlElement().getContainingFile()) {
                     @Override
                     protected void run(@NotNull Result result) throws Throwable {
                         mockMessage.copyFrom(dialog.getMockCopy());
