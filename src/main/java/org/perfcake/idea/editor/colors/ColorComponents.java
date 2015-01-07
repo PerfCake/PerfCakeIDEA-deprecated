@@ -9,9 +9,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.components.panels.Wrapper;
 import org.jetbrains.annotations.NotNull;
-import org.perfcake.idea.editor.components.EditorPanel;
-import org.perfcake.idea.editor.components.ScenarioPanel;
-import org.perfcake.idea.editor.swing.ColorAdjustable;
+import org.perfcake.idea.editor.gui.EditorPanel;
+import org.perfcake.idea.editor.gui.ScenarioPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +19,8 @@ import java.util.Map;
 
 /**
  * Created by miron on 30. 10. 2014.
+ * This method provides coloring of scenario editor according to user preferences,
+ * default colors, and disabling of coloring.
  */
 public class ColorComponents {
 
@@ -97,6 +98,10 @@ public class ColorComponents {
         return propertiesComponent.getBoolean("coloring", false);
     }
 
+    /**
+     * Turns coloring off/on. By default coloring is on. WHen turned off ColorComponents returns null
+     * @param on
+     */
     public static void setColoringOn(boolean on) {
         propertiesComponent.setValue("coloring", Boolean.toString(on));
     }

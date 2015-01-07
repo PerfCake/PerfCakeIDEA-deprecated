@@ -1,4 +1,4 @@
-package org.perfcake.idea.editor.components;
+package org.perfcake.idea.editor.gui;
 
 import com.intellij.ui.components.JBList;
 import org.jdesktop.swingx.JXCollapsiblePane;

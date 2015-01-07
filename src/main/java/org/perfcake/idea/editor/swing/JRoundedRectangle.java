@@ -61,6 +61,7 @@ public class JRoundedRectangle extends JPanel {
             //fallback if UIDefaults table was not set
             setUI(new RoundedRectangleUI());
         }
+
     }
 
     private void select() {

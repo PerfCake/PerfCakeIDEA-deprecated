@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by miron on 4.2.2014.
+ * @see super
  */
 public class PerfCakeConfigurationFactory extends ConfigurationFactory {
 

@@ -1,6 +1,5 @@
 package org.perfcake.idea.run;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -12,12 +11,9 @@ import java.net.URL;
  * Created by miron on 7.4.2014.
  */
 public class LoggerInitializer implements ModuleComponent {
-    private static final Logger log = Logger.getInstance(ModuleComponent.class);
-    private final Module module;
+
 
     public LoggerInitializer(Module module) {
-        this.module = module;
-
     }
 
     public void initComponent() {

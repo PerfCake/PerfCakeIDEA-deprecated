@@ -31,6 +31,7 @@ import java.util.Map;
 
 /**
  * Created by miron on 4.2.2014.
+ * @see super
  */
 public class PerfCakeRunConfiguration extends LocatableConfigurationBase implements PerfCakeRunConfigurationParams, RefactoringListenerProvider {
     private static final Logger LOG = Logger.getInstance(PerfCakeRunConfiguration.class);

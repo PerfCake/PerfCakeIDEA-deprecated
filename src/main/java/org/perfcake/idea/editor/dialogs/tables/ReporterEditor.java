@@ -81,7 +81,7 @@ public class ReporterEditor {
 
 
     private class ReporterTableModel extends AbstractTableModel {
-        private final String[] columnNames = {"Enabled", "Reporter"};
+        private final String[] columnNames = {"Reporter", "Enabled"};
 
         @Override
         public int getRowCount() {
@@ -100,25 +100,24 @@ public class ReporterEditor {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            try {
-                Reporter Reporter = mockCopy.getReporters().get(rowIndex);
-                if (Reporter.isValid()) {
-                    if (columnIndex == 0) {
-                        if (Reporter.getEnabled().getStringValue() != null
-                                && Reporter.getEnabled().getStringValue()
-                                .equals("true")) {
-                            return '*';
-                        }
-                        return null;
-                    }
-                    if (columnIndex == 1) {
-                        return Reporter.getClazz().getStringValue();
-                    }
+
+            Reporter Reporter = mockCopy.getReporters().get(rowIndex);
+            if (Reporter.isValid()) {
+                if (columnIndex == 0) {
+                    return Reporter.getClazz().getStringValue();
                 }
-                return null;
-            } catch (IndexOutOfBoundsException e) {
-                return null;
+
+                if (columnIndex == 1) {
+                    if (Reporter.getEnabled().getStringValue() != null
+                            && Reporter.getEnabled().getStringValue()
+                            .equals("true")) {
+                        return '*';
+                    }
+                    return null;
+                }
             }
+            return null;
         }
+
     }
 }

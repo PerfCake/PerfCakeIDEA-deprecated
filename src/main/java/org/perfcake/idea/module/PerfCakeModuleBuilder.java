@@ -25,9 +25,15 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
 
     @Override
     public String getGroupName() {
-        return PerfCakeProjectTemplatesFactory.PERFCAKE;
+        return "PerfCake";
     }
 
+    /**
+     * Creates module directories on module creation.
+     *
+     * @param rootModel
+     * @throws ConfigurationException
+     */
     public void setupRootModel(ModifiableRootModel rootModel) throws ConfigurationException {
         super.setupRootModel(rootModel);
 

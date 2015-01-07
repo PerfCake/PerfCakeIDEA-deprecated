@@ -13,7 +13,7 @@ import org.perfcake.idea.util.Constants;
 import javax.swing.*;
 
 /**
- * Created by miron on 10. 10. 2014.
+ * Created by miron on 10. 10. 2014. This class describes xml file of type scenario.
  */
 public class ScenarioDomFileDescription extends DomFileDescription<Scenario> {
 

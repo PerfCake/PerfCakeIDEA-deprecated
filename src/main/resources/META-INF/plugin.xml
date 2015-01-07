@@ -7,7 +7,7 @@
     <description><![CDATA[
 	PerfCake plugin for Intellij Idea.<br/>
         PerfCake is a lightweight performance testing tool and a load generator.<br/>
-        <b>Requires Java 7.</b>
+        <b>This plugin requires, that Intellij Idea is run on Java at least version 7.</b>
       ]]></description>
 
 

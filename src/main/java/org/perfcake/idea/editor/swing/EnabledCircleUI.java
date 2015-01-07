@@ -56,6 +56,5 @@ public class EnabledCircleUI extends PanelUI {
     public boolean contains(JComponent c, int x, int y) {
         Rectangle area = computeArea(c);
         return area.contains(x, y);
-        //TODO return (new RoundRectangle2D.Double(area.x, area.y, area.width, area.height, arcWidth, arcHeight)).contains(x, y);
     }
 }

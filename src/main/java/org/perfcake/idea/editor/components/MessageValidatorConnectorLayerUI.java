@@ -1,5 +1,6 @@
 package org.perfcake.idea.editor.components;
 
+import org.perfcake.idea.editor.gui.ScenarioPanel;
 import org.perfcake.idea.model.Scenario;
 
 import javax.swing.*;

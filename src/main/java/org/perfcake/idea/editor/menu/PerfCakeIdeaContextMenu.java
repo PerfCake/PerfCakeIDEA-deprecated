@@ -5,6 +5,8 @@ import org.perfcake.idea.editor.actions.RedoAction;
 import org.perfcake.idea.editor.actions.UndoAction;
 
 import javax.swing.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by miron on 24. 11. 2014.
@@ -18,31 +20,15 @@ public class PerfCakeIdeaContextMenu extends JPopupMenu{
         this.domElement = domElement;
         this.listeningComponent = listeningComponent;
 
-//        AnAction undoAction = ActionManager.getInstance().getAction(IdeActions.ACTION_UNDO);
-//        AnAction redoAction = ActionManager.getInstance().getAction(IdeActions.ACTION_REDO);
-//        ArrayList<AnAction> actions = new ArrayList<>();
-//        actions.add(undoAction);
-//        actions.add(redoAction);
-//        DefaultActionGroup defaultActionGroup = new DefaultActionGroup("UndoRedo", actions);
-//        ActionPopupMenu actionPopupMenu = ActionManager.getInstance().createActionPopupMenu(ActionPlaces.EDITOR_POPUP, defaultActionGroup);
-//        JPopupMenu popupMenu = actionPopupMenu.getComponent();
-//        Component[] components = popupMenu.getComponents();
-//
-//        for(Component c : components){
-//            add((JMenuItem) c);
-//        }
-
 
         JMenuItem undoItem = new JMenuItem();
         undoItem.setAction(new UndoAction(domElement));
+        undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
         add(undoItem);
-
-//        JMenuItem undoItem2 = new JMenuItem();
-//        undoItem2.setAction(new UndoAction2());
-//        add(undoItem2);
 
         JMenuItem redoItem = new JMenuItem();
         redoItem.setAction(new RedoAction(domElement));
+        redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK));
         add(redoItem);
 
         add(new JSeparator());
@@ -53,6 +39,7 @@ public class PerfCakeIdeaContextMenu extends JPopupMenu{
         if (addAction != null) {
             JMenuItem addItem = new JMenuItem();
             addItem.setAction(addAction);
+            addItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.SHIFT_MASK));
             add(addItem);
         }
 
@@ -74,6 +61,7 @@ public class PerfCakeIdeaContextMenu extends JPopupMenu{
         if (editAction != null) {
             JMenuItem editItem = new JMenuItem();
             editItem.setAction(editAction);
+            editItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.SHIFT_MASK));
             add(editItem);
         }
 
@@ -81,58 +69,11 @@ public class PerfCakeIdeaContextMenu extends JPopupMenu{
         if (deleteAction != null) {
             JMenuItem deleteItem = new JMenuItem();
             deleteItem.setAction(deleteAction);
+            deleteItem.setAccelerator(KeyStroke.getKeyStroke("DELETE"));
             add(deleteItem);
         }
 
-
-//        if(domElement instanceof Properties){
-//            JMenuItem addPropertyItem = new JMenuItem();
-//            addPropertyItem.setAction(new PropertyAddAction((IProperties) domElement, listeningComponent));
-//            add(addPropertyItem);
-//
-//            JMenuItem editPropertiesItem = new JMenuItem();
-//            editPropertiesItem.setAction(new PropertiesEditAction((IProperties) domElement, listeningComponent));
-//            add(editPropertiesItem);
-//        }
-//
-//        if(domElement instanceof Property){
-//            JMenuItem deletePropertyItem = new JMenuItem();
-//
-//            List<Property> propertyList = new ArrayList<>();
-//            propertyList.add((Property) domElement);
-//            deletePropertyItem.setAction(new PropertyDeleteAction(propertyList, listeningComponent));
-//            add(deletePropertyItem);
-//
-//            JMenuItem editPropertyItem = new JMenuItem();
-//            editPropertyItem.setAction(new PropertyEditAction((Property) domElement, listeningComponent));
-//            add(editPropertyItem);
-//        }
-
     }
-
-//    public JPopupMenu createMenu(){
-//        AnAction undoAction = ActionManager.getInstance().getAction(IdeActions.ACTION_UNDO);
-//        AnAction redoAction = ActionManager.getInstance().getAction(IdeActions.ACTION_REDO);
-//        ArrayList<AnAction> actions = new ArrayList<>();
-//        actions.add(undoAction);
-//        actions.add(redoAction);
-//        DefaultActionGroup defaultActionGroup = new DefaultActionGroup("UndoRedo", actions);
-//        ActionPopupMenu actionPopupMenu = ActionManager.getInstance().createActionPopupMenu(ActionPlaces.EDITOR_POPUP, defaultActionGroup);
-//        JPopupMenu popupMenu = actionPopupMenu.getComponent();
-//
-//
-//        JMenuItem undoItem = new JMenuItem();
-//        undoItem.setAction(new UndoAction(domElement));
-//        popupMenu.add(undoItem);
-//
-//        ActionMap actionMap = listeningComponent.getActionMap();
-//
-//        JMenuItem addItem = new JMenuItem();
-//        addItem.setAction(actionMap.get(ActionType.ADD));
-//        popupMenu.add(addItem);
-//
-//        return popupMenu;
-//    }
 
 
 }

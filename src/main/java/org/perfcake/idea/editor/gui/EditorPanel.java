@@ -1,6 +1,7 @@
-package org.perfcake.idea.editor.components;
+package org.perfcake.idea.editor.gui;
 
 import com.intellij.ui.components.JBScrollPane;
+import org.perfcake.idea.editor.components.MessageValidatorConnectorLayerUI;
 
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
@@ -34,24 +35,7 @@ public class EditorPanel extends JPanel {
 
         LayerUI<ScenarioPanel> layerUI = new MessageValidatorConnectorLayerUI();
         final JLayer<ScenarioPanel> jlayer = new JLayer<>(scenarioPanel, layerUI);
-//        jlayer.setTransferHandler(new TransferHandler() {
-//            @Override
-//            public boolean canImport(TransferSupport support) {
-//                //JLayer jLayer = (JLayer) support.getComponent();
-//                Component componentAt = jlayer.getView().findComponentAt(support.getDropLocation().getDropPoint());
-//                System.out.println(support.getDropLocation().getDropPoint());
-//                if(componentAt != null){
-//                    System.out.println(componentAt);
-//                }
-//                return super.canImport(support);
-//
-//            }
-//
-//            @Override
-//            public boolean importData(TransferSupport support) {
-//                return super.importData(support);
-//            }
-//        });
+
 
         //put scenario panel in scrollpane to allow scrolling when scenario is big
         JBScrollPane jbScrollPane = new JBScrollPane(jlayer);
@@ -64,19 +48,6 @@ public class EditorPanel extends JPanel {
     }
 
 
-//        private JRoundedRectangle findDeepest(Component root, Point p, Container component) {
-//            JRoundedRectangle result = null;
-//            for (Component c : component.getComponents()) {
-//                Point convertPoint = SwingUtilities.convertPoint(root, p, c);
-//                if (c.contains(convertPoint)) {
-//                    if (c instanceof JRoundedRectangle) {
-//                        result = (JRoundedRectangle) c;
-//                    }
-//                    findDeepest(root, p, (Container) c);
-//                }
-//            }
-//            return result;
-//        }
 
 
     public JPanel getToolbarPanel() {

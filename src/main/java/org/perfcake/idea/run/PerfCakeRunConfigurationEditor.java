@@ -8,6 +8,7 @@ import javax.swing.*;
 
 /**
  * Created by miron on 17.2.2014.
+ * This class is handling data from run configuration GUI.
  */
 public class PerfCakeRunConfigurationEditor extends SettingsEditor<PerfCakeRunConfiguration> {
     private PerfCakeRunConfigurationForm myForm;

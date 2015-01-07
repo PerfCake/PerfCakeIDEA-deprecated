@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by miron on 21. 12. 2014.
+ * Created by miron on 21. 12. 2014. This swing component is shown in console window, when running scenario.
+ * It is adding toolbar for scenario stopping button.
  */
 public class ConsoleContentWrapper extends JPanel {
 

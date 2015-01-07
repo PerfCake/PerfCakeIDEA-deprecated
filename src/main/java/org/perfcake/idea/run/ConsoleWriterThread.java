@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 
 /**
  * Created by miron on 9.3.2014.
+ * This class is writing scenario test output to Idea console window.
  */
 public class ConsoleWriterThread implements Runnable {
     private final static Logger log = Logger.getInstance(ConsoleWriterThread.class);

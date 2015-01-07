@@ -1,6 +1,9 @@
 package org.perfcake.idea.editor.components;
 
 import com.intellij.util.xml.ui.BasicDomElementComponent;
+import org.perfcake.idea.editor.gui.EditorPanel;
+import org.perfcake.idea.editor.gui.ScenarioPanel;
+import org.perfcake.idea.editor.gui.ToolbarPanel;
 import org.perfcake.idea.model.Scenario;
 
 import javax.swing.*;

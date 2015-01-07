@@ -17,6 +17,7 @@ import org.perfcake.idea.model.Scenario;
 
 /**
  * Created by miron on 19.2.2014.
+ * @see super
  */
 public class PerfCakeRunConfigurationProducer extends RunConfigurationProducer<PerfCakeRunConfiguration> {
 

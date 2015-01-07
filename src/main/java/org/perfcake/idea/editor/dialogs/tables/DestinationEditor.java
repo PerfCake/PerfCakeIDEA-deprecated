@@ -80,7 +80,7 @@ public class DestinationEditor {
     }
 
     private class DestinationTableModel extends AbstractTableModel {
-        private final String[] columnNames = {"Enabled", "Destination"};
+        private final String[] columnNames = {"Destination", "Enabled"};
 
         @Override
         public int getRowCount() {
@@ -104,13 +104,14 @@ public class DestinationEditor {
             Destination destination = mockCopy.getDestinations().get(rowIndex);
                 if (destination.isValid()) {
                     if (columnIndex == 0) {
+                        return destination.getClazz().getStringValue();
+                    }
+
+                    if (columnIndex == 1) {
                         if(destination.getEnabled().getStringValue() != null && destination.getEnabled().getStringValue().equals("true")){
                             return '*';
                         }
                         return null;
-                    }
-                    if (columnIndex == 1) {
-                        return destination.getClazz().getStringValue();
                     }
                 }
                 return null;

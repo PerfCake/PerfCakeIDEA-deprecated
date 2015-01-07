@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by miron on 21.5.2014.
+ * Created by miron on 21.5.2014. This class adds PerfCake settings to Idea settings.
  */
 public class PerfCakeIdeSettings implements Configurable {
     private ColorSettingForm form = new ColorSettingForm();

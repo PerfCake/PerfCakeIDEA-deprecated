@@ -11,6 +11,7 @@ import javax.swing.*;
 
 /**
  * Created by miron on 4.2.2014.
+ * @see super
  */
 public class PerfCakeConfigurationType implements ConfigurationType {
     private static final Logger log = Logger.getInstance(PerfCakeConfigurationType.class);

@@ -16,6 +16,9 @@ public class PerfCakeRunner extends DefaultProgramRunner {
         return "PerfCakeRunner";
     }
 
+    /**
+     * @return true if we can run this parameters
+     */
     @Override
     public boolean canRun(@NotNull String executorId, @NotNull RunProfile profile) {
         return executorId.equals(DefaultRunExecutor.EXECUTOR_ID) && profile instanceof PerfCakeRunConfiguration;

@@ -1,10 +1,11 @@
-package org.perfcake.idea.editor.components;
+package org.perfcake.idea.editor.gui;
 
 import com.intellij.util.xml.ui.Committable;
+import org.perfcake.idea.editor.colors.ColorAdjustable;
 import org.perfcake.idea.editor.colors.ColorComponents;
 import org.perfcake.idea.editor.colors.ColorType;
+import org.perfcake.idea.editor.components.*;
 import org.perfcake.idea.editor.menu.PopClickListener;
-import org.perfcake.idea.editor.swing.ColorAdjustable;
 import org.perfcake.idea.model.Message;
 import org.perfcake.idea.model.Validator;
 import org.perfcake.idea.model.ValidatorRef;
