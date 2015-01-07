@@ -1,18 +1,18 @@
 <idea-plugin version="2" url="https://www.perfcake.org">
     <id>org.perfcake.idea</id>
     <name>PerfCakeIDEA</name>
-    <version>3.3.0</version>
+    <version>3.3.1</version>
     <vendor email="michalko.miron@gmail.com">Miron Michalko</vendor>
 
     <description><![CDATA[
 	PerfCake plugin for Intellij Idea.<br/>
         PerfCake is a lightweight performance testing tool and a load generator.<br/>
-        <b>This plugin requires, that Intellij Idea is run on Java at least version 7.</b>
+        <b>Plugin requires, that Intellij Idea is run on Java at least version 7.</b>
       ]]></description>
 
 
     <change-notes><![CDATA[
-      <small>Initial release.</small>
+      <small>Added support for disabling of editor coloring</small>
       ]]>
     </change-notes>
 
