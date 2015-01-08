@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://www.perfcake.org">
     <id>org.perfcake.idea</id>
     <name>PerfCakeIDEA</name>
-    <version>3.3.1</version>
+    <version>3.3.2</version>
     <vendor email="michalko.miron@gmail.com">Miron Michalko</vendor>
 
     <description><![CDATA[
