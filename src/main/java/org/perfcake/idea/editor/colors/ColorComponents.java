@@ -95,7 +95,7 @@ public class ColorComponents {
     }
 
     public static boolean isColoringOn() {
-        return propertiesComponent.getBoolean("coloring", false);
+        return propertiesComponent.getBoolean("coloring", true);
     }
 
     /**
